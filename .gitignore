@@ -1,0 +1,11 @@
+.DS_Store
+*.pem
+.env*
+sbmi-portal/dev.db
+sbmi-portal/node_modules
+sbmi-portal/.next
+sbmi-portal/out
+sbmi-portal/.vercel
+*.tsbuildinfo
+sbmi-portal/next-env.d.ts
+sbmi-portal/src/generated

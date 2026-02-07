@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+/* SBMI / base44 design tokens */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --sbmi-green: #1B4332;
+  --sbmi-green-mid: #2D5A45;
+  --sbmi-green-dark: #0F261A;
+  --sbmi-gold: #C9A227;
+  --sbmi-gold-hover: #B8922A;
+  --sbmi-cream: #FAF8F5;
+  --sbmi-border: #E8E4DE;
+  --sbmi-muted: #3D5A4C;
+  --sbmi-muted-light: #3D5A4C99;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+}
+
+.font-serif {
+  font-family: var(--font-serif), serif;
+}
+
+/* SBMI utility classes for app pages */
+.sbmi-page-bg { background-color: var(--sbmi-cream); }
+.sbmi-card { background: white; border: 1px solid var(--sbmi-border); }
+.sbmi-heading { color: var(--sbmi-green); font-family: var(--font-serif), serif; }
+.sbmi-muted { color: var(--sbmi-muted); }
+.sbmi-btn-primary { background: var(--sbmi-gold); color: var(--sbmi-green); }
+.sbmi-btn-primary:hover { background: var(--sbmi-gold-hover); }
+.sbmi-btn-secondary { background: var(--sbmi-green-mid); color: white; }
+.sbmi-btn-secondary:hover { background: var(--sbmi-green); }
+.sbmi-link { color: var(--sbmi-gold); }
+.sbmi-link:hover { color: var(--sbmi-gold-hover); text-decoration: underline; }
+.sbmi-nav-link { color: var(--sbmi-muted); }
+.sbmi-nav-link:hover { color: var(--sbmi-green); }
+.sbmi-input:focus { border-color: var(--sbmi-gold); outline: none; box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.2); }
