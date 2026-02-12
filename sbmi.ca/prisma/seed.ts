@@ -29,7 +29,7 @@ async function main() {
   const adminEmailHash = hashEmail("admin@sbmi.ca");
   await prisma.user.upsert({
     where: { emailHash: adminEmailHash },
-    update: { email: "admin@sbmi.ca" },
+    update: { email: "admin@sbmi.ca", passwordHash: adminHash },
     create: {
       email: "admin@sbmi.ca",
       emailHash: adminEmailHash,
@@ -66,7 +66,7 @@ async function main() {
   const memberEmailHash = hashEmail("demo@sbmi.ca");
   await prisma.user.upsert({
     where: { emailHash: memberEmailHash },
-    update: { email: "demo@sbmi.ca", memberId: member.id },
+    update: { email: "demo@sbmi.ca", memberId: member.id, passwordHash: memberHash },
     create: {
       email: "demo@sbmi.ca",
       emailHash: memberEmailHash,
