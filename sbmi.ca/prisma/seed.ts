@@ -25,7 +25,7 @@ async function main() {
     create: { name: "ADMIN" },
   });
 
-  const hash = await bcrypt.hash("admin123", 10);
+  const adminHash = await bcrypt.hash("admin123", 10);
   const adminEmailHash = hashEmail("admin@sbmi.ca");
   await prisma.user.upsert({
     where: { emailHash: adminEmailHash },
@@ -33,12 +33,50 @@ async function main() {
     create: {
       email: "admin@sbmi.ca",
       emailHash: adminEmailHash,
-      passwordHash: hash,
+      passwordHash: adminHash,
       roleId: adminRole.id,
     },
   });
 
-  console.log("Seeded roles and admin@sbmi.ca / admin123");
+  const household = await prisma.household.upsert({
+    where: { id: "seed-household-demo" },
+    update: {},
+    create: {
+      id: "seed-household-demo",
+      name: "Demo Household",
+      city: "Calgary",
+    },
+  });
+
+  const member = await prisma.member.upsert({
+    where: { id: "seed-member-demo" },
+    update: {},
+    create: {
+      id: "seed-member-demo",
+      firstName: "Demo",
+      lastName: "Member",
+      householdId: household.id,
+      status: "ACTIVE",
+      memberNumber: "DEMO001",
+      joinedAt: new Date(),
+    },
+  });
+
+  const memberHash = await bcrypt.hash("demo123", 10);
+  const memberEmailHash = hashEmail("demo@sbmi.ca");
+  await prisma.user.upsert({
+    where: { emailHash: memberEmailHash },
+    update: { email: "demo@sbmi.ca", memberId: member.id },
+    create: {
+      email: "demo@sbmi.ca",
+      emailHash: memberEmailHash,
+      passwordHash: memberHash,
+      roleId: memberRole.id,
+      memberId: member.id,
+    },
+  });
+
+  console.log("Seeded: admin@sbmi.ca / admin123 (admin), demo@sbmi.ca / demo123 (member)");
 }
 
 main()

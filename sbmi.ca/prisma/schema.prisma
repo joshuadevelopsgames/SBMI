@@ -28,6 +28,7 @@ model User {
   sessions              Session[]
   passwordResetTokens   PasswordResetToken[]
   twoFactorCodes        TwoFactorCode[]
+  emailChangeRequests   EmailChangeRequest[]
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 }
@@ -52,6 +53,16 @@ model PasswordResetToken {
   createdAt DateTime  @default(now())
 }
 
+model EmailChangeRequest {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  newEmail  String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
 model TwoFactorCode {
   id        String   @id @default(cuid())
   userId    String   @unique
@@ -72,35 +83,51 @@ model Household {
 }
 
 model Member {
-  id           String   @id @default(cuid())
-  memberNumber String?  @unique
-  firstName    String
-  lastName     String
-  phone        String?
-  householdId  String
-  household    Household @relation(fields: [householdId], references: [id])
-  user         User?
-  status       String   @default("PENDING") // PENDING | ACTIVE | SUSPENDED | TERMINATED
-  paymentSchedule String @default("MONTHLY") // MONTHLY | WEEKLY | BIWEEKLY
-  joinedAt     DateTime? @default(now())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  payments     Payment[]
-  claims       Claim[]
+  id              String         @id @default(cuid())
+  memberNumber    String?        @unique
+  firstName       String
+  lastName        String
+  phone           String?
+  householdId     String
+  household       Household     @relation(fields: [householdId], references: [id])
+  user            User?
+  status          String         @default("PENDING") // PENDING | ACTIVE | SUSPENDED | TERMINATED
+  paymentSchedule String        @default("MONTHLY") // MONTHLY | WEEKLY | BIWEEKLY
+  joinedAt        DateTime?     @default(now()) // SOW: membership start date for duration display
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  payments           Payment[]
+  claims             Claim[]
+  familyMembers     FamilyMember[]
+  assistanceRequests AssistanceRequest[]
 }
 
 model Payment {
-  id          String   @id @default(cuid())
-  memberId    String
-  member      Member   @relation(fields: [memberId], references: [id])
-  amount      Float
-  category    String   // DUES | FEE | PENALTY | ADMISSION
-  status      String   @default("PENDING") // PENDING | COMPLETED | FAILED
-  stripePaymentId String?
-  dueAt       DateTime?
-  paidAt      DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String   @id @default(cuid())
+  memberId         String
+  member           Member   @relation(fields: [memberId], references: [id])
+  amount           Float
+  category         String   // DUES | FEE | PENALTY | ADMISSION
+  status           String   @default("PENDING") // PENDING | COMPLETED | FAILED
+  stripePaymentId  String?
+  receiptUrl       String?  // SOW US5: stored with amount and paidAt, associated with member
+  dueAt            DateTime?
+  paidAt           DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+// SOW Family Management: family members associated with member account (Article 2.5)
+model FamilyMember {
+  id        String   @id @default(cuid())
+  memberId  String
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  fullName  String
+  birthDate DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([memberId])
 }
 
 model Claim {
@@ -116,6 +143,21 @@ model Claim {
   rejectionReason String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+// SOW US51: assistance request; no status/resolution/history shown to member
+model AssistanceRequest {
+  id             String   @id @default(cuid())
+  memberId       String
+  member         Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  requestType    String   // SELF | OTHER
+  familyMemberId String?
+  otherName      String?
+  otherPhone     String?
+  description    String
+  createdAt      DateTime @default(now())
+
+  @@index([memberId])
 }
 
 model Application {

@@ -1,11 +1,14 @@
 import { cookies } from "next/headers";
 import { createHash, createHmac, timingSafeEqual } from "crypto";
 import bcrypt from "bcryptjs";
+import { Prisma } from "@prisma/client";
 import { prisma } from "./db";
 import { SESSION_COOKIE } from "./constants";
 
-const SESSION_DAYS = 7;
-const SESSION_DAYS_LONG = 30; // "Stay logged in" (SOW: fixed, not configurable)
+// SOW US8: without "stay logged in" = expire when browser closes or after 24h, whichever first
+const SESSION_HOURS_NON_PERSISTENT = 24;
+// SOW US3: with "stay logged in" = non-expiring cookie (use long-lived server session)
+const SESSION_DAYS_PERSISTENT = 365 * 10;
 const TWO_FACTOR_EXPIRY_MINUTES = 10;
 const PASSWORD_RESET_EXPIRY_MINUTES = 60;
 
@@ -57,12 +60,29 @@ export async function createSession(
   options?: { longLived?: boolean; isPre2FA?: boolean }
 ): Promise<string> {
   const token = generateToken();
-  const days = options?.longLived ? SESSION_DAYS_LONG : SESSION_DAYS;
   const expiresAt = new Date();
-  expiresAt.setDate(expiresAt.getDate() + days);
-  await prisma.session.create({
-    data: { token, userId, expiresAt, isPre2FA: options?.isPre2FA ?? false },
-  });
+  if (options?.longLived) {
+    expiresAt.setDate(expiresAt.getDate() + SESSION_DAYS_PERSISTENT);
+  } else {
+    expiresAt.setHours(expiresAt.getHours() + SESSION_HOURS_NON_PERSISTENT);
+  }
+  const isPre2FA = options?.isPre2FA ?? false;
+  // #region agent log
+  fetch('http://127.0.0.1:7248/ingest/38fd0722-180d-490a-a45c-46d9597fbe7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hypothesisId:'C',location:'auth.ts:createSession:beforeInsert',message:'createSession before INSERT',data:{userId:expiresAt.toISOString().slice(0,19)},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
+  // Raw INSERT for Supabase transaction-mode pooler (no prepared statements)
+  try {
+    await prisma.$executeRaw(
+      Prisma.sql`
+        INSERT INTO "Session" (id, token, "userId", "expiresAt", "isPre2FA", "createdAt")
+        VALUES (gen_random_uuid()::text, ${token}, ${userId}, ${expiresAt.toISOString()}::timestamptz, ${isPre2FA}, NOW())
+      `
+    );
+  } catch (insertErr) {
+    const err = insertErr as Error;
+    fetch('http://127.0.0.1:7248/ingest/38fd0722-180d-490a-a45c-46d9597fbe7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hypothesisId:'C',location:'auth.ts:createSession:insertFailed',message:'Session INSERT failed',data:{errorMessage:err?.message,errorName:err?.name},timestamp:Date.now()})}).catch(()=>{});
+    throw insertErr;
+  }
   return token;
 }
 
@@ -74,21 +94,26 @@ export async function getSession(): Promise<
     const raw = cookieStore.get(SESSION_COOKIE)?.value;
     if (!raw) return null;
     const token = verifyAndUnwrapCookieValue(raw);
-    if (!token) return null;
+    if (!token || typeof token !== "string" || token.length === 0) return null;
 
-    const session = await prisma.session.findUnique({
-      where: { token },
-      include: { user: { include: { role: true } } },
-    });
-    if (!session || session.expiresAt < new Date()) {
-      if (session) await prisma.session.delete({ where: { id: session.id } }).catch(() => {});
-      return null;
-    }
+    // Raw query to avoid Turbopack/Prisma client bundling issues with session lookup
+    const rows = await prisma.$queryRaw<
+      Array<{ userId: string; roleName: string; memberId: string | null; isPre2FA: boolean }>
+    >(Prisma.sql`
+      SELECT s."userId", s."isPre2FA", r.name AS "roleName", u."memberId"
+      FROM "Session" s
+      INNER JOIN "User" u ON u.id = s."userId"
+      INNER JOIN "Role" r ON r.id = u."roleId"
+      WHERE s.token = ${token} AND s."expiresAt" > NOW()
+      LIMIT 1
+    `);
+    const row = rows[0];
+    if (!row) return null;
     return {
-      userId: session.userId,
-      role: session.user.role.name,
-      memberId: session.user.memberId,
-      isPre2FA: session.isPre2FA,
+      userId: row.userId,
+      role: row.roleName,
+      memberId: row.memberId,
+      isPre2FA: row.isPre2FA,
     };
   } catch {
     return null;
@@ -102,22 +127,22 @@ export async function setSessionCookie(token: string): Promise<void> {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    maxAge: SESSION_DAYS * 24 * 60 * 60,
     path: "/",
   });
 }
 
 export async function destroySession(token?: string): Promise<void> {
   if (token) {
-    await prisma.session.deleteMany({ where: { token } }).catch(() => {});
+    // Raw query to avoid Turbopack/Prisma client bundling issues
+    await prisma.$executeRaw`DELETE FROM "Session" WHERE token = ${token}`.catch(() => {});
   }
   const cookieStore = await cookies();
   cookieStore.delete(SESSION_COOKIE);
 }
 
-/** Cookie options: session cookie (no maxAge) vs long-lived (stay logged in). */
+/** SOW US3/US8: session cookie (browser close / 24h) vs non-expiring (stay logged in). */
 export function getSessionCookieOptions(longLived: boolean) {
-  const maxAge = longLived ? SESSION_DAYS_LONG * 24 * 60 * 60 : undefined; // undefined = session cookie
+  const maxAge = longLived ? SESSION_DAYS_PERSISTENT * 24 * 60 * 60 : undefined;
   return {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -162,10 +187,8 @@ export async function validate2FACode(userId: string, code: string): Promise<boo
 }
 
 export async function updateLastSuccessfulLogin(userId: string): Promise<void> {
-  await prisma.user.update({
-    where: { id: userId },
-    data: { lastSuccessfulLoginAt: new Date() },
-  });
+  // Raw query to avoid Turbopack/Prisma client bundling issues
+  await prisma.$executeRaw`UPDATE "User" SET "lastSuccessfulLoginAt" = NOW() WHERE id = ${userId}`;
 }
 
 // --- Password reset (SOW: single-use magic key link) ---
@@ -187,4 +210,23 @@ export async function consumePasswordResetToken(token: string): Promise<string |
     data: { usedAt: new Date() },
   });
   return row.userId;
+}
+
+const EMAIL_CHANGE_EXPIRY_MINUTES = 60;
+
+export async function createEmailChangeToken(userId: string, newEmail: string): Promise<string> {
+  const token = generateToken();
+  const expiresAt = new Date();
+  expiresAt.setMinutes(expiresAt.getMinutes() + EMAIL_CHANGE_EXPIRY_MINUTES);
+  await prisma.emailChangeRequest.create({
+    data: { token, userId, newEmail: newEmail.trim().toLowerCase(), expiresAt },
+  });
+  return token;
+}
+
+export async function consumeEmailChangeToken(token: string): Promise<{ userId: string; newEmail: string } | null> {
+  const row = await prisma.emailChangeRequest.findUnique({ where: { token } });
+  if (!row || row.expiresAt < new Date()) return null;
+  await prisma.emailChangeRequest.delete({ where: { id: row.id } });
+  return { userId: row.userId, newEmail: row.newEmail };
 }

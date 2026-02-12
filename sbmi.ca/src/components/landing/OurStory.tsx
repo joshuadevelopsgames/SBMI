@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export default function OurStory() {
   return (
-    <section className="py-24 md:py-32 bg-[#1B4332] relative overflow-hidden">
+    <section className="py-24 md:py-32 bg-[#0F3D2C] relative overflow-hidden">
       <div
         className="absolute inset-0 opacity-[0.04]"
         style={{
@@ -21,11 +21,11 @@ export default function OurStory() {
           className="text-center"
         >
           <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="h-px w-16 bg-[#C9A227]/40" />
-            <span className="text-sm tracking-[0.2em] text-[#C9A227] uppercase font-medium">
+            <div className="h-px w-16 bg-[#D4A43A]/40" />
+            <span className="text-sm tracking-[0.2em] text-[#D4A43A] uppercase font-medium">
               Our Story
             </span>
-            <div className="h-px w-16 bg-[#C9A227]/40" />
+            <div className="h-px w-16 bg-[#D4A43A]/40" />
           </div>
 
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-white mb-12 leading-tight">
@@ -46,9 +46,9 @@ export default function OurStory() {
           </div>
 
           <div className="mt-16 flex items-center justify-center gap-2">
-            <div className="w-2 h-2 bg-[#C9A227] rotate-45" />
-            <div className="w-2 h-2 bg-[#C9A227]/60 rotate-45" />
-            <div className="w-2 h-2 bg-[#C9A227]/30 rotate-45" />
+            <div className="w-2 h-2 bg-[#D4A43A] rotate-45" />
+            <div className="w-2 h-2 bg-[#D4A43A]/60 rotate-45" />
+            <div className="w-2 h-2 bg-[#D4A43A]/30 rotate-45" />
           </div>
         </motion.div>
       </div>

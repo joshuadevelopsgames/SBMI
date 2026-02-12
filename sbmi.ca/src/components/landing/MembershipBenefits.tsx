@@ -52,7 +52,7 @@ const benefits: {
 
 export default function MembershipBenefits() {
   return (
-    <section className="py-24 md:py-32 bg-[#FAF8F5]">
+    <section className="py-24 md:py-32 bg-[#FAF7F0]">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -62,14 +62,14 @@ export default function MembershipBenefits() {
           className="text-center mb-16"
         >
           <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="h-px w-8 bg-[#C9A227]" />
-            <span className="text-sm tracking-[0.2em] text-[#C9A227] uppercase font-medium">
+            <div className="h-px w-8 bg-[#D4A43A]" />
+            <span className="text-sm tracking-[0.2em] text-[#D4A43A] uppercase font-medium">
               Membership
             </span>
-            <div className="h-px w-8 bg-[#C9A227]" />
+            <div className="h-px w-8 bg-[#D4A43A]" />
           </div>
 
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#1B4332] leading-tight">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#0F3D2C] leading-tight">
             Benefits of Membership
           </h2>
         </motion.div>
@@ -84,16 +84,16 @@ export default function MembershipBenefits() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="group"
             >
-              <div className="bg-white p-8 h-full border border-[#E8E4DE] hover:border-[#C9A227]/30 transition-all duration-500 hover:shadow-lg hover:shadow-[#C9A227]/5">
-                <div className="w-12 h-12 bg-[#1B4332] flex items-center justify-center mb-6 group-hover:bg-[#C9A227] transition-colors duration-500">
+              <div className="bg-white p-8 h-full border border-[#E2DCD2] hover:border-[#D4A43A]/30 transition-all duration-500 hover:shadow-lg hover:shadow-[#D4A43A]/5">
+                <div className="w-12 h-12 bg-[#0F3D2C] flex items-center justify-center mb-6 group-hover:bg-[#D4A43A] transition-colors duration-500">
                   <benefit.icon className="w-5 h-5 text-white" />
                 </div>
 
-                <h3 className="text-lg font-medium text-[#1B4332] mb-3">
+                <h3 className="text-lg font-medium text-[#0F3D2C] mb-3">
                   {benefit.title}
                 </h3>
 
-                <p className="text-[#3D5A4C]/80 leading-relaxed text-sm">
+                <p className="text-[#3D5A4A]/80 leading-relaxed text-sm">
                   {benefit.description}
                 </p>
               </div>

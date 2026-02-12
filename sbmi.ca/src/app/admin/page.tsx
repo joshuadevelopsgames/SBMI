@@ -13,77 +13,85 @@ export default async function AdminDashboardPage() {
     ]);
 
   return (
-    <div>
-      <div className="flex items-center gap-3 mb-6">
-        <div className="h-px w-8 bg-[#C9A227]" />
-        <span className="text-xs tracking-[0.2em] text-[#C9A227] uppercase font-medium">
-          Admin
-        </span>
-      </div>
-      <h1 className="text-2xl md:text-3xl font-serif font-light text-[#1B4332] mb-8">
-        Admin Dashboard
-      </h1>
+    <div className="space-y-8">
+      {/* Welcome / title */}
+      <section>
+        <h1 className="text-3xl md:text-4xl font-display font-semibold text-[#1B5E3B] mb-1">
+          Admin Dashboard
+        </h1>
+        <p className="text-lg text-[#3D5A4A]/90">
+          SBMI Portal administration. Overview and quick access.
+        </p>
+      </section>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-        <div className="sbmi-card rounded-none p-5">
-          <p className="text-sm text-[#3D5A4C] mb-1">Total members</p>
-          <p className="text-2xl font-serif text-[#1B4332]">{membersCount}</p>
+      {/* Summary stats */}
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="sbmi-card p-5">
+          <p className="text-sm text-[#3D5A4A] mb-1">Total members</p>
+          <p className="text-2xl font-display font-semibold text-[#1B5E3B]">{membersCount}</p>
         </div>
-        <div className="sbmi-card rounded-none p-5">
-          <p className="text-sm text-[#3D5A4C] mb-1">Pending approvals (members)</p>
-          <p className="text-2xl font-serif text-[#1B4332]">{pendingMembers}</p>
+        <div className="sbmi-card p-5">
+          <p className="text-sm text-[#3D5A4A] mb-1">Pending approvals (members)</p>
+          <p className="text-2xl font-display font-semibold text-[#1B5E3B]">{pendingMembers}</p>
           <Link
             href="/admin/approvals"
-            className="text-sm text-[#C9A227] hover:text-[#B8922A] hover:underline font-medium mt-2 inline-block"
+            className="text-sm text-[#1B5E3B] hover:text-[#17503A] font-medium mt-2 inline-block"
           >
             View →
           </Link>
         </div>
-        <div className="sbmi-card rounded-none p-5">
-          <p className="text-sm text-[#3D5A4C] mb-1">Pending claims</p>
-          <p className="text-2xl font-serif text-[#1B4332]">{pendingClaims}</p>
+        <div className="sbmi-card p-5">
+          <p className="text-sm text-[#3D5A4A] mb-1">Pending claims</p>
+          <p className="text-2xl font-display font-semibold text-[#1B5E3B]">{pendingClaims}</p>
           <Link
             href="/admin/approvals"
-            className="text-sm text-[#C9A227] hover:text-[#B8922A] hover:underline font-medium mt-2 inline-block"
+            className="text-sm text-[#1B5E3B] hover:text-[#17503A] font-medium mt-2 inline-block"
           >
             View →
           </Link>
         </div>
-        <div className="sbmi-card rounded-none p-5">
-          <p className="text-sm text-[#3D5A4C] mb-1">Payments recorded</p>
-          <p className="text-2xl font-serif text-[#1B4332]">{paymentsCount}</p>
+        <div className="sbmi-card p-5">
+          <p className="text-sm text-[#3D5A4A] mb-1">Payments recorded</p>
+          <p className="text-2xl font-display font-semibold text-[#1B5E3B]">{paymentsCount}</p>
         </div>
-      </div>
+      </section>
 
-      <div className="sbmi-card rounded-none p-6">
-        <h2 className="font-serif text-[#1B4332] mb-3">Quick links</h2>
-        <ul className="space-y-2 text-sm">
-          <li>
-            <Link
-              href="/admin/members"
-              className="text-[#C9A227] hover:text-[#B8922A] hover:underline"
-            >
-              Manage members
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/admin/approvals"
-              className="text-[#C9A227] hover:text-[#B8922A] hover:underline"
-            >
-              Approval queue
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/admin/reports"
-              className="text-[#C9A227] hover:text-[#B8922A] hover:underline"
-            >
-              Reports
-            </Link>
-          </li>
-        </ul>
-      </div>
+      {/* Feature cards: Members, Approvals, Reports */}
+      <section className="grid gap-4 sm:grid-cols-3">
+        <Link
+          href="/admin/members"
+          className="sbmi-card p-5 block hover:shadow-md hover:border-[#1B5E3B]/30 transition-all group"
+        >
+          <h3 className="font-display font-semibold text-[#1B5E3B] text-lg mb-1 group-hover:text-[#17503A]">
+            Members
+          </h3>
+          <p className="text-sm text-[#3D5A4A]">
+            View all members, add new members, and manage accounts.
+          </p>
+        </Link>
+        <Link
+          href="/admin/approvals"
+          className="sbmi-card p-5 block hover:shadow-md hover:border-[#1B5E3B]/30 transition-all group"
+        >
+          <h3 className="font-display font-semibold text-[#1B5E3B] text-lg mb-1 group-hover:text-[#17503A]">
+            Approvals
+          </h3>
+          <p className="text-sm text-[#3D5A4A]">
+            Process pending membership applications and claims.
+          </p>
+        </Link>
+        <Link
+          href="/admin/reports"
+          className="sbmi-card p-5 block hover:shadow-md hover:border-[#1B5E3B]/30 transition-all group"
+        >
+          <h3 className="font-display font-semibold text-[#1B5E3B] text-lg mb-1 group-hover:text-[#17503A]">
+            Reports
+          </h3>
+          <p className="text-sm text-[#3D5A4A]">
+            Access admin reports and data.
+          </p>
+        </Link>
+      </section>
     </div>
   );
 }

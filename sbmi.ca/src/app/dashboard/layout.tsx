@@ -1,6 +1,9 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { getSession } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+import { MemberHeader } from "./MemberHeader";
+import { MemberFooter } from "./MemberFooter";
+import { Breadcrumbs } from "@/components/navigation/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -8,56 +11,47 @@ export default async function DashboardLayout({
   children,
 }: { children: React.ReactNode }) {
   const session = await getSession();
-  if (!session) redirect("/api/auth/logout?redirect=/login");
+  if (!session) redirect("/login");
+  if (session.isPre2FA) redirect("/login/2fa");
   if (session.role === "ADMIN") redirect("/admin");
 
+  let memberInfo: { firstName: string; lastName: string; memberSinceYear: number | null } | null = null;
+  if (session.memberId) {
+    const m = await prisma.member.findUnique({
+      where: { id: session.memberId },
+      select: { firstName: true, lastName: true, joinedAt: true },
+    });
+    if (m)
+      memberInfo = {
+        firstName: m.firstName,
+        lastName: m.lastName,
+        memberSinceYear: m.joinedAt ? m.joinedAt.getFullYear() : null,
+      };
+  }
+
   return (
-    <div className="min-h-screen sbmi-page-bg">
-      <header className="bg-[#1B4332] border-b border-[#2D5A45]">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link
-            href="/dashboard"
-            className="font-serif font-medium text-white tracking-wide"
-          >
-            SBMI Portal
-          </Link>
-          <nav className="flex items-center gap-4">
-            <Link
-              href="/dashboard"
-              className="text-white/80 hover:text-white text-sm transition-colors"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/dashboard/profile"
-              className="text-white/80 hover:text-white text-sm transition-colors"
-            >
-              Profile
-            </Link>
-            <Link
-              href="/dashboard/payments"
-              className="text-white/80 hover:text-white text-sm transition-colors"
-            >
-              Payments
-            </Link>
-            <Link
-              href="/dashboard/claims"
-              className="text-white/80 hover:text-white text-sm transition-colors"
-            >
-              Claims
-            </Link>
-            <form action="/api/auth/logout" method="POST">
-              <button
-                type="submit"
-                className="text-white/70 hover:text-white text-sm transition-colors"
-              >
-                Sign out
-              </button>
-            </form>
-          </nav>
+    <div className="min-h-screen sbmi-page-bg flex flex-col">
+      <MemberHeader memberInfo={memberInfo} />
+      <main className="max-w-5xl mx-auto px-4 py-8 w-full flex-1">
+        <div className="mb-4">
+          <Breadcrumbs
+            rootHref="/dashboard"
+            rootLabel="Dashboard"
+            theme="light"
+            labelMap={{
+              "/dashboard": "Dashboard",
+              "/dashboard/claims": "Claims",
+              "/dashboard/family": "Family",
+              "/dashboard/payments": "Payments",
+              "/dashboard/profile": "Profile",
+              "/dashboard/reports": "Reports",
+              "/dashboard/assistance": "Assistance",
+            }}
+          />
         </div>
-      </header>
-      <main className="max-w-5xl mx-auto px-4 py-8">{children}</main>
+        {children}
+      </main>
+      <MemberFooter />
     </div>
   );
 }

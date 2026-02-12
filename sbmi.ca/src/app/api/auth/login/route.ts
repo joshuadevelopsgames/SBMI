@@ -7,6 +7,7 @@ import {
   signToken,
   getSessionCookieOptions,
   createAndSend2FACode,
+  updateLastSuccessfulLogin,
 } from "@/lib/auth";
 import { SESSION_COOKIE } from "@/lib/constants";
 
@@ -46,30 +47,32 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: GENERIC_ERROR }, { status: 401 });
     }
 
+    // SOW US6: 2FA when email is configured; skip in dev so demo login works without email
     const longLived = Boolean(stayLoggedIn);
     const cookieOpts = getSessionCookieOptions(longLived);
+    const skip2FA = !process.env.RESEND_API_KEY;
 
-    if (user.role.name === "ADMIN") {
-      const token = await createSession(user.id, { longLived, isPre2FA: true });
+    const token = await createSession(user.id, {
+      longLived,
+      isPre2FA: skip2FA ? false : true,
+    });
+    if (skip2FA) {
+      await updateLastSuccessfulLogin(user.id);
+    } else {
       await createAndSend2FACode(user.id);
-      const cookieValue = signToken(token);
-      const res = NextResponse.json({
-        ok: true,
-        role: "ADMIN",
-        redirect: "/login/2fa",
-      });
-      res.cookies.set(SESSION_COOKIE, cookieValue, cookieOpts);
-      return res;
     }
 
-    const token = await createSession(user.id, { longLived });
-    const { updateLastSuccessfulLogin } = await import("@/lib/auth");
-    await updateLastSuccessfulLogin(user.id);
     const cookieValue = signToken(token);
+    const redirectTo =
+      skip2FA
+        ? user.role.name === "ADMIN"
+          ? "/admin"
+          : "/dashboard"
+        : "/login/2fa";
     const res = NextResponse.json({
       ok: true,
       role: user.role.name,
-      redirect: "/dashboard",
+      redirect: redirectTo,
     });
     res.cookies.set(SESSION_COOKIE, cookieValue, cookieOpts);
     return res;

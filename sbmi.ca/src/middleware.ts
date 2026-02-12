@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { SESSION_COOKIE } from "@/lib/constants";
 
-const publicPaths = ["/", "/login"];
+const publicPaths = ["/", "/login", "/dashboard"];
 const memberPaths = ["/dashboard", "/profile", "/payments", "/claims"];
 const adminPaths = ["/admin"];
 
@@ -12,7 +12,8 @@ export function middleware(req: NextRequest) {
 
   const isLoginArea = path === "/login" || path.startsWith("/login/");
   if (isLoginArea) {
-    if (path === "/login" && token) return NextResponse.redirect(new URL("/dashboard", req.url));
+    // Don't auto-redirect to dashboard - let the login page handle valid sessions
+    // This avoids redirect loops when session cookie exists but is invalid
     return NextResponse.next();
   }
   const isPublic = publicPaths.some((p) => p === path || path.startsWith(p + "/"));

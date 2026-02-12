@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { getSession } from "@/lib/auth";
+import { Breadcrumbs } from "@/components/navigation/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -14,49 +16,44 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-screen sbmi-page-bg">
-      <header className="bg-[#0F261A] border-b border-[#1B4332]">
+      <header className="bg-[#0F3D2C] shadow-md">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link
             href="/admin"
-            className="font-serif font-medium text-white tracking-wide"
+            className="flex items-center gap-2 font-display font-semibold text-white tracking-wide text-lg"
           >
+            <Image src="/sbmi-logo.png" alt="" width={36} height={36} className="rounded-full object-contain" unoptimized />
             SBMI Admin
           </Link>
-          <nav className="flex items-center gap-4">
+          <nav className="flex items-center gap-1">
             <Link
               href="/admin"
-              className="text-white/80 hover:text-white text-sm transition-colors"
+              className="px-3 py-1.5 rounded-md text-white/80 hover:text-white hover:bg-white/10 text-sm font-medium transition-colors"
             >
               Dashboard
             </Link>
             <Link
               href="/admin/members"
-              className="text-white/80 hover:text-white text-sm transition-colors"
+              className="px-3 py-1.5 rounded-md text-white/80 hover:text-white hover:bg-white/10 text-sm font-medium transition-colors"
             >
               Members
             </Link>
             <Link
               href="/admin/approvals"
-              className="text-white/80 hover:text-white text-sm transition-colors"
+              className="px-3 py-1.5 rounded-md text-white/80 hover:text-white hover:bg-white/10 text-sm font-medium transition-colors"
             >
               Approvals
             </Link>
             <Link
               href="/admin/reports"
-              className="text-white/80 hover:text-white text-sm transition-colors"
+              className="px-3 py-1.5 rounded-md text-white/80 hover:text-white hover:bg-white/10 text-sm font-medium transition-colors"
             >
               Reports
-            </Link>
-            <Link
-              href="/dashboard"
-              className="text-[#C9A227] hover:text-[#B8922A] text-sm transition-colors"
-            >
-              Member view
             </Link>
             <form action="/api/auth/logout" method="POST">
               <button
                 type="submit"
-                className="text-white/70 hover:text-white text-sm transition-colors"
+                className="px-3 py-1.5 rounded-md text-white/60 hover:text-white hover:bg-white/10 text-sm font-medium transition-colors"
               >
                 Sign out
               </button>
@@ -64,7 +61,22 @@ export default async function AdminLayout({
           </nav>
         </div>
       </header>
-      <main className="max-w-6xl mx-auto px-4 py-8">{children}</main>
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        <div className="mb-4">
+          <Breadcrumbs
+            rootHref="/admin"
+            rootLabel="Admin"
+            theme="light"
+            labelMap={{
+              "/admin": "Dashboard",
+              "/admin/members": "Members",
+              "/admin/approvals": "Approvals",
+              "/admin/reports": "Reports",
+            }}
+          />
+        </div>
+        {children}
+      </main>
     </div>
   );
 }

@@ -16,7 +16,7 @@ function normalizeCode(value: string): string {
 export async function POST(req: NextRequest) {
   try {
     const session = await getSession();
-    if (!session || !session.isPre2FA || session.role !== "ADMIN") {
+    if (!session || !session.isPre2FA) {
       return NextResponse.json({ error: "Invalid code." }, { status: 401 });
     }
 
@@ -43,7 +43,8 @@ export async function POST(req: NextRequest) {
     }
     await updateLastSuccessfulLogin(session.userId);
 
-    return NextResponse.json({ ok: true, redirect: "/admin" });
+    const redirect = session.role === "ADMIN" ? "/admin" : "/dashboard";
+    return NextResponse.json({ ok: true, redirect });
   } catch {
     return NextResponse.json({ error: "Invalid code." }, { status: 500 });
   }

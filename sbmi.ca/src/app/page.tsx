@@ -20,18 +20,18 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5]">
+    <div className="min-h-screen bg-[#FAF7F0]">
       <div className="fixed top-6 right-6 z-50">
         <Link
           href="/login"
-          className="inline-flex items-center justify-center gap-2 bg-[#C9A227] hover:bg-[#B8922A] text-[#1B4332] px-6 py-2 rounded-none shadow-lg font-medium transition-colors"
+          className="inline-flex items-center justify-center gap-2 bg-[#D4A43A] hover:bg-[#C4922E] text-[#171717] px-6 py-2.5 rounded-xl shadow-lg font-semibold tracking-wide transition-all duration-300 hover:shadow-xl hover:shadow-[#D4A43A]/30 hover:-translate-y-0.5"
         >
           <LogIn className="w-4 h-4" />
           Login
         </Link>
       </div>
 
-      <HeroSection onApplyClick={scrollToForm} onContactClick={scrollToForm} />
+      <HeroSection onApplyClick={scrollToForm} />
       <WhatIsIddir />
       <OurStory />
       <MembershipBenefits />

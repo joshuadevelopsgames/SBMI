@@ -42,3 +42,35 @@ async function send(to: string, subject: string, body: string): Promise<void> {
 export function buildPasswordResetLink(token: string): string {
   return `${APP_URL}/login/reset-password?token=${encodeURIComponent(token)}`;
 }
+
+export async function sendEmailChangeConfirmation(to: string, newEmail: string, approvalLink: string): Promise<void> {
+  const subject = "Confirm email change";
+  const body = `You requested to change your account email to: ${newEmail}\n\nClick the link below to approve this change. You will be logged out and must sign in with your new email.\n\n${approvalLink}\n\nThis link expires in 1 hour.`;
+  await send(to, subject, body);
+  if (!RESEND_API_KEY) console.log("[dev] Email change approval link for", to, ":", approvalLink);
+}
+
+export function buildEmailChangeApprovalLink(token: string): string {
+  return `${APP_URL}/api/auth/approve-email-change?token=${encodeURIComponent(token)}`;
+}
+
+/** SOW US51: notify designated administrators of new assistance request. */
+export async function sendAssistanceRequestNotification(
+  to: string,
+  payload: { requestType: string; memberName: string; forName?: string; phone?: string; description: string }
+): Promise<void> {
+  const typeLabel = payload.requestType === "SELF" ? "For myself" : "For someone else";
+  const lines = [
+    `A member has submitted an assistance request.`,
+    ``,
+    `Request type: ${typeLabel}`,
+    `Submitted by (member): ${payload.memberName}`,
+  ];
+  if (payload.forName) lines.push(`Person concerned: ${payload.forName}`);
+  if (payload.phone) lines.push(`Phone: ${payload.phone}`);
+  lines.push(``, `Description:`, payload.description);
+  const body = lines.join("\n");
+  const subject = "SBMI: New assistance request";
+  await send(to, subject, body);
+  if (!RESEND_API_KEY) console.log("[dev] Assistance request notification to", to);
+}

@@ -50,16 +50,16 @@ export default function SubmitClaimForm({ className }: { className?: string }) {
 
   return (
     <form onSubmit={handleSubmit} className={className}>
-      <h2 className="font-serif text-[#1B4332] mb-4">Submit a claim</h2>
+      <h2 className="font-display font-semibold text-[#1B5E3B] mb-4">Submit a claim</h2>
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-[#1B4332] mb-1">
+          <label className="block text-sm font-medium text-[#1B5E3B] mb-1">
             Reason *
           </label>
           <select
             value={form.reason}
             onChange={(e) => setForm((p) => ({ ...p, reason: e.target.value }))}
-            className="w-full rounded-none border border-[#E8E4DE] px-3 py-2 sbmi-input"
+            className="w-full rounded-lg border border-[#E2DCD2] px-3 py-2.5 sbmi-input"
           >
             {CLAIM_REASONS.map((r) => (
               <option key={r} value={r}>
@@ -69,7 +69,7 @@ export default function SubmitClaimForm({ className }: { className?: string }) {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-[#1B4332] mb-1">
+          <label className="block text-sm font-medium text-[#1B5E3B] mb-1">
             Amount (optional)
           </label>
           <input
@@ -78,31 +78,31 @@ export default function SubmitClaimForm({ className }: { className?: string }) {
             min="0"
             value={form.amount}
             onChange={(e) => setForm((p) => ({ ...p, amount: e.target.value }))}
-            className="w-full rounded-none border border-[#E8E4DE] px-3 py-2 sbmi-input"
+            className="w-full rounded-lg border border-[#E2DCD2] px-3 py-2.5 sbmi-input"
             placeholder="0.00"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-[#1B4332] mb-1">
+          <label className="block text-sm font-medium text-[#1B5E3B] mb-1">
             Description / supporting details (optional)
           </label>
           <textarea
             value={form.description}
             onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
             rows={3}
-            className="w-full rounded-none border border-[#E8E4DE] px-3 py-2 sbmi-input resize-none"
+            className="w-full rounded-lg border border-[#E2DCD2] px-3 py-2.5 sbmi-input resize-none"
             placeholder="Provide any relevant details..."
           />
         </div>
         {message && (
-          <p className="text-sm text-[#1B4332] bg-[#C9A227]/10 border border-[#C9A227]/30 px-3 py-2">
+          <p className="text-sm text-[#1B5E3B] bg-[#D4A43A]/10 border border-[#D4A43A]/30 rounded-lg px-3 py-2">
             {message}
           </p>
         )}
         <button
           type="submit"
           disabled={loading}
-          className="rounded-none bg-[#C9A227] hover:bg-[#B8922A] text-[#1B4332] px-4 py-2 font-medium disabled:opacity-50"
+          className="rounded-lg bg-[#D4A43A] hover:bg-[#C4922E] text-[#171717] px-4 py-2.5 font-medium disabled:opacity-50 shadow-sm transition-colors"
         >
           {loading ? "Submitting…" : "Submit claim"}
         </button>

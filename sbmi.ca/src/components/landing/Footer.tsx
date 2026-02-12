@@ -18,24 +18,24 @@ export default function Footer() {
 
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-white/60 text-sm">
-                <MapPin className="w-4 h-4 text-[#C9A227]" />
+                <MapPin className="w-4 h-4 text-[#D4A43A]" />
                 <span>Calgary, Alberta, Canada</span>
               </div>
               <a
                 href="mailto:sbmi2011@outlook.com"
-                className="flex items-center gap-3 text-white/60 text-sm hover:text-[#C9A227] transition-colors"
+                className="flex items-center gap-3 text-white/60 text-sm hover:text-[#D4A43A] transition-colors"
               >
-                <Mail className="w-4 h-4 text-[#C9A227]" />
+                <Mail className="w-4 h-4 text-[#D4A43A]" />
                 <span>sbmi2011@outlook.com</span>
               </a>
             </div>
           </div>
 
           <div className="text-center md:text-right">
-            <div className="inline-flex items-center gap-2 text-[#C9A227] mb-4">
-              <div className="h-px w-8 bg-[#C9A227]/40" />
+            <div className="inline-flex items-center gap-2 text-[#D4A43A] mb-4">
+              <div className="h-px w-8 bg-[#D4A43A]/40" />
               <Heart className="w-4 h-4" />
-              <div className="h-px w-8 bg-[#C9A227]/40" />
+              <div className="h-px w-8 bg-[#D4A43A]/40" />
             </div>
             <p className="text-xl md:text-2xl font-serif text-white/90 italic">
               &ldquo;Built on solidarity.

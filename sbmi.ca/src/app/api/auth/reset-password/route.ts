@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
       where: { id: userId },
       data: { passwordHash },
     });
+    await prisma.session.deleteMany({ where: { userId } });
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "This link is invalid or has expired." }, { status: 500 });

@@ -9,12 +9,11 @@ export async function PATCH(req: NextRequest) {
   }
 
   const body = await req.json().catch(() => ({}));
-  const { firstName, lastName, phone } = body;
+  const { firstName, lastName } = body;
 
-  const data: { firstName?: string; lastName?: string; phone?: string | null } = {};
+  const data: { firstName?: string; lastName?: string } = {};
   if (typeof firstName === "string" && firstName.trim()) data.firstName = firstName.trim();
   if (typeof lastName === "string" && lastName.trim()) data.lastName = lastName.trim();
-  if (typeof phone === "string") data.phone = phone.trim() || null;
 
   if (Object.keys(data).length === 0) {
     return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });

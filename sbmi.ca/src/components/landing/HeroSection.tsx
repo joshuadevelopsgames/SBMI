@@ -1,19 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowDown, Users } from "lucide-react";
+import { ArrowDown, Users, UserPlus } from "lucide-react";
 import { motion } from "framer-motion";
-import Link from "next/link";
 
 type Props = {
   onApplyClick: () => void;
-  onContactClick: () => void;
 };
 
-export default function HeroSection({ onApplyClick, onContactClick }: Props) {
+export default function HeroSection({ onApplyClick }: Props) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1B4332] via-[#2D5A45] to-[#1B4332]">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0F3D2C] via-[#1B5E3B] to-[#0F3D2C]">
         <div
           className="absolute inset-0 opacity-[0.08]"
           style={{
@@ -30,16 +28,16 @@ export default function HeroSection({ onApplyClick, onContactClick }: Props) {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="h-px w-12 bg-[#C9A227]/60" />
-            <Users className="w-5 h-5 text-[#C9A227]" />
-            <div className="h-px w-12 bg-[#C9A227]/60" />
+            <div className="h-px w-12 bg-[#D4A43A]/60" />
+            <Users className="w-5 h-5 text-[#D4A43A]" />
+            <div className="h-px w-12 bg-[#D4A43A]/60" />
           </div>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-light text-white tracking-tight mb-6">
             Samuel Bete Iddir
           </h1>
 
-          <p className="text-lg md:text-xl text-[#C9A227] font-light tracking-wide mb-6">
+          <p className="text-lg md:text-xl text-[#D4A43A] font-light tracking-wide mb-6">
             A community of mutual support, solidarity, and care in Calgary
           </p>
 
@@ -50,15 +48,10 @@ export default function HeroSection({ onApplyClick, onContactClick }: Props) {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
               onClick={onApplyClick}
-              className="bg-[#C9A227] hover:bg-[#B8922A] text-[#1B4332] font-medium px-8 py-6 text-base rounded-none tracking-wide transition-all duration-300 hover:shadow-lg hover:shadow-[#C9A227]/20"
+              className="inline-flex items-center gap-2.5 bg-[#D4A43A] hover:bg-[#C4922E] text-[#171717] font-semibold px-8 py-6 text-base rounded-xl tracking-wide transition-all duration-300 hover:shadow-xl hover:shadow-[#D4A43A]/30 hover:-translate-y-0.5 border-0"
             >
+              <UserPlus className="w-5 h-5" />
               Apply to Join
-            </Button>
-            <Button
-              onClick={onContactClick}
-              className="bg-[#2D5A45] hover:bg-[#1B4332] text-white px-8 py-6 text-base rounded-none tracking-wide transition-all duration-300"
-            >
-              Contact Us
             </Button>
           </div>
         </motion.div>

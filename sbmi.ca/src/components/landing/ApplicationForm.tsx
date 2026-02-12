@@ -54,7 +54,7 @@ export default function ApplicationForm({ formRef }: { formRef: FormRef }) {
   return (
     <section
       ref={formRef}
-      className="py-24 md:py-32 bg-[#1B4332] relative overflow-hidden"
+      className="py-24 md:py-32 bg-[#0F3D2C] relative overflow-hidden"
     >
       <div
         className="absolute inset-0 opacity-[0.03]"
@@ -72,11 +72,11 @@ export default function ApplicationForm({ formRef }: { formRef: FormRef }) {
           className="text-center mb-12"
         >
           <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="h-px w-12 bg-[#C9A227]/40" />
-            <span className="text-sm tracking-[0.2em] text-[#C9A227] uppercase font-medium">
+            <div className="h-px w-12 bg-[#D4A43A]/40" />
+            <span className="text-sm tracking-[0.2em] text-[#D4A43A] uppercase font-medium">
               Join Us
             </span>
-            <div className="h-px w-12 bg-[#C9A227]/40" />
+            <div className="h-px w-12 bg-[#D4A43A]/40" />
           </div>
 
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-white leading-tight">
@@ -88,15 +88,15 @@ export default function ApplicationForm({ formRef }: { formRef: FormRef }) {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white p-12 text-center"
+            className="bg-white p-12 text-center rounded-xl"
           >
-            <div className="w-16 h-16 bg-[#1B4332] mx-auto flex items-center justify-center mb-6">
-              <CheckCircle className="w-8 h-8 text-[#C9A227]" />
+            <div className="w-16 h-16 bg-[#0F3D2C] mx-auto flex items-center justify-center mb-6">
+              <CheckCircle className="w-8 h-8 text-[#D4A43A]" />
             </div>
-            <h3 className="text-2xl font-serif text-[#1B4332] mb-4">
+            <h3 className="text-2xl font-serif text-[#171717] mb-4">
               Application Received
             </h3>
-            <p className="text-[#3D5A4C]/80">
+            <p className="text-[#3D5A4A]/80">
               Thank you for your interest in joining Samuel Bete Iddir. A
               representative will contact you with next steps.
             </p>
@@ -108,15 +108,15 @@ export default function ApplicationForm({ formRef }: { formRef: FormRef }) {
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.2 }}
             onSubmit={handleSubmit}
-            className="bg-white p-8 md:p-10"
+            className="bg-white p-8 md:p-10 rounded-xl"
           >
             <div className="space-y-6">
               <div>
                 <Label
                   htmlFor="full_name"
-                  className="text-[#1B4332] font-medium mb-2 block"
+                  className="text-[#171717] font-medium mb-2 block"
                 >
-                  Full Name <span className="text-[#C9A227]">*</span>
+                  Full Name <span className="text-[#D4A43A]">*</span>
                 </Label>
                 <Input
                   id="full_name"
@@ -124,7 +124,7 @@ export default function ApplicationForm({ formRef }: { formRef: FormRef }) {
                   value={formData.full_name}
                   onChange={handleChange}
                   required
-                  className="border-[#E8E4DE] focus:border-[#C9A227] focus:ring-[#C9A227]/20 rounded-none h-12"
+                  className="border-[#E2DCD2] focus:border-[#D4A43A] focus:ring-[#D4A43A]/20 rounded-lg h-12"
                   placeholder="Enter your full name"
                 />
               </div>
@@ -132,9 +132,9 @@ export default function ApplicationForm({ formRef }: { formRef: FormRef }) {
               <div>
                 <Label
                   htmlFor="email"
-                  className="text-[#1B4332] font-medium mb-2 block"
+                  className="text-[#171717] font-medium mb-2 block"
                 >
-                  Email Address <span className="text-[#C9A227]">*</span>
+                  Email Address <span className="text-[#D4A43A]">*</span>
                 </Label>
                 <Input
                   id="email"
@@ -143,7 +143,7 @@ export default function ApplicationForm({ formRef }: { formRef: FormRef }) {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="border-[#E8E4DE] focus:border-[#C9A227] focus:ring-[#C9A227]/20 rounded-none h-12"
+                  className="border-[#E2DCD2] focus:border-[#D4A43A] focus:ring-[#D4A43A]/20 rounded-lg h-12"
                   placeholder="your@email.com"
                 />
               </div>
@@ -151,9 +151,9 @@ export default function ApplicationForm({ formRef }: { formRef: FormRef }) {
               <div>
                 <Label
                   htmlFor="phone"
-                  className="text-[#1B4332] font-medium mb-2 block"
+                  className="text-[#171717] font-medium mb-2 block"
                 >
-                  Phone Number <span className="text-[#C9A227]">*</span>
+                  Phone Number <span className="text-[#D4A43A]">*</span>
                 </Label>
                 <Input
                   id="phone"
@@ -162,7 +162,7 @@ export default function ApplicationForm({ formRef }: { formRef: FormRef }) {
                   value={formData.phone}
                   onChange={handleChange}
                   required
-                  className="border-[#E8E4DE] focus:border-[#C9A227] focus:ring-[#C9A227]/20 rounded-none h-12"
+                  className="border-[#E2DCD2] focus:border-[#D4A43A] focus:ring-[#D4A43A]/20 rounded-lg h-12"
                   placeholder="(403) 000-0000"
                 />
               </div>
@@ -170,10 +170,10 @@ export default function ApplicationForm({ formRef }: { formRef: FormRef }) {
               <div>
                 <Label
                   htmlFor="household_size"
-                  className="text-[#1B4332] font-medium mb-2 block"
+                  className="text-[#171717] font-medium mb-2 block"
                 >
                   Household Size{" "}
-                  <span className="text-[#3D5A4C]/50 text-sm font-normal">
+                  <span className="text-[#3D5A4A]/50 text-sm font-normal">
                     (optional)
                   </span>
                 </Label>
@@ -182,7 +182,7 @@ export default function ApplicationForm({ formRef }: { formRef: FormRef }) {
                   name="household_size"
                   value={formData.household_size}
                   onChange={handleChange}
-                  className="border-[#E8E4DE] focus:border-[#C9A227] focus:ring-[#C9A227]/20 rounded-none h-12"
+                  className="border-[#E2DCD2] focus:border-[#D4A43A] focus:ring-[#D4A43A]/20 rounded-lg h-12"
                   placeholder="Number of family members"
                 />
               </div>
@@ -190,10 +190,10 @@ export default function ApplicationForm({ formRef }: { formRef: FormRef }) {
               <div>
                 <Label
                   htmlFor="message"
-                  className="text-[#1B4332] font-medium mb-2 block"
+                  className="text-[#171717] font-medium mb-2 block"
                 >
                   Message or Reason for Interest{" "}
-                  <span className="text-[#3D5A4C]/50 text-sm font-normal">
+                  <span className="text-[#3D5A4A]/50 text-sm font-normal">
                     (optional)
                   </span>
                 </Label>
@@ -203,7 +203,7 @@ export default function ApplicationForm({ formRef }: { formRef: FormRef }) {
                   value={formData.message}
                   onChange={handleChange}
                   rows={4}
-                  className="border-[#E8E4DE] focus:border-[#C9A227] focus:ring-[#C9A227]/20 rounded-none resize-none"
+                  className="border-[#E2DCD2] focus:border-[#D4A43A] focus:ring-[#D4A43A]/20 rounded-lg resize-none"
                   placeholder="Tell us about yourself or why you'd like to join..."
                 />
               </div>
@@ -211,7 +211,7 @@ export default function ApplicationForm({ formRef }: { formRef: FormRef }) {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-[#C9A227] hover:bg-[#B8922A] text-[#1B4332] font-medium h-12 rounded-none tracking-wide transition-all duration-300"
+                className="w-full bg-[#D4A43A] hover:bg-[#C4922E] text-[#171717] font-medium h-12 rounded-lg tracking-wide transition-all duration-300 shadow-sm"
               >
                 {isSubmitting ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -223,7 +223,7 @@ export default function ApplicationForm({ formRef }: { formRef: FormRef }) {
                 )}
               </Button>
 
-              <p className="text-center text-sm text-[#3D5A4C]/60">
+              <p className="text-center text-sm text-[#3D5A4A]/60">
                 All inquiries are kept confidential. A representative will contact
                 you with next steps.
               </p>
