@@ -59,3 +59,14 @@
   - All logo `<Image>` components: added `unoptimized` and set size to 96×96 on auth cards (36×36 in headers) so the PNG displays reliably.
   - Login page: added “← Back to home” link (absolute top-left) to `/`.
 - **Files:** `public/sbmi-logo.png`, `src/app/login/page.tsx`, `src/app/login/2fa/page.tsx`, `src/app/login/forgot-password/page.tsx`, `src/app/login/reset-password/page.tsx`, `src/app/dashboard/MemberHeader.tsx`, `src/app/admin/layout.tsx`.
+
+---
+
+## Demo login buttons use regular login API
+
+- **Goal:** Stop demo login from failing by using the same path as normal login.
+- **Changes:**
+  - “Enter as member” and “Enter as admin” now call `/api/auth/login` with fixed credentials (demo@sbmi.ca / demo123, admin@sbmi.ca / admin123) instead of `/api/auth/demo-login`.
+  - One code path for both real and demo logins; no DEMO_MODE or separate raw-SQL route needed for the buttons.
+  - Removed debug instrumentation from `api/auth/demo-login/route.ts` and `lib/auth.ts`. Left demo-login route in place but unused by the UI.
+- **Files:** `src/app/login/page.tsx`, `src/app/api/auth/demo-login/route.ts`, `src/lib/auth.ts`.

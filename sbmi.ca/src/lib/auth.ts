@@ -67,22 +67,13 @@ export async function createSession(
     expiresAt.setHours(expiresAt.getHours() + SESSION_HOURS_NON_PERSISTENT);
   }
   const isPre2FA = options?.isPre2FA ?? false;
-  // #region agent log
-  fetch('http://127.0.0.1:7248/ingest/38fd0722-180d-490a-a45c-46d9597fbe7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hypothesisId:'C',location:'auth.ts:createSession:beforeInsert',message:'createSession before INSERT',data:{userId:expiresAt.toISOString().slice(0,19)},timestamp:Date.now()})}).catch(()=>{});
-  // #endregion
   // Raw INSERT for Supabase transaction-mode pooler (no prepared statements)
-  try {
-    await prisma.$executeRaw(
-      Prisma.sql`
-        INSERT INTO "Session" (id, token, "userId", "expiresAt", "isPre2FA", "createdAt")
-        VALUES (gen_random_uuid()::text, ${token}, ${userId}, ${expiresAt.toISOString()}::timestamptz, ${isPre2FA}, NOW())
-      `
-    );
-  } catch (insertErr) {
-    const err = insertErr as Error;
-    fetch('http://127.0.0.1:7248/ingest/38fd0722-180d-490a-a45c-46d9597fbe7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hypothesisId:'C',location:'auth.ts:createSession:insertFailed',message:'Session INSERT failed',data:{errorMessage:err?.message,errorName:err?.name},timestamp:Date.now()})}).catch(()=>{});
-    throw insertErr;
-  }
+  await prisma.$executeRaw(
+    Prisma.sql`
+      INSERT INTO "Session" (id, token, "userId", "expiresAt", "isPre2FA", "createdAt")
+      VALUES (gen_random_uuid()::text, ${token}, ${userId}, ${expiresAt.toISOString()}::timestamptz, ${isPre2FA}, NOW())
+    `
+  );
   return token;
 }
 

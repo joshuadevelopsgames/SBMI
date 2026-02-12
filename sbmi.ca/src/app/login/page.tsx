@@ -39,11 +39,13 @@ function LoginForm() {
   async function handleDemoLogin(role: "MEMBER" | "ADMIN") {
     setDemoError(null);
     setDemoLoading(role.toLowerCase() as "member" | "admin");
+    const email = role === "ADMIN" ? "admin@sbmi.ca" : "demo@sbmi.ca";
+    const password = role === "ADMIN" ? "admin123" : "demo123";
     try {
-      const res = await fetch("/api/auth/demo-login", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role }),
+        body: JSON.stringify({ email, password, stayLoggedIn: false }),
         credentials: "include",
       });
       const data = await res.json().catch(() => ({}));
