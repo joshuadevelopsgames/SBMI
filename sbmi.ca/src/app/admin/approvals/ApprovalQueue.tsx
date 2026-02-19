@@ -24,12 +24,23 @@ type ClaimWithMember = {
   member: { id: string; firstName: string; lastName: string; memberNumber: string | null };
 };
 
+type FamilyMemberChangeWithMember = {
+  id: string;
+  action: string;
+  fullName: string;
+  birthDate: Date;
+  createdAt: Date;
+  member: { id: string; firstName: string; lastName: string; memberNumber: string | null };
+};
+
 export default function ApprovalQueue({
   applications,
   claims,
+  familyMemberChanges,
 }: {
   applications: Application[];
   claims: ClaimWithMember[];
+  familyMemberChanges: FamilyMemberChangeWithMember[];
 }) {
   const router = useRouter();
   const [rejectReason, setRejectReason] = useState<Record<string, string>>({});
@@ -58,6 +69,25 @@ export default function ApprovalQueue({
     setLoading(id);
     try {
       const res = await fetch(`/api/admin/claims/${id}/decision`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action,
+          rejectionReason: action === "reject" ? rejectReason[id] : undefined,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? "Failed");
+      router.refresh();
+    } finally {
+      setLoading(null);
+    }
+  }
+
+  async function handleFamilyMemberChangeDecision(id: string, action: "approve" | "reject") {
+    setLoading(id);
+    try {
+      const res = await fetch(`/api/admin/family-member-change-requests/${id}/decision`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -183,6 +213,68 @@ export default function ApprovalQueue({
                     <button
                       onClick={() => handleClaimDecision(claim.id, "reject")}
                       disabled={loading === claim.id}
+                      className="flex-1 rounded-lg border border-[#1B5E3B] text-[#1B5E3B] py-2 text-sm font-medium hover:bg-[#1B5E3B] hover:text-white disabled:opacity-50 transition-colors"
+                    >
+                      Reject
+                    </button>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      {/* Pending family member add/remove requests */}
+      <section className="sbmi-card p-6">
+        <h2 className="font-display font-semibold text-[#1B5E3B] mb-4">
+          Pending household member changes ({familyMemberChanges.length})
+        </h2>
+        {familyMemberChanges.length === 0 ? (
+          <p className="text-[#3D5A4A] text-sm">No pending household member change requests.</p>
+        ) : (
+          <ul className="space-y-4">
+            {familyMemberChanges.map((request) => (
+              <li
+                key={request.id}
+                className="rounded-lg border border-[#E2DCD2] p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+              >
+                <div>
+                  <p className="font-medium text-[#1B5E3B]">
+                    {request.member.firstName} {request.member.lastName}
+                    {request.member.memberNumber && ` (#${request.member.memberNumber})`}
+                  </p>
+                  <p className="text-sm text-[#3D5A4A]">
+                    {request.action === "ADD" ? "Add" : "Remove"} household member: {request.fullName}
+                  </p>
+                  <p className="text-sm text-[#3D5A4A]/80">
+                    Birth date: {formatDate(request.birthDate)}
+                  </p>
+                  <p className="text-xs text-[#3D5A4A]/60 mt-1">
+                    Requested {formatDate(request.createdAt)}
+                  </p>
+                </div>
+                <div className="flex flex-col gap-2 min-w-[200px]">
+                  <input
+                    type="text"
+                    placeholder="Rejection reason (if rejecting)"
+                    className="rounded-lg border border-[#E2DCD2] px-3 py-2 text-sm sbmi-input"
+                    value={rejectReason[request.id] ?? ""}
+                    onChange={(e) =>
+                      setRejectReason((prev) => ({ ...prev, [request.id]: e.target.value }))
+                    }
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleFamilyMemberChangeDecision(request.id, "approve")}
+                      disabled={loading === request.id}
+                      className="flex-1 rounded-lg bg-[#D4A43A] hover:bg-[#C4922E] text-[#171717] py-2 text-sm font-medium disabled:opacity-50 shadow-sm transition-colors"
+                    >
+                      {loading === request.id ? "…" : "Approve"}
+                    </button>
+                    <button
+                      onClick={() => handleFamilyMemberChangeDecision(request.id, "reject")}
+                      disabled={loading === request.id}
                       className="flex-1 rounded-lg border border-[#1B5E3B] text-[#1B5E3B] py-2 text-sm font-medium hover:bg-[#1B5E3B] hover:text-white disabled:opacity-50 transition-colors"
                     >
                       Reject

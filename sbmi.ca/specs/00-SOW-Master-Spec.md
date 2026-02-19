@@ -62,13 +62,14 @@
 | Element | Specification | SOW Reference |
 |--------|----------------|---------------|
 | **User roles** | Member | US25 |
-| **Screens** | Family Members screen (list + Add/Edit/Delete) | US25 |
-| **User flows** | View list → Add (name, DOB; age ≤25) / Edit (DOB) / Delete (with confirm) | US25–US29 |
-| **System states** | Family list; per-member eligible (≤25) or greyed-out (>25); no auto-removal | US26, US27 |
+| **Screens** | Family Members screen (list + Add/Edit/Delete actions and pending approval requests) | US25 |
+| **User flows** | View list → request Add (name, DOB; age ≤25) / Edit (DOB) / request Delete (with confirm); admin approves add/delete requests before data changes apply | US25–US29 (amended) |
+| **System states** | Family list; per-member eligible (≤25) or greyed-out (>25); pending add/remove approval requests; no auto-removal | US26, US27 (amended) |
 | **Inputs** | Full name, birth date (required, valid date); edit birth date | US26, US28 |
-| **Outputs** | List with current age; greyed-out + italic note when >25; bylaw reference | US27, US30 |
+| **Outputs** | List with current age; greyed-out + italic note when >25; bylaw reference; request-submitted feedback for add/remove | US27, US30 (amended) |
 
-**Explicit exclusions:** Benefit approval/entitlement; age overrides; historical/audit/approval; archival/recovery; enforcement (US25–US30).
+**Explicit exclusions:** Benefit approval/entitlement; age overrides; historical/audit for member self-edits; archival/recovery; enforcement (US25–US30).  
+**Note (scope amendment):** Add/remove household-member changes now require admin approval prior to applying changes.
 
 ---
 

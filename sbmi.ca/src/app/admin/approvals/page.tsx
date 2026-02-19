@@ -9,12 +9,17 @@ export default async function AdminApprovalsPage() {
   const session = await getSession();
   if (!session || session.role !== "ADMIN") redirect("/api/auth/logout?redirect=/login");
 
-  const [pendingApplications, pendingClaims] = await Promise.all([
+  const [pendingApplications, pendingClaims, pendingFamilyMemberChanges] = await Promise.all([
     prisma.application.findMany({
       where: { status: "PENDING" },
       orderBy: { createdAt: "asc" },
     }),
     prisma.claim.findMany({
+      where: { status: "PENDING" },
+      include: { member: true },
+      orderBy: { createdAt: "asc" },
+    }),
+    prisma.familyMemberChangeRequest.findMany({
       where: { status: "PENDING" },
       include: { member: true },
       orderBy: { createdAt: "asc" },
@@ -36,6 +41,7 @@ export default async function AdminApprovalsPage() {
       <ApprovalQueue
         applications={pendingApplications}
         claims={pendingClaims}
+        familyMemberChanges={pendingFamilyMemberChanges}
       />
     </div>
   );
