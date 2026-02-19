@@ -29,3 +29,16 @@ Daily implementation notes for SBMI.ca updates.
 - `src/app/admin/page.tsx`
 - `specs/00-SOW-Master-Spec.md`
 - `specs/04-Family-Management-Spec.md`
+
+## Family page lint follow-up for approval workflow update
+
+**Goal**
+- Remove newly introduced lint issues from the updated family page implementation.
+
+**What changed**
+- Refactored family-page loading logic to avoid synchronous state updates inside effects.
+- Removed an unused import and updated reload callbacks to explicitly set loading before refresh.
+- Confirmed the family page now passes ESLint checks.
+
+**Files**
+- `src/app/dashboard/family/page.tsx`

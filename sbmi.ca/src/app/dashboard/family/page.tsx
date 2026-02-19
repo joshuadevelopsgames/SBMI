@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { formatCalendarDate, formatDate } from "@/lib/date";
 
 type FamilyMemberRow = {
@@ -60,13 +59,6 @@ function BirthDateSelect({
   const [year, setYear] = useState(parts.year);
   const [month, setMonth] = useState(parts.month);
   const [day, setDay] = useState(parts.day);
-
-  useEffect(() => {
-    const p = toDateParts(value);
-    setYear(p.year);
-    setMonth(p.month);
-    setDay(p.day);
-  }, [value]);
 
   const update = (y: string, m: string, d: string) => {
     const next = fromDateParts(y, m, d);
@@ -147,28 +139,33 @@ export default function FamilyPage() {
   const [notice, setNotice] = useState("");
 
   async function load() {
-    setLoading(true);
-    const [familyRes, requestRes] = await Promise.all([
-      fetch("/api/dashboard/family-members", { credentials: "include" }),
-      fetch("/api/dashboard/family-member-change-requests", { credentials: "include" }),
-    ]);
-    if (familyRes.ok) {
-      const data = await familyRes.json();
-      setList(Array.isArray(data) ? data : []);
-    } else {
+    try {
+      const [familyRes, requestRes] = await Promise.all([
+        fetch("/api/dashboard/family-members", { credentials: "include" }),
+        fetch("/api/dashboard/family-member-change-requests", { credentials: "include" }),
+      ]);
+      if (familyRes.ok) {
+        const data = await familyRes.json();
+        setList(Array.isArray(data) ? data : []);
+      } else {
+        setList([]);
+      }
+      if (requestRes.ok) {
+        const data = await requestRes.json();
+        setPendingRequests(Array.isArray(data) ? data : []);
+      } else {
+        setPendingRequests([]);
+      }
+    } catch {
       setList([]);
-    }
-    if (requestRes.ok) {
-      const data = await requestRes.json();
-      setPendingRequests(Array.isArray(data) ? data : []);
-    } else {
       setPendingRequests([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   useEffect(() => {
-    load();
+    void load();
   }, []);
 
   const pendingRemovalIds = new Set(
@@ -297,7 +294,7 @@ export default function FamilyPage() {
       {addOpen && (
         <AddForm
           onClose={() => setAddOpen(false)}
-          onSaved={(message) => { setAddOpen(false); setNotice(message); load(); }}
+          onSaved={(message) => { setAddOpen(false); setNotice(message); setLoading(true); void load(); }}
         />
       )}
       {editId && (
@@ -306,7 +303,7 @@ export default function FamilyPage() {
           initialFullName={list.find((f) => f.id === editId)?.fullName ?? ""}
           initialBirthDate={list.find((f) => f.id === editId)?.birthDate ?? ""}
           onClose={() => setEditId(null)}
-          onSaved={() => { setEditId(null); load(); }}
+          onSaved={() => { setEditId(null); setLoading(true); void load(); }}
         />
       )}
       {deleteId && (
@@ -314,7 +311,7 @@ export default function FamilyPage() {
           id={deleteId}
           name={list.find((f) => f.id === deleteId)?.fullName ?? "this person"}
           onClose={() => setDeleteId(null)}
-          onDeleted={(message) => { setDeleteId(null); setNotice(message); load(); }}
+          onDeleted={(message) => { setDeleteId(null); setNotice(message); setLoading(true); void load(); }}
         />
       )}
     </div>
