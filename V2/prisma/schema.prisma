@@ -1,0 +1,200 @@
+// SBMI.ca — Prisma Schema
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+enum PaymentStatus {
+  SUCCEEDED
+  FAILED
+  CANCELLED
+  DECLINED
+}
+
+enum PaymentType {
+  ONE_TIME
+  RECURRING
+}
+
+enum AssistanceRequestType {
+  SELF
+  OTHER
+}
+
+model User {
+  id                  String    @id @default(cuid())
+  email               String    @unique
+  firstName           String
+  lastName            String
+  role                Role      @default(MEMBER)
+  membershipStartDate DateTime?
+  lastLoginAt         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  // Auth
+  passwordHash        String
+  twoFactorCode       String?
+  twoFactorCodeAt     DateTime?
+
+  // Password reset
+  passwordResetToken  String?   @unique
+  passwordResetAt     DateTime?
+
+  // Email change
+  emailChangeToken    String?   @unique
+  emailChangePending  String?
+  emailChangeAt       DateTime?
+
+  // Stripe
+  stripeCustomerId    String?   @unique
+
+  // Member status
+  status              String    @default("ACTIVE")
+
+  // Relations
+  sessions            Session[]
+  familyMembers       FamilyMember[]
+  payments            Payment[]
+  penalties           Penalty[]
+  memberBalance       MemberBalance?
+  assistanceRequests  AssistanceRequest[]
+  applications        Application[]
+
+  @@map("users")
+}
+
+model Session {
+  id         String    @id @default(cuid())
+  userId     String
+  token      String    @unique @default(cuid())
+  persistent Boolean   @default(false)
+  expiresAt  DateTime?
+  createdAt  DateTime  @default(now())
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model FamilyMember {
+  id         String   @id @default(cuid())
+  userId     String
+  fullName   String
+  birthDate  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assistanceRequests AssistanceRequest[]
+
+  @@map("family_members")
+}
+
+model Payment {
+  id                    String        @id @default(cuid())
+  userId                String
+  amount                Int
+  paymentDate           DateTime      @default(now())
+  status                PaymentStatus
+  paymentType           PaymentType
+  receiptUrl            String?
+  stripePaymentIntentId String?       @unique
+  stripeSubscriptionId  String?
+  notes                 String?
+  createdAt             DateTime      @default(now())
+
+  user                  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+model Penalty {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Int
+  reason    String   @default("Non-payment")
+  notes     String?
+  createdAt DateTime @default(now())
+  paidAt    DateTime?
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("penalties")
+}
+
+model MemberBalance {
+  id                   String    @id @default(cuid())
+  userId               String    @unique
+  paidThroughDate      DateTime?
+  creditCents          Int       @default(0)
+  stripeSubscriptionId String?
+  recurringActive      Boolean   @default(false)
+  updatedAt            DateTime  @updatedAt
+
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("member_balances")
+}
+
+model AssistanceRequest {
+  id             String                @id @default(cuid())
+  userId         String
+  requestType    AssistanceRequestType
+  familyMemberId String?
+  otherName      String?
+  otherPhone     String?
+  description    String
+  status         String                @default("PENDING")
+  adminNotes     String?
+  createdAt      DateTime              @default(now())
+
+  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMember   FamilyMember?         @relation(fields: [familyMemberId], references: [id])
+
+  @@map("assistance_requests")
+}
+
+model Application {
+  id         String   @id @default(cuid())
+  userId     String?
+  firstName  String
+  lastName   String
+  email      String
+  phone      String
+  address    String
+  city       String
+  province   String
+  postalCode String
+  message    String?
+  status     String   @default("PENDING")
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       User?    @relation(fields: [userId], references: [id])
+
+  @@map("applications")
+}
+
+model AppConfig {
+  id                       String   @id @default(cuid())
+  monthlyContributionCents Int      @default(2000)
+  penaltyAmountCents       Int      @default(500)
+  bylawsPdfUrl             String   @default("/bylaws.pdf")
+  adminEmail               String   @default("admin@sbmi.ca")
+  welcomeMessage           String?
+  updatedAt                DateTime @updatedAt
+
+  @@map("app_config")
+}
