@@ -23,12 +23,12 @@ interface AssistanceClientProps {
   pastRequests: PastRequest[]
 }
 
+type AssistanceFor = 'MYSELF' | 'FAMILY_MEMBER'
+
 export default function AssistanceClient({ familyMembers, pastRequests }: AssistanceClientProps) {
   const router = useRouter()
-  const [requestType, setRequestType] = useState<'SELF' | 'OTHER'>('SELF')
+  const [assistanceFor, setAssistanceFor] = useState<AssistanceFor>('MYSELF')
   const [familyMemberId, setFamilyMemberId] = useState('')
-  const [otherName, setOtherName] = useState('')
-  const [otherPhone, setOtherPhone] = useState('')
   const [description, setDescription] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(false)
@@ -37,12 +37,8 @@ export default function AssistanceClient({ familyMembers, pastRequests }: Assist
 
   const validate = () => {
     const errs: Record<string, string> = {}
-    if (requestType === 'SELF' && !familyMemberId) {
+    if (assistanceFor === 'FAMILY_MEMBER' && !familyMemberId) {
       errs.familyMemberId = 'Please select a family member.'
-    }
-    if (requestType === 'OTHER') {
-      if (!otherName.trim()) errs.otherName = 'Name is required.'
-      if (!otherPhone.trim()) errs.otherPhone = 'Phone number is required.'
     }
     if (!description.trim()) errs.description = 'Please describe the situation.'
     return errs
@@ -60,10 +56,8 @@ export default function AssistanceClient({ familyMembers, pastRequests }: Assist
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          requestType,
-          familyMemberId: requestType === 'SELF' ? familyMemberId : undefined,
-          otherName: requestType === 'OTHER' ? otherName : undefined,
-          otherPhone: requestType === 'OTHER' ? otherPhone : undefined,
+          requestType: 'SELF',
+          familyMemberId: assistanceFor === 'FAMILY_MEMBER' ? familyMemberId : undefined,
           description,
         }),
       })
@@ -80,6 +74,11 @@ export default function AssistanceClient({ familyMembers, pastRequests }: Assist
       setLoading(false)
     }
   }
+
+  const options: { value: AssistanceFor; label: string; sublabel: string }[] = [
+    { value: 'MYSELF', label: 'Myself', sublabel: 'The member is the deceased' },
+    { value: 'FAMILY_MEMBER', label: 'Family Member', sublabel: 'A registered spouse or child' },
+  ]
 
   return (
     <div>
@@ -108,63 +107,62 @@ export default function AssistanceClient({ familyMembers, pastRequests }: Assist
           <form onSubmit={handleSubmit} noValidate>
             {submitError && <div className="alert-error" style={{ marginBottom: 20 }}>{submitError}</div>}
 
-            {/* Request type */}
+            {/* Assistance For — two clear options */}
             <div style={{ marginBottom: 24 }}>
               <label className="form-label">Assistance For</label>
-              <div style={{ display: 'flex', gap: 12 }}>
-                <label style={{
-                  flex: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10,
-                  padding: '12px 16px',
-                  border: `2px solid ${requestType === 'SELF' ? 'var(--color-green)' : 'var(--color-gray-200)'}`,
-                  background: requestType === 'SELF' ? 'var(--color-green-pale)' : 'var(--color-white)',
-                  cursor: 'pointer',
-                  fontSize: 14,
-                  fontWeight: requestType === 'SELF' ? 600 : 400,
-                  color: requestType === 'SELF' ? 'var(--color-green)' : 'var(--color-gray-700)',
-                }}>
-                  <input
-                    type="radio"
-                    name="requestType"
-                    value="SELF"
-                    checked={requestType === 'SELF'}
-                    onChange={() => setRequestType('SELF')}
-                    style={{ accentColor: 'var(--color-green)' }}
-                  />
-                  Myself / Family Member
-                </label>
-                <label style={{
-                  flex: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10,
-                  padding: '12px 16px',
-                  border: `2px solid ${requestType === 'OTHER' ? 'var(--color-green)' : 'var(--color-gray-200)'}`,
-                  background: requestType === 'OTHER' ? 'var(--color-green-pale)' : 'var(--color-white)',
-                  cursor: 'pointer',
-                  fontSize: 14,
-                  fontWeight: requestType === 'OTHER' ? 600 : 400,
-                  color: requestType === 'OTHER' ? 'var(--color-green)' : 'var(--color-gray-700)',
-                }}>
-                  <input
-                    type="radio"
-                    name="requestType"
-                    value="OTHER"
-                    checked={requestType === 'OTHER'}
-                    onChange={() => setRequestType('OTHER')}
-                    style={{ accentColor: 'var(--color-green)' }}
-                  />
-                  Someone Else
-                </label>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                {options.map((opt) => {
+                  const selected = assistanceFor === opt.value
+                  return (
+                    <label
+                      key={opt.value}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: 12,
+                        padding: '14px 16px',
+                        border: `2px solid ${selected ? 'var(--color-green)' : 'var(--color-gray-200)'}`,
+                        background: selected ? 'var(--color-green-pale)' : 'var(--color-white)',
+                        cursor: 'pointer',
+                        borderRadius: 2,
+                        transition: 'border-color 0.15s, background 0.15s',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="assistanceFor"
+                        value={opt.value}
+                        checked={selected}
+                        onChange={() => {
+                          setAssistanceFor(opt.value)
+                          setFamilyMemberId('')
+                          setErrors({})
+                        }}
+                        style={{ accentColor: 'var(--color-green)', marginTop: 2, flexShrink: 0 }}
+                      />
+                      <div>
+                        <div style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: selected ? 'var(--color-green)' : 'var(--color-gray-800)',
+                          marginBottom: 2,
+                        }}>
+                          {opt.label}
+                        </div>
+                        <div style={{ fontSize: 12, color: 'var(--color-gray-500)' }}>
+                          {opt.sublabel}
+                        </div>
+                      </div>
+                    </label>
+                  )
+                })}
               </div>
             </div>
 
-            {/* SELF: family member selector */}
-            {requestType === 'SELF' && (
+            {/* Family Member dropdown — only shown when Family Member is selected */}
+            {assistanceFor === 'FAMILY_MEMBER' && (
               <div style={{ marginBottom: 20 }}>
-                <label className="form-label" htmlFor="familyMember">Family Member</label>
+                <label className="form-label" htmlFor="familyMember">Select Family Member</label>
                 {familyMembers.length === 0 ? (
                   <div className="alert-info">
                     No active family members on file. You can add them in the{' '}
@@ -184,34 +182,6 @@ export default function AssistanceClient({ familyMembers, pastRequests }: Assist
                   </select>
                 )}
                 {errors.familyMemberId && <p className="error-message">{errors.familyMemberId}</p>}
-              </div>
-            )}
-
-            {/* OTHER: name and phone */}
-            {requestType === 'OTHER' && (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
-                <div>
-                  <label className="form-label" htmlFor="otherName">Full Name</label>
-                  <input
-                    id="otherName"
-                    type="text"
-                    className={`form-input${errors.otherName ? ' error' : ''}`}
-                    value={otherName}
-                    onChange={(e) => setOtherName(e.target.value)}
-                  />
-                  {errors.otherName && <p className="error-message">{errors.otherName}</p>}
-                </div>
-                <div>
-                  <label className="form-label" htmlFor="otherPhone">Phone Number</label>
-                  <input
-                    id="otherPhone"
-                    type="tel"
-                    className={`form-input${errors.otherPhone ? ' error' : ''}`}
-                    value={otherPhone}
-                    onChange={(e) => setOtherPhone(e.target.value)}
-                  />
-                  {errors.otherPhone && <p className="error-message">{errors.otherPhone}</p>}
-                </div>
               </div>
             )}
 
@@ -255,7 +225,6 @@ export default function AssistanceClient({ familyMembers, pastRequests }: Assist
               <thead>
                 <tr>
                   <th>Date</th>
-                  <th>Type</th>
                   <th>For</th>
                   <th>Description</th>
                 </tr>
@@ -267,14 +236,9 @@ export default function AssistanceClient({ familyMembers, pastRequests }: Assist
                       {new Date(r.createdAt).toLocaleDateString('en-CA')}
                     </td>
                     <td>
-                      <span className={r.requestType === 'SELF' ? 'badge-current' : 'badge-ahead'}>
-                        {r.requestType === 'SELF' ? 'Self/Family' : 'Other'}
-                      </span>
-                    </td>
-                    <td>
-                      {r.requestType === 'SELF'
-                        ? r.familyMemberName || 'Self'
-                        : r.otherName || '—'}
+                      {r.familyMemberName
+                        ? r.familyMemberName
+                        : <span style={{ color: 'var(--color-gray-500)', fontStyle: 'italic' }}>Myself</span>}
                     </td>
                     <td style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {r.description}
