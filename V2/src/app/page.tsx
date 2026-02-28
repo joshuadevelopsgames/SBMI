@@ -1364,9 +1364,6 @@ export default function WelcomePage() {
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {[
                   { href: '/login', label: 'Member Login' },
-                  { href: '/member', label: 'Dashboard' },
-                  { href: '/member/payments', label: 'Make a Payment' },
-                  { href: '/member/bylaws', label: 'Download Bylaws' },
                 ].map((link) => (
                   <li key={link.label}>
                     <a href={link.href} style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: 14, fontWeight: 300 }}>
