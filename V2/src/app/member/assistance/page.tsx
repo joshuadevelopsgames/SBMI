@@ -1,13 +1,37 @@
 import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import AssistanceClient from './AssistanceClient'
 
 export default async function AssistancePage() {
+  const cookieStore = await cookies()
+  const isDemo = cookieStore.get('sbmi_demo')?.value === '1'
+
+  if (isDemo) {
+    return (
+      <AssistanceClient
+        familyMembers={[
+          { id: 'demo-1', fullName: 'Tigist Demo', isActive: true },
+          { id: 'demo-2', fullName: 'Yonas Demo', isActive: true },
+        ]}
+        pastRequests={[
+          {
+            id: 'demo-req-1',
+            requestType: 'MEMBER',
+            familyMemberName: null,
+            otherName: null,
+            description: 'Demo assistance request — no real data.',
+            createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+          },
+        ]}
+      />
+    )
+  }
+
   const user = await getSession()
   if (!user) redirect('/login')
 
-  // Get active family members (under 25)
   const allMembers = await prisma.familyMember.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: 'asc' },
@@ -22,7 +46,6 @@ export default async function AssistancePage() {
     })
     .filter((m) => m.isActive)
 
-  // Get past requests
   const pastRequests = await prisma.assistanceRequest.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: 'desc' },

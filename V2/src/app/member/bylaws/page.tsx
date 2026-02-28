@@ -1,12 +1,19 @@
 import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { getSession } from '@/lib/auth'
 import { getAppConfig } from '@/lib/payments'
 
 export default async function BylawsPage() {
-  const user = await getSession()
-  if (!user) redirect('/login')
+  const cookieStore = await cookies()
+  const isDemo = cookieStore.get('sbmi_demo')?.value === '1'
 
-  const config = await getAppConfig()
+  let config = { bylawsPdfUrl: '/bylaws.pdf', adminEmail: 'info@sbmi.ca' }
+
+  if (!isDemo) {
+    const user = await getSession()
+    if (!user) redirect('/login')
+    config = await getAppConfig()
+  }
 
   return (
     <div>
@@ -73,7 +80,7 @@ export default async function BylawsPage() {
         </div>
 
         <a
-          href={config.bylawsPdfUrl}
+          href={config.bylawsPdfUrl || '/bylaws.pdf'}
           download="SBMI-Bylaws.pdf"
           className="btn-primary"
           style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
@@ -87,7 +94,7 @@ export default async function BylawsPage() {
         <p style={{ marginTop: 16, fontSize: 13, color: 'var(--color-gray-400)' }}>
           If you have questions about the bylaws, please contact the SBMI administration at{' '}
           <a href={`mailto:${config.adminEmail}`} style={{ color: 'var(--color-green)' }}>
-            {config.adminEmail}
+            {config.adminEmail || 'info@sbmi.ca'}
           </a>
         </p>
       </div>
