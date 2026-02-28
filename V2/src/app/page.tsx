@@ -704,10 +704,8 @@ export default function WelcomePage() {
               {
                 icon: (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="2" y="7" width="20" height="14" rx="2"/>
-                    <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
-                    <line x1="12" y1="12" x2="12" y2="16"/>
-                    <line x1="10" y1="14" x2="14" y2="14"/>
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <polyline points="9 12 11 14 15 10"/>
                   </svg>
                 ),
                 title: 'Funeral Financial Assistance',
@@ -732,8 +730,12 @@ export default function WelcomePage() {
               {
                 icon: (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                    <polyline points="9 22 9 12 15 12 15 22"/>
+                    <line x1="12" y1="2" x2="12" y2="6"/>
+                    <path d="M9 6c0 3 3 4 3 8"/>
+                    <path d="M15 6c0 3-3 4-3 8"/>
+                    <path d="M9 14a3 3 0 0 0 6 0"/>
+                    <line x1="8" y1="22" x2="16" y2="22"/>
+                    <line x1="12" y1="17" x2="12" y2="22"/>
                   </svg>
                 ),
                 title: 'Lekso Coordination',
