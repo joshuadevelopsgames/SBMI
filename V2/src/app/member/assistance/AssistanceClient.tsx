@@ -88,7 +88,6 @@ export default function AssistanceClient({ familyMembers, pastRequests }: Assist
         border: '1px solid var(--color-gray-200)',
         padding: '32px',
         marginBottom: 32,
-        maxWidth: 640,
       }}>
         <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 20, fontWeight: 700, color: 'var(--color-gray-900)', marginBottom: 8 }}>
           Submit Assistance Request

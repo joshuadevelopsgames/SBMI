@@ -45,7 +45,7 @@ export default async function MemberLayout({
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, paddingTop: 36 }}>
           <MemberHeader user={{ firstName: DEMO_USER.firstName, lastName: DEMO_USER.lastName }} />
-          <main style={{ flex: 1, padding: '32px 32px', maxWidth: 1100, width: '100%' }}>
+          <main style={{ flex: 1, padding: '32px 40px' }}>
             {children}
           </main>
         </div>
@@ -65,7 +65,7 @@ export default async function MemberLayout({
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         <MemberHeader user={{ firstName: user.firstName, lastName: user.lastName }} />
-        <main style={{ flex: 1, padding: '32px 32px', maxWidth: 1100, width: '100%' }}>
+        <main style={{ flex: 1, padding: '32px 40px' }}>
           {children}
         </main>
       </div>

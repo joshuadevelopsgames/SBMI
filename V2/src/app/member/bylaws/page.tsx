@@ -21,7 +21,6 @@ export default async function BylawsPage() {
         background: 'var(--color-white)',
         border: '1px solid var(--color-gray-200)',
         padding: '40px',
-        maxWidth: 640,
       }}>
         {/* Document icon */}
         <div style={{
@@ -81,7 +80,8 @@ export default async function BylawsPage() {
 
         <a
           href={config.bylawsPdfUrl || '/bylaws.pdf'}
-          download="SBMI-Bylaws.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
           className="btn-primary"
           style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
         >

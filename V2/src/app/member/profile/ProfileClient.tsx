@@ -139,7 +139,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
     : 'N/A'
 
   return (
-    <div style={{ maxWidth: 640 }}>
+    <div>
       {/* Member info */}
       <div style={{
         background: 'var(--color-white)',
