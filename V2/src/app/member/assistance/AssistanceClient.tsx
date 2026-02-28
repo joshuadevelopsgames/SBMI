@@ -23,12 +23,14 @@ interface AssistanceClientProps {
   pastRequests: PastRequest[]
 }
 
-type AssistanceFor = 'MYSELF' | 'FAMILY_MEMBER'
+type AssistanceFor = 'MYSELF' | 'FAMILY_MEMBER' | 'SOMEONE_ELSE'
 
 export default function AssistanceClient({ familyMembers, pastRequests }: AssistanceClientProps) {
   const router = useRouter()
   const [assistanceFor, setAssistanceFor] = useState<AssistanceFor>('MYSELF')
   const [familyMemberId, setFamilyMemberId] = useState('')
+  const [otherName, setOtherName] = useState('')
+  const [otherPhone, setOtherPhone] = useState('')
   const [description, setDescription] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(false)
@@ -39,6 +41,10 @@ export default function AssistanceClient({ familyMembers, pastRequests }: Assist
     const errs: Record<string, string> = {}
     if (assistanceFor === 'FAMILY_MEMBER' && !familyMemberId) {
       errs.familyMemberId = 'Please select a family member.'
+    }
+    if (assistanceFor === 'SOMEONE_ELSE') {
+      if (!otherName.trim()) errs.otherName = 'Please enter the name of the person.'
+      if (!otherPhone.trim()) errs.otherPhone = 'Please enter a contact phone number.'
     }
     if (!description.trim()) errs.description = 'Please describe the situation.'
     return errs
@@ -56,8 +62,10 @@ export default function AssistanceClient({ familyMembers, pastRequests }: Assist
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          requestType: 'SELF',
+          requestType: assistanceFor === 'MYSELF' ? 'SELF' : assistanceFor === 'FAMILY_MEMBER' ? 'FAMILY' : 'OTHER',
           familyMemberId: assistanceFor === 'FAMILY_MEMBER' ? familyMemberId : undefined,
+          otherName: assistanceFor === 'SOMEONE_ELSE' ? otherName.trim() : undefined,
+          otherPhone: assistanceFor === 'SOMEONE_ELSE' ? otherPhone.trim() : undefined,
           description,
         }),
       })
@@ -78,6 +86,7 @@ export default function AssistanceClient({ familyMembers, pastRequests }: Assist
   const options: { value: AssistanceFor; label: string; sublabel: string }[] = [
     { value: 'MYSELF', label: 'Myself', sublabel: 'The member is the deceased' },
     { value: 'FAMILY_MEMBER', label: 'Family Member', sublabel: 'A registered spouse or child' },
+    { value: 'SOMEONE_ELSE', label: 'Someone Else', sublabel: 'Another person — provide name and phone' },
   ]
 
   return (
@@ -106,10 +115,10 @@ export default function AssistanceClient({ familyMembers, pastRequests }: Assist
           <form onSubmit={handleSubmit} noValidate>
             {submitError && <div className="alert-error" style={{ marginBottom: 20 }}>{submitError}</div>}
 
-            {/* Assistance For — two clear options */}
+            {/* Assistance For — three options */}
             <div style={{ marginBottom: 24 }}>
               <label className="form-label">Assistance For</label>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
                 {options.map((opt) => {
                   const selected = assistanceFor === opt.value
                   return (
@@ -135,6 +144,8 @@ export default function AssistanceClient({ familyMembers, pastRequests }: Assist
                         onChange={() => {
                           setAssistanceFor(opt.value)
                           setFamilyMemberId('')
+                          setOtherName('')
+                          setOtherPhone('')
                           setErrors({})
                         }}
                         style={{ accentColor: 'var(--color-green)', marginTop: 2, flexShrink: 0 }}
@@ -181,6 +192,40 @@ export default function AssistanceClient({ familyMembers, pastRequests }: Assist
                   </select>
                 )}
                 {errors.familyMemberId && <p className="error-message">{errors.familyMemberId}</p>}
+              </div>
+            )}
+
+            {/* Someone Else — name and phone fields */}
+            {assistanceFor === 'SOMEONE_ELSE' && (
+              <div style={{ marginBottom: 20, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                <div>
+                  <label className="form-label" htmlFor="otherName">
+                    Full Name <span style={{ color: 'var(--color-red)' }}>*</span>
+                  </label>
+                  <input
+                    id="otherName"
+                    type="text"
+                    className={`form-input${errors.otherName ? ' error' : ''}`}
+                    value={otherName}
+                    onChange={(e) => setOtherName(e.target.value)}
+                    placeholder="Full name of the person"
+                  />
+                  {errors.otherName && <p className="error-message">{errors.otherName}</p>}
+                </div>
+                <div>
+                  <label className="form-label" htmlFor="otherPhone">
+                    Phone Number <span style={{ color: 'var(--color-red)' }}>*</span>
+                  </label>
+                  <input
+                    id="otherPhone"
+                    type="tel"
+                    className={`form-input${errors.otherPhone ? ' error' : ''}`}
+                    value={otherPhone}
+                    onChange={(e) => setOtherPhone(e.target.value)}
+                    placeholder="Contact phone number"
+                  />
+                  {errors.otherPhone && <p className="error-message">{errors.otherPhone}</p>}
+                </div>
               </div>
             )}
 
@@ -237,7 +282,9 @@ export default function AssistanceClient({ familyMembers, pastRequests }: Assist
                     <td>
                       {r.familyMemberName
                         ? r.familyMemberName
-                        : <span style={{ color: 'var(--color-gray-500)', fontStyle: 'italic' }}>Myself</span>}
+                        : r.otherName
+                          ? r.otherName
+                          : <span style={{ color: 'var(--color-gray-500)', fontStyle: 'italic' }}>Myself</span>}
                     </td>
                     <td style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {r.description}

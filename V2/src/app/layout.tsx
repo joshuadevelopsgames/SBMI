@@ -1,20 +1,21 @@
 import type { Metadata } from 'next'
-import { Playfair_Display, Inter } from 'next/font/google'
+import { Libre_Baskerville, Source_Sans_3 } from 'next/font/google'
 import './globals.css'
 
-const playfair = Playfair_Display({
+const libreBaskerville = Libre_Baskerville({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  // Next.js injects this as --font-playfair-display on <html>
-  variable: '--font-playfair-display',
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  // Next.js injects this as --font-libre-baskerville on <html>
+  variable: '--font-libre-baskerville',
   display: 'swap',
 })
 
-const inter = Inter({
+const sourceSans3 = Source_Sans_3({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  // Next.js injects this as --font-inter on <html>
-  variable: '--font-inter',
+  weight: ['300', '400', '600', '700'],
+  // Next.js injects this as --font-source-sans-3 on <html>
+  variable: '--font-source-sans-3',
   display: 'swap',
 })
 
@@ -39,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
+    <html lang="en" className={`${libreBaskerville.variable} ${sourceSans3.variable}`}>
       <body>{children}</body>
     </html>
   )

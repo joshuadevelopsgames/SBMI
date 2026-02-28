@@ -40,7 +40,7 @@ export async function PATCH(req: NextRequest) {
       },
     })
 
-    await sendEmailChangeConfirmation(email, email, token)
+    await sendEmailChangeConfirmation(user.email, email, token)
 
     return NextResponse.json({ success: true })
   } catch (error) {

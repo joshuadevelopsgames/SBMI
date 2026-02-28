@@ -231,7 +231,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
         {emailSubmitError && <div className="alert-error" style={{ marginBottom: 16 }}>{emailSubmitError}</div>}
         {emailSuccess && (
           <div className="alert-success" style={{ marginBottom: 16 }}>
-            A confirmation email has been sent to your new address. Please click the link in that email to complete the change.
+            A confirmation email has been sent to your current email address. Please click the link in that email to confirm the change to your new address.
           </div>
         )}
         <form onSubmit={handleEmailChange} noValidate>

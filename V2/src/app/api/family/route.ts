@@ -22,6 +22,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid date of birth.' }, { status: 400 })
     }
 
+    // Block adding family members who are already 25 or older (US26)
+    const today = new Date()
+    const ageMs = today.getTime() - birth.getTime()
+    const ageYears = ageMs / (1000 * 60 * 60 * 24 * 365.25)
+    if (ageYears >= 25) {
+      return NextResponse.json(
+        { error: 'Family members who are 25 years of age or older cannot be added. Coverage is available for spouses and dependent children under 25.' },
+        { status: 400 }
+      )
+    }
+
     const member = await prisma.familyMember.create({
       data: {
         userId: user.id,

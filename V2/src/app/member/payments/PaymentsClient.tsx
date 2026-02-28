@@ -45,6 +45,8 @@ function formatDate(iso: string) {
   })
 }
 
+const HISTORY_PAGE_SIZE = 10
+
 export default function PaymentsClient({ summary, config, pendingPenaltyCents, payments }: PaymentsClientProps) {
   const router = useRouter()
   const [paymentType, setPaymentType] = useState<'ONE_TIME' | 'RECURRING'>('ONE_TIME')
@@ -52,6 +54,7 @@ export default function PaymentsClient({ summary, config, pendingPenaltyCents, p
   const [loading, setLoading] = useState(false)
   const [cancelLoading, setCancelLoading] = useState(false)
   const [error, setError] = useState('')
+  const [historyPage, setHistoryPage] = useState(1)
 
   const monthlyAmount = config.monthlyContributionCents
   const penaltyAmount = pendingPenaltyCents
@@ -313,57 +316,133 @@ export default function PaymentsClient({ summary, config, pendingPenaltyCents, p
           }}>
             <p style={{ color: 'var(--color-gray-500)', fontSize: 15 }}>No payment history yet.</p>
           </div>
-        ) : (
-          <div style={{ background: 'var(--color-white)', border: '1px solid var(--color-gray-200)' }}>
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Amount</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Receipt</th>
-                </tr>
-              </thead>
-              <tbody>
-                {payments.map((p) => (
-                  <tr key={p.id}>
-                    <td style={{ whiteSpace: 'nowrap' }}>{formatDate(p.paymentDate)}</td>
-                    <td style={{ fontWeight: 600 }}>{formatCents(p.amount)}</td>
-                    <td>
-                      <span style={{ fontSize: 12, color: 'var(--color-gray-500)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                        {p.paymentType === 'ONE_TIME' ? 'One-Time' : 'Recurring'}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={
-                        p.status === 'SUCCEEDED' ? 'badge-current' :
-                        p.status === 'FAILED' || p.status === 'DECLINED' ? 'badge-overdue' :
-                        'badge-ahead'
-                      }>
-                        {p.status.charAt(0) + p.status.slice(1).toLowerCase()}
-                      </span>
-                    </td>
-                    <td>
-                      {p.receiptUrl ? (
-                        <a
-                          href={p.receiptUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ color: 'var(--color-green)', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}
-                        >
-                          View Receipt
-                        </a>
-                      ) : (
-                        <span style={{ color: 'var(--color-gray-400)', fontSize: 13 }}>—</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        ) : (() => {
+          const totalPages = Math.ceil(payments.length / HISTORY_PAGE_SIZE)
+          const paginated = payments.slice((historyPage - 1) * HISTORY_PAGE_SIZE, historyPage * HISTORY_PAGE_SIZE)
+          return (
+            <div>
+              <div style={{ background: 'var(--color-white)', border: '1px solid var(--color-gray-200)' }}>
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Amount</th>
+                      <th>Type</th>
+                      <th>Status</th>
+                      <th>Receipt</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginated.map((p) => (
+                      <tr key={p.id}>
+                        <td style={{ whiteSpace: 'nowrap' }}>{formatDate(p.paymentDate)}</td>
+                        <td style={{ fontWeight: 600 }}>{formatCents(p.amount)}</td>
+                        <td>
+                          <span style={{ fontSize: 12, color: 'var(--color-gray-500)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                            {p.paymentType === 'ONE_TIME' ? 'One-Time' : 'Recurring'}
+                          </span>
+                        </td>
+                        <td>
+                          <span className={
+                            p.status === 'SUCCEEDED' ? 'badge-current' :
+                            p.status === 'FAILED' || p.status === 'DECLINED' ? 'badge-overdue' :
+                            'badge-ahead'
+                          }>
+                            {p.status.charAt(0) + p.status.slice(1).toLowerCase()}
+                          </span>
+                        </td>
+                        <td>
+                          {p.receiptUrl ? (
+                            <a
+                              href={p.receiptUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ color: 'var(--color-green)', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}
+                            >
+                              View Receipt
+                            </a>
+                          ) : (
+                            <span style={{ color: 'var(--color-gray-400)', fontSize: 13 }}>—</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {/* Pagination controls */}
+              {totalPages > 1 && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '12px 16px',
+                  background: 'var(--color-white)',
+                  borderTop: '1px solid var(--color-gray-200)',
+                  borderLeft: '1px solid var(--color-gray-200)',
+                  borderRight: '1px solid var(--color-gray-200)',
+                  borderBottom: '1px solid var(--color-gray-200)',
+                }}>
+                  <span style={{ fontSize: 13, color: 'var(--color-gray-500)' }}>
+                    Showing {(historyPage - 1) * HISTORY_PAGE_SIZE + 1}–{Math.min(historyPage * HISTORY_PAGE_SIZE, payments.length)} of {payments.length}
+                  </span>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                      onClick={() => setHistoryPage((p) => Math.max(1, p - 1))}
+                      disabled={historyPage === 1}
+                      style={{
+                        padding: '6px 14px',
+                        fontSize: 13,
+                        fontWeight: 600,
+                        border: '1px solid var(--color-gray-200)',
+                        background: historyPage === 1 ? 'var(--color-gray-50)' : 'var(--color-white)',
+                        color: historyPage === 1 ? 'var(--color-gray-400)' : 'var(--color-gray-700)',
+                        cursor: historyPage === 1 ? 'not-allowed' : 'pointer',
+                        borderRadius: 2,
+                      }}
+                    >
+                      ← Previous
+                    </button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => setHistoryPage(page)}
+                        style={{
+                          padding: '6px 12px',
+                          fontSize: 13,
+                          fontWeight: 600,
+                          border: '1px solid var(--color-gray-200)',
+                          background: historyPage === page ? 'var(--color-green)' : 'var(--color-white)',
+                          color: historyPage === page ? 'white' : 'var(--color-gray-700)',
+                          cursor: 'pointer',
+                          borderRadius: 2,
+                        }}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => setHistoryPage((p) => Math.min(totalPages, p + 1))}
+                      disabled={historyPage === totalPages}
+                      style={{
+                        padding: '6px 14px',
+                        fontSize: 13,
+                        fontWeight: 600,
+                        border: '1px solid var(--color-gray-200)',
+                        background: historyPage === totalPages ? 'var(--color-gray-50)' : 'var(--color-white)',
+                        color: historyPage === totalPages ? 'var(--color-gray-400)' : 'var(--color-gray-700)',
+                        cursor: historyPage === totalPages ? 'not-allowed' : 'pointer',
+                        borderRadius: 2,
+                      }}
+                    >
+                      Next →
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        })()}
       </div>
     </div>
   )

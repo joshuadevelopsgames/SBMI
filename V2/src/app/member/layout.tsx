@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { getSession } from '@/lib/auth'
 import MemberSidebar from '@/components/MemberSidebar'
 import MemberHeader from '@/components/MemberHeader'
+import MemberFooter from '@/components/MemberFooter'
 
 // Demo user shown when sbmi_demo cookie is set
 const DEMO_USER = {
@@ -48,6 +49,7 @@ export default async function MemberLayout({
           <main style={{ flex: 1, padding: '32px 40px' }}>
             {children}
           </main>
+          <MemberFooter adminEmail="info@sbmi.ca" />
         </div>
       </div>
     )
@@ -68,6 +70,7 @@ export default async function MemberLayout({
         <main style={{ flex: 1, padding: '32px 40px' }}>
           {children}
         </main>
+        <MemberFooter adminEmail="info@sbmi.ca" />
       </div>
     </div>
   )

@@ -1,13 +1,21 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Link from 'next/link'
+import ReCAPTCHA from 'react-google-recaptcha'
+
+// Use Google's public test site key for development/demo
+// Replace with a real site key from https://www.google.com/recaptcha/admin in production
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
   const [emailError, setEmailError] = useState('')
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const [captchaError, setCaptchaError] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const recaptchaRef = useRef<ReCAPTCHA>(null)
 
   const validateEmail = (value: string) => {
     if (!value) {
@@ -26,14 +34,20 @@ export default function ForgotPasswordPage() {
     validateEmail(email)
     if (emailError || !email) return
 
+    if (!captchaToken) {
+      setCaptchaError('Please complete the CAPTCHA verification.')
+      return
+    }
+    setCaptchaError('')
+
     setLoading(true)
     try {
       await fetch('/api/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, captchaToken }),
       })
-      // Always show same message regardless of whether email exists
+      // Always show same message regardless of whether email exists (security)
       setSubmitted(true)
     } catch {
       setSubmitted(true)
@@ -134,6 +148,23 @@ export default function ForgotPasswordPage() {
                   autoFocus
                 />
                 {emailError && <p className="error-message">{emailError}</p>}
+              </div>
+
+              {/* reCAPTCHA v2 checkbox */}
+              <div style={{ marginBottom: 24 }}>
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={RECAPTCHA_SITE_KEY}
+                  onChange={(token) => {
+                    setCaptchaToken(token)
+                    if (token) setCaptchaError('')
+                  }}
+                  onExpired={() => {
+                    setCaptchaToken(null)
+                    setCaptchaError('CAPTCHA expired. Please verify again.')
+                  }}
+                />
+                {captchaError && <p className="error-message" style={{ marginTop: 8 }}>{captchaError}</p>}
               </div>
 
               <button
