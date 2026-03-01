@@ -309,6 +309,35 @@ button, input, select, textarea { border-radius: 0; }
   .mobile-menu-btn {
     display: block !important;
   }
+
+  /* ─── WELCOME PAGE MOBILE OPTIMIZATIONS ─────────────────────────── */
+  .hero-section {
+    min-height: 500px !important;
+    max-height: 600px !important;
+  }
+
+  .split-grid-mobile {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .split-grid-mobile > div {
+    min-height: auto !important;
+  }
+
+  .stats-grid-mobile {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .benefits-grid-mobile {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  .memorial-image-hide {
+    display: none !important;
+  }
 }
 
 @media (max-width: 480px) {

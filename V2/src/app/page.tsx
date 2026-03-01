@@ -259,7 +259,7 @@ export default function WelcomePage() {
       )}
 
       {/* ─── HERO — Full-bleed photo with overlay ───────────────── */}
-      <section style={{
+      <section className="hero-section" style={{
         position: 'relative',
         height: '100vh',
         minHeight: 600,
@@ -397,7 +397,7 @@ export default function WelcomePage() {
         padding: '0',
       }}>
         <div className="container">
-          <div style={{
+          <div className="stats-grid-mobile" style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
             borderLeft: '1px solid rgba(255,255,255,0.08)',
@@ -438,9 +438,11 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      {/* ─── WHAT IS AN IDDIR — Split screen ────────────────────── */}
-      <section id="about" style={{ background: 'var(--color-off-white)' }}>
-        <div style={{
+      {/* ─── WHAT IS AN IDDIR — Split screen ───────────────── */}
+      <section id="about" style={{
+        background: 'var(--color-off-white)',
+      }}>
+        <div className="split-grid-mobile" style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           minHeight: 560,
@@ -554,7 +556,7 @@ export default function WelcomePage() {
           backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(249,168,37,0.06) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(27,94,32,0.1) 0%, transparent 50%)',
         }} />
 
-        <div style={{
+        <div className="split-grid-mobile" style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           position: 'relative',
@@ -627,7 +629,7 @@ export default function WelcomePage() {
           </div>
 
           {/* Image side */}
-          <div style={{ position: 'relative', minHeight: 500 }}>
+          <div className="memorial-image-hide" style={{ position: 'relative', minHeight: 500 }}>
             <Image
               src="/images/candlelight-vigil.jpg"
               alt="Community candlelight vigil in memory"
@@ -700,7 +702,7 @@ export default function WelcomePage() {
           </div>
 
           {/* Benefits grid */}
-          <div style={{
+          <div className="benefits-grid-mobile" style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
             gap: 2,
