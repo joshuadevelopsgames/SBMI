@@ -11,13 +11,27 @@ interface FamilyMemberData {
   ageYears: number
 }
 
-interface FamilyManagementClientProps {
-  members: FamilyMemberData[]
+interface FamilyMemberRequest {
+  id: string
+  userId: string
+  familyMemberId: string | null
+  requestType: 'ADD' | 'REMOVE'
+  status: 'PENDING' | 'APPROVED' | 'REJECTED'
+  fullName: string | null
+  birthDate: string | null
+  reason: string | null
+  createdAt: string
 }
 
-export default function FamilyManagementClient({ members: initialMembers }: FamilyManagementClientProps) {
+interface FamilyManagementClientProps {
+  members: FamilyMemberData[]
+  requests?: FamilyMemberRequest[]
+}
+
+export default function FamilyManagementClient({ members: initialMembers, requests: initialRequests = [] }: FamilyManagementClientProps) {
   const router = useRouter()
   const [members, setMembers] = useState(initialMembers)
+  const [requests, setRequests] = useState(initialRequests)
   const [showAddForm, setShowAddForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -53,13 +67,15 @@ export default function FamilyManagementClient({ members: initialMembers }: Fami
         body: JSON.stringify(formData),
       })
       if (res.ok) {
+        const data = await res.json()
+        setRequests((prev) => [...prev, data.request])
         router.refresh()
         setShowAddForm(false)
         setFormData({ fullName: '', birthDate: '' })
         setFormErrors({})
       } else {
         const data = await res.json()
-        setError(data.error || 'Failed to add family member.')
+        setError(data.error || 'Failed to submit family member request.')
       }
     } catch {
       setError('An error occurred.')
@@ -102,12 +118,13 @@ export default function FamilyManagementClient({ members: initialMembers }: Fami
     try {
       const res = await fetch(`/api/family/${id}`, { method: 'DELETE' })
       if (res.ok) {
-        setMembers((prev) => prev.filter((m) => m.id !== id))
+        const data = await res.json()
+        setRequests((prev) => [...prev, data.request])
         setDeletingId(null)
         router.refresh()
       } else {
         const data = await res.json()
-        setError(data.error || 'Failed to remove family member.')
+        setError(data.error || 'Failed to submit removal request.')
       }
     } catch {
       setError('An error occurred.')
@@ -123,6 +140,17 @@ export default function FamilyManagementClient({ members: initialMembers }: Fami
     setShowAddForm(false)
   }
 
+  const getStatusBadgeColor = (status: string) => {
+    switch (status) {
+      case 'PENDING': return 'var(--color-gold)'
+      case 'APPROVED': return 'var(--color-green)'
+      case 'REJECTED': return 'var(--color-red)'
+      default: return 'var(--color-gray-500)'
+    }
+  }
+
+  const pendingRequests = requests.filter((r) => r.status === 'PENDING')
+
   return (
     <div>
       {/* Info banner */}
@@ -132,6 +160,57 @@ export default function FamilyManagementClient({ members: initialMembers }: Fami
       </div>
 
       {error && <div className="alert-error" style={{ marginBottom: 16 }}>{error}</div>}
+
+      {/* Pending requests */}
+      {pendingRequests.length > 0 && (
+        <div style={{ marginBottom: 24 }}>
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--color-gray-900)', marginBottom: 12 }}>
+            Pending Requests ({pendingRequests.length})
+          </h3>
+          {pendingRequests.map((req) => (
+            <div
+              key={req.id}
+              style={{
+                background: 'var(--color-off-white)',
+                border: `1px solid var(--color-gold)`,
+                borderLeft: `4px solid var(--color-gold)`,
+                padding: '16px 20px',
+                marginBottom: 12,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 16,
+              }}
+            >
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--color-gray-900)', marginBottom: 4 }}>
+                  {req.requestType === 'ADD' ? 'Add Family Member' : 'Remove Family Member'}
+                </div>
+                <div style={{ fontSize: 13, color: 'var(--color-gray-600)' }}>
+                  {req.requestType === 'ADD' ? req.fullName : `Remove ${req.fullName}`}
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--color-gray-500)', marginTop: 4 }}>
+                  Submitted: {new Date(req.createdAt).toLocaleDateString('en-CA')}
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span
+                  style={{
+                    background: getStatusBadgeColor(req.status),
+                    color: 'white',
+                    padding: '4px 12px',
+                    borderRadius: 4,
+                    fontSize: 12,
+                    fontWeight: 600,
+                  }}
+                >
+                  {req.status}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Members list */}
       {members.length === 0 ? (
@@ -316,7 +395,7 @@ export default function FamilyManagementClient({ members: initialMembers }: Fami
             </div>
             <div style={{ display: 'flex', gap: 12 }}>
               <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? 'Adding...' : 'Add Family Member'}
+                {loading ? 'Submitting...' : 'Submit for Approval'}
               </button>
               <button
                 type="button"

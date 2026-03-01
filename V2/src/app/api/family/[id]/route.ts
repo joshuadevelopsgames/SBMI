@@ -53,8 +53,22 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     })
     if (!existing) return NextResponse.json({ error: 'Not found.' }, { status: 404 })
 
-    await prisma.familyMember.delete({ where: { id } })
-    return NextResponse.json({ success: true })
+    // Create a removal request instead of directly deleting
+    const request = await prisma.familyMemberRequest.create({
+      data: {
+        userId: user.id,
+        familyMemberId: id,
+        requestType: 'REMOVE',
+        status: 'PENDING',
+      },
+    })
+
+    return NextResponse.json(
+      { 
+        message: 'Family member removal request submitted for admin approval.',
+        request 
+      }
+    )
   } catch (error) {
     console.error('[DELETE /api/family/:id]', error)
     return NextResponse.json({ error: 'An error occurred.' }, { status: 500 })

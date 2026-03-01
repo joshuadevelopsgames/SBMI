@@ -31,6 +31,17 @@ enum AssistanceRequestType {
   OTHER
 }
 
+enum FamilyMemberRequestType {
+  ADD
+  REMOVE
+}
+
+enum FamilyMemberRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
   id                  String    @id @default(cuid())
   email               String    @unique
@@ -63,13 +74,14 @@ model User {
   status              String    @default("ACTIVE")
 
   // Relations
-  sessions            Session[]
-  familyMembers       FamilyMember[]
-  payments            Payment[]
-  penalties           Penalty[]
-  memberBalance       MemberBalance?
-  assistanceRequests  AssistanceRequest[]
-  applications        Application[]
+  sessions              Session[]
+  familyMembers         FamilyMember[]
+  familyMemberRequests  FamilyMemberRequest[]
+  payments              Payment[]
+  penalties             Penalty[]
+  memberBalance         MemberBalance?
+  assistanceRequests    AssistanceRequest[]
+  applications          Application[]
 
   @@map("users")
 }
@@ -97,8 +109,28 @@ model FamilyMember {
 
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   assistanceRequests AssistanceRequest[]
+  requests   FamilyMemberRequest[] @relation("FamilyMemberToRequest")
 
   @@map("family_members")
+}
+
+model FamilyMemberRequest {
+  id             String                    @id @default(cuid())
+  userId         String
+  familyMemberId String?
+  requestType    FamilyMemberRequestType
+  status         FamilyMemberRequestStatus @default(PENDING)
+  fullName       String?
+  birthDate      DateTime?
+  reason         String?
+  adminNotes     String?
+  createdAt      DateTime                  @default(now())
+  updatedAt      DateTime                  @updatedAt
+
+  user           User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMember   FamilyMember?             @relation("FamilyMemberToRequest", fields: [familyMemberId], references: [id], onDelete: SetNull)
+
+  @@map("family_member_requests")
 }
 
 model Payment {

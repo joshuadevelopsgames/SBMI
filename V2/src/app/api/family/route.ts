@@ -33,17 +33,43 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const member = await prisma.familyMember.create({
+    // Create a request instead of directly adding the family member
+    const request = await prisma.familyMemberRequest.create({
       data: {
         userId: user.id,
+        requestType: 'ADD',
         fullName: fullName.trim(),
         birthDate: birth,
+        status: 'PENDING',
       },
     })
 
-    return NextResponse.json(member, { status: 201 })
+    return NextResponse.json(
+      { 
+        message: 'Family member request submitted for admin approval.',
+        request 
+      }, 
+      { status: 201 }
+    )
   } catch (error) {
     console.error('[POST /api/family]', error)
+    return NextResponse.json({ error: 'An error occurred.' }, { status: 500 })
+  }
+}
+
+export async function GET(req: NextRequest) {
+  const user = await getSession()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  try {
+    const requests = await prisma.familyMemberRequest.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: 'desc' },
+    })
+
+    return NextResponse.json(requests, { status: 200 })
+  } catch (error) {
+    console.error('[GET /api/family]', error)
     return NextResponse.json({ error: 'An error occurred.' }, { status: 500 })
   }
 }

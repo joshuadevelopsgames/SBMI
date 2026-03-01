@@ -126,29 +126,28 @@ body {
     margin-bottom: 32px !important;
   }
 
-  /* Stack all 2-column grids (About, Memorial, Join) */
-  div[style*="grid-template-columns: 1fr 1fr"],
-  .split-grid-mobile,
-  .application-form-grid {
+  /* Stack all 2-column grids (About, Memorial, Join) - but NOT form grids */
+  .split-grid-mobile {
     display: flex !important;
     flex-direction: column !important;
     min-height: auto !important;
   }
 
+  .split-grid-mobile > div {
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 40px 20px !important;
+  }
+
+  /* Application form section stacking */
   .application-form-grid {
+    display: flex !important;
     flex-direction: column !important;
   }
 
   .application-form-grid > div {
     width: 100% !important;
     min-height: auto !important;
-  }
-
-  div[style*="grid-template-columns: 1fr 1fr"] > div,
-  .split-grid-mobile > div {
-    width: 100% !important;
-    min-height: auto !important;
-    padding: 40px 20px !important;
   }
 
   /* Specifically for the "What is an Iddir?" image container on mobile */
@@ -219,9 +218,14 @@ body {
     display: none !important;
   }
 
-  /* Form internal grids */
-  .form-grid-2col,
-  div[style*="grid-template-columns: 1fr 1fr"] {
+  /* Form internal grids - only stack form fields, not other grids */
+  .form-grid-2col {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* Specifically target form field grids within the application form */
+  .application-form-grid div[style*="grid-template-columns"] {
     grid-template-columns: 1fr !important;
     gap: 16px !important;
   }
