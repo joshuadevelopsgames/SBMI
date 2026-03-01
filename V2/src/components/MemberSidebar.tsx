@@ -152,7 +152,7 @@ export default function MemberSidebar({ user }: MemberSidebarProps) {
               </div>
             </div>
           </Link>
-          <div className="flag-bar" style={{ marginTop: 16 }} />
+          <div className="flag-bar" style={{ marginTop: 16 }}><div /></div>
         </div>
 
         {/* User info */}
