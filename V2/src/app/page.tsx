@@ -286,10 +286,10 @@ export default function WelcomePage() {
         </div>
 
         {/* Hero content */}
-        <div className="container" style={{ position: 'relative', zIndex: 2, paddingBottom: 80, paddingTop: 120 }}>
+        <div className="container" style={{ position: 'relative', zIndex: 2, paddingBottom: 'clamp(40px, 10vw, 80px)', paddingTop: 'clamp(60px, 10vw, 120px)' }}>
           <div style={{ maxWidth: 720 }}>
             <p style={{
-              fontSize: 12,
+              fontSize: 'clamp(10px, 2vw, 12px)',
               fontWeight: 700,
               color: '#F9A825',
               letterSpacing: '0.2em',
@@ -312,7 +312,7 @@ export default function WelcomePage() {
               <em style={{ fontStyle: 'italic', color: '#F9A825' }}>stand together.</em>
             </h1>
             <p style={{
-              fontSize: 18,
+              fontSize: 'clamp(14px, 4vw, 18px)',
               lineHeight: 1.75,
               color: 'rgba(255,255,255,0.85)',
               marginBottom: 44,
@@ -323,7 +323,13 @@ export default function WelcomePage() {
               rooted in Ethiopian tradition, providing financial and emotional support
               to members and their families during times of bereavement.
             </p>
-            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center', flexDirection: 'column', alignItems: 'flex-start' }}>
+              <style>{`
+                @media (max-width: 768px) {
+                  .hero-buttons { flex-direction: column; width: 100%; }
+                  .hero-buttons a { width: 100%; text-align: center; }
+                }
+              `}</style>
               <a
                 href="#apply"
                 style={{
