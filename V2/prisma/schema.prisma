@@ -42,6 +42,29 @@ enum FamilyMemberRequestStatus {
   REJECTED
 }
 
+enum GovernanceNotificationType {
+  ASSISTANCE_REQUEST
+  FAMILY_CHANGE_REQUEST
+  APPLICATION_PENDING
+  SUPPORT_REQUEST
+}
+
+enum GovernanceNotificationStatus {
+  ACTIVE
+  RESOLVED
+}
+
+enum ApprovalDecision {
+  APPROVE
+  REJECT
+}
+
+enum SupportRequestStatus {
+  PENDING
+  APPROVED
+  DECLINED
+}
+
 model User {
   id                  String    @id @default(cuid())
   email               String    @unique
@@ -219,14 +242,64 @@ model Application {
   @@map("applications")
 }
 
+model GovernanceNotification {
+  id                String                      @id @default(cuid())
+  notificationType  GovernanceNotificationType
+  status            GovernanceNotificationStatus @default(ACTIVE)
+  relatedEntityId   String  // ID of the related entity (AssistanceRequest, FamilyMemberRequest, etc.)
+  relatedEntityType String  // Type of entity ("ASSISTANCE_REQUEST", "FAMILY_CHANGE", etc.)
+  createdBy         String? // User ID of who created this notification (e.g., submitter)
+  supportRequestId  String? @unique
+  createdAt         DateTime @default(now())
+  resolvedAt        DateTime?
+  outcome           String?  // "Approved", "Declined", etc.
+  approvalVotes     GovernanceApprovalVote[]
+  supportRequest    SupportRequest? @relation(fields: [supportRequestId], references: [id], onDelete: Cascade)
+
+  @@map("governance_notifications")
+}
+
+model GovernanceApprovalVote {
+  id                    String              @id @default(cuid())
+  notificationId        String?
+  supportRequestId      String?
+  votedByUserId         String
+  decision              ApprovalDecision
+  votedAt               DateTime @default(now())
+  notification          GovernanceNotification? @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  supportRequest        SupportRequest? @relation(fields: [supportRequestId], references: [id], onDelete: Cascade)
+
+  @@map("governance_approval_votes")
+}
+
+model SupportRequest {
+  id                String              @id @default(cuid())
+  submittedByUserId String
+  targetUserId      String
+  targetFamilyMemberId String?
+  description       String
+  supportType       String
+  amountRequested   Int
+  status            SupportRequestStatus @default(PENDING)
+  createdAt         DateTime @default(now())
+  approvalVotes     GovernanceApprovalVote[]
+  notification      GovernanceNotification?
+
+  @@map("support_requests")
+}
+
 model AppConfig {
-  id                       String   @id @default(cuid())
-  monthlyContributionCents Int      @default(2000)
-  penaltyAmountCents       Int      @default(500)
-  bylawsPdfUrl             String   @default("/bylaws.pdf")
-  adminEmail               String   @default("admin@sbmi.ca")
-  welcomeMessage           String?
-  updatedAt                DateTime @updatedAt
+  id                                String   @id @default(cuid())
+  monthlyContributionCents          Int      @default(2000)
+  penaltyAmountCents                Int      @default(500)
+  bylawsPdfUrl                      String   @default("/bylaws.pdf")
+  adminEmail                        String   @default("admin@sbmi.ca")
+  welcomeMessage                    String?
+  assistanceApprovalThreshold       Int      @default(2)
+  assistanceRejectionThreshold      Int      @default(2)
+  supportRequestApprovalThreshold   Int      @default(2)
+  supportRequestRejectionThreshold  Int      @default(2)
+  updatedAt                         DateTime @updatedAt
 
   @@map("app_config")
 }
