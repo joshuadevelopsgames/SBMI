@@ -314,8 +314,14 @@ button, input, select, textarea { border-radius: 0; }
 
   /* Stack all 2-column grids (About, Memorial, Join) */
   div[style*="grid-template-columns: 1fr 1fr"],
-  .split-grid-mobile {
+  .split-grid-mobile,
+  .application-form-grid {
     display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Specific fix for Join section: Info card first, then Form */
+  .application-form-grid {
     flex-direction: column !important;
   }
 
@@ -343,10 +349,11 @@ button, input, select, textarea { border-radius: 0; }
   }
 
   /* How It Works Grid */
-  .how-it-works-grid {
+  .how-it-works-grid,
+  div[style*="grid-template-columns: repeat(4"] {
     display: grid !important;
     grid-template-columns: 1fr !important;
-    gap: 32px !important;
+    gap: 40px !important;
   }
 
   /* Form Fields */
