@@ -286,7 +286,7 @@ export default function WelcomePage() {
         </div>
 
         {/* Hero content */}
-        <div className="container" style={{ position: 'relative', zIndex: 2, paddingBottom: 'clamp(40px, 10vw, 80px)', paddingTop: 'clamp(60px, 10vw, 120px)' }}>
+        <div className="container hero-content-mobile" style={{ position: 'relative', zIndex: 2, paddingBottom: 'clamp(40px, 10vw, 80px)', paddingTop: 'clamp(60px, 10vw, 120px)' }}>
           <div style={{ maxWidth: 720 }}>
             <p style={{
               fontSize: 'clamp(10px, 2vw, 12px)',
@@ -323,13 +323,7 @@ export default function WelcomePage() {
               rooted in Ethiopian tradition, providing financial and emotional support
               to members and their families during times of bereavement.
             </p>
-            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start', flexDirection: 'column' }}>
-              <style>{`
-                @media (max-width: 768px) {
-                  .hero-buttons { flex-direction: column; width: 100%; }
-                  .hero-buttons a { width: 100%; text-align: center; }
-                }
-              `}</style>
+            <div className="hero-buttons" style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start', flexDirection: 'column' }}>
               <a
                 href="#apply"
                 style={{

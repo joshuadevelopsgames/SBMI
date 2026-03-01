@@ -263,7 +263,7 @@ button, input, select, textarea { border-radius: 0; }
   }
 
   body {
-    font-size: 16px; /* Prevent zoom on iOS */
+    font-size: 16px;
   }
 
   h1 { font-size: 28px; line-height: 1.3; }
@@ -271,35 +271,12 @@ button, input, select, textarea { border-radius: 0; }
   h3 { font-size: 18px; line-height: 1.4; }
   h4 { font-size: 16px; line-height: 1.4; }
 
-  .form-input,
-  .form-label {
-    font-size: 16px; /* Prevent zoom on iOS */
-  }
-
   .btn-primary,
   .btn-secondary,
   .btn-danger {
     width: 100%;
     padding: 14px 20px;
     font-size: 14px;
-  }
-
-  .btn-sm {
-    padding: 10px 14px;
-    font-size: 12px;
-  }
-
-  .card {
-    padding: 16px;
-  }
-
-  .data-table {
-    font-size: 12px;
-  }
-
-  .data-table th,
-  .data-table td {
-    padding: 10px 12px;
   }
 
   .desktop-nav {
@@ -310,31 +287,84 @@ button, input, select, textarea { border-radius: 0; }
     display: block !important;
   }
 
-  /* ─── WELCOME PAGE MOBILE OPTIMIZATIONS ─────────────────────────── */
+  /* ─── COMPREHENSIVE MOBILE LAYOUT FIXES ─── */
+  
+  /* Hero section adjustments */
   .hero-section {
     min-height: 500px !important;
-    max-height: 600px !important;
+    max-height: 700px !important;
+    align-items: center !important;
   }
 
+  .hero-content-mobile {
+    padding-top: 100px !important;
+    padding-bottom: 40px !important;
+  }
+
+  .hero-buttons {
+    width: 100% !important;
+    gap: 12px !important;
+  }
+
+  .hero-buttons a {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  /* Stack all 2-column grids (About, Memorial, Join) */
+  div[style*="grid-template-columns: 1fr 1fr"],
   .split-grid-mobile {
     display: flex !important;
     flex-direction: column !important;
   }
 
+  div[style*="grid-template-columns: 1fr 1fr"] > div,
   .split-grid-mobile > div {
     min-height: auto !important;
+    width: 100% !important;
+    padding: 40px 20px !important;
   }
 
-  .stats-grid-mobile {
+  /* Stats Grid (4-column) */
+  .stats-grid-mobile,
+  div[style*="grid-template-columns: repeat(4"] {
     display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0 !important;
   }
 
-  .benefits-grid-mobile {
+  /* Benefits Grid (3-column) */
+  .benefits-grid-mobile,
+  div[style*="grid-template-columns: repeat(3"] {
     display: grid !important;
     grid-template-columns: 1fr !important;
+    gap: 20px !important;
   }
 
+  /* How It Works Grid */
+  .how-it-works-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+
+  /* Form Fields */
+  .form-grid-2col,
+  form div[style*="grid-template-columns: 1fr 1fr"] {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* Footer */
+  .footer-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+
+  /* Memorial image hide */
   .memorial-image-hide {
     display: none !important;
   }
@@ -344,36 +374,6 @@ button, input, select, textarea { border-radius: 0; }
   .container {
     padding: 0 12px;
   }
-
   h1 { font-size: 24px; }
   h2 { font-size: 20px; }
-  h3 { font-size: 16px; }
-
-  .btn-primary,
-  .btn-secondary,
-  .btn-danger {
-    padding: 12px 16px;
-    font-size: 13px;
-  }
-
-  .card {
-    padding: 12px;
-  }
-
-  .form-label {
-    font-size: 12px;
-  }
-
-  .data-table th,
-  .data-table td {
-    padding: 8px 10px;
-  }
-
-  .data-table th {
-    font-size: 10px;
-  }
-
-  .data-table td {
-    font-size: 11px;
-  }
 }
