@@ -380,10 +380,15 @@ button, input, select, textarea { border-radius: 0; }
   }
 
   /* Footer */
-  .footer-grid {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 40px !important;
+  .footer-grid,
+  footer div[style*="grid-template-columns: 2fr"] {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 48px !important;
+  }
+
+  .footer-grid > div {
+    width: 100% !important;
   }
 
   /* Memorial image hide */
