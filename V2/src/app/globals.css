@@ -385,10 +385,23 @@ button, input, select, textarea { border-radius: 0; }
     display: flex !important;
     flex-direction: column !important;
     gap: 48px !important;
+    grid-template-columns: 1fr !important;
   }
 
   .footer-grid > div {
     width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Bottom bar footer */
+  footer .container > div:last-child {
+    flex-direction: column !important;
+    gap: 24px !important;
+    text-align: center !important;
+  }
+
+  footer .container > div:last-child > div {
+    justify-content: center !important;
   }
 
   /* Memorial image hide */

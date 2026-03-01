@@ -1300,7 +1300,7 @@ export default function WelcomePage() {
       }}>
         <div className="flag-bar" />
         <div className="container" style={{ padding: '64px 24px 32px' }}>
-          <div style={{
+          <div className="footer-grid" style={{
             display: 'grid',
             gridTemplateColumns: '2fr 1fr 1fr 1fr',
             gap: 48,
