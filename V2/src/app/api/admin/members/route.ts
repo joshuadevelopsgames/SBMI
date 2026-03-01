@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { verifyAuth } from '@/lib/auth';
+import { getSession } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const auth = await verifyAuth(request);
-    if (!auth || auth.user.role !== 'ADMIN') {
+    const user = await getSession();
+    if (!user || user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
 
-    const where: any = { role: 'MEMBER' };
+    const where: Record<string, unknown> = { role: 'MEMBER' };
     if (status !== 'ALL') {
       where.status = status;
     }
@@ -45,8 +45,8 @@ export async function GET(request: NextRequest) {
         fullName: `${m.firstName} ${m.lastName}`,
         status: m.status,
         membershipStatus: isOverdue ? 'OVERDUE' : 'CURRENT',
-        joinedAt: m.membershipStartDate?.toISOString() || new Date().toISOString(),
-        lastActive: m.lastActive?.toISOString(),
+        joinedAt: m.membershipStartDate?.toISOString() || m.createdAt.toISOString(),
+        lastLoginAt: m.lastLoginAt?.toISOString(),
         familyCount: m.familyMembers.length,
         paidThroughDate: balance?.paidThroughDate?.toISOString(),
         recurringActive: balance?.recurringActive || false,

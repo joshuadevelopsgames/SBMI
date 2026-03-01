@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { verifyAuth } from '@/lib/auth';
+import { getSession } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
-    const auth = await verifyAuth(request);
-    if (!auth || auth.user.role !== 'ADMIN') {
+    const user = await getSession();
+    if (!user || user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -18,12 +18,12 @@ export async function POST(request: NextRequest) {
     // Create the support request
     const supportRequest = await prisma.supportRequest.create({
       data: {
-        submittedByUserId: auth.user.id,
+        submittedByUserId: user.id,
         targetUserId,
         targetFamilyMemberId: targetFamilyMemberId || undefined,
         description,
         supportType,
-        amountRequested,
+        amountRequested: Math.round(Number(amountRequested)),
         status: 'PENDING',
       },
     });
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
         status: 'ACTIVE',
         relatedEntityId: supportRequest.id,
         relatedEntityType: 'SUPPORT_REQUEST',
-        createdBy: auth.user.id,
+        createdBy: user.id,
         supportRequestId: supportRequest.id,
       },
     });

@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import styles from '@/app/globals.css';
 
 interface Notification {
   id: string;
@@ -18,7 +16,6 @@ interface Notification {
 }
 
 export default function NotificationsPage() {
-  const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -51,8 +48,8 @@ export default function NotificationsPage() {
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to vote');
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to vote');
       }
 
       fetchNotifications();
@@ -62,76 +59,95 @@ export default function NotificationsPage() {
   };
 
   return (
-    <div className="admin-container">
-      <h1>Governance Notifications</h1>
+    <div>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--color-gray-900)', marginBottom: 24 }}>
+        Governance Notifications
+      </h1>
 
-      <div className="admin-filters">
+      <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
         <button
-          className={filter === 'ACTIVE' ? 'active' : ''}
+          className={filter === 'ACTIVE' ? 'btn-primary btn-sm' : 'btn-secondary btn-sm'}
           onClick={() => setFilter('ACTIVE')}
         >
           Active
         </button>
         <button
-          className={filter === 'RESOLVED' ? 'active' : ''}
+          className={filter === 'RESOLVED' ? 'btn-primary btn-sm' : 'btn-secondary btn-sm'}
           onClick={() => setFilter('RESOLVED')}
         >
           Resolved
         </button>
       </div>
 
-      {error && <div className="error-message">{error}</div>}
+      {error && (
+        <div className="alert-error" style={{ marginBottom: 16 }}>{error}</div>
+      )}
 
       {loading ? (
-        <p>Loading notifications...</p>
+        <p style={{ color: 'var(--color-gray-400)' }}>Loading notifications...</p>
       ) : notifications.length === 0 ? (
-        <p>No notifications found.</p>
+        <div style={{
+          background: 'var(--color-white)',
+          border: '1px solid var(--color-gray-200)',
+          padding: '48px',
+          textAlign: 'center',
+          color: 'var(--color-gray-400)',
+        }}>
+          No {filter.toLowerCase()} notifications found.
+        </div>
       ) : (
-        <div className="notifications-list">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {notifications.map(notification => (
-            <div key={notification.id} className="notification-card">
-              <div className="notification-header">
-                <h3>{notification.notificationType.replace(/_/g, ' ')}</h3>
-                <span className={`status-badge status-${notification.status.toLowerCase()}`}>
+            <div
+              key={notification.id}
+              style={{
+                background: 'var(--color-white)',
+                border: '1px solid var(--color-gray-200)',
+                padding: '20px 24px',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--color-gray-900)' }}>
+                  {notification.notificationType.replace(/_/g, ' ')}
+                </h3>
+                <span className={notification.status === 'ACTIVE' ? 'badge-current' : 'badge-ahead'}>
                   {notification.status}
                 </span>
               </div>
 
               {notification.outcome && (
-                <p className="notification-outcome">
+                <p style={{ fontSize: 14, color: 'var(--color-gray-600)', marginBottom: 8 }}>
                   <strong>Outcome:</strong> {notification.outcome}
                 </p>
               )}
 
-              <div className="notification-votes">
-                <p>
-                  <strong>Votes:</strong> {notification.approvalVotes.filter(v => v.decision === 'APPROVE').length} Approve,{' '}
-                  {notification.approvalVotes.filter(v => v.decision === 'REJECT').length} Reject
-                </p>
+              <div style={{ fontSize: 13, color: 'var(--color-gray-500)', marginBottom: 12 }}>
+                <span style={{ marginRight: 16 }}>
+                  ✓ {notification.approvalVotes.filter(v => v.decision === 'APPROVE').length} Approve
+                </span>
+                <span>
+                  ✗ {notification.approvalVotes.filter(v => v.decision === 'REJECT').length} Reject
+                </span>
               </div>
 
-              <div className="notification-dates">
-                <p>
-                  <small>Created: {new Date(notification.createdAt).toLocaleString()}</small>
-                </p>
-                {notification.resolvedAt && (
-                  <p>
-                    <small>Resolved: {new Date(notification.resolvedAt).toLocaleString()}</small>
-                  </p>
-                )}
-              </div>
+              <p style={{ fontSize: 12, color: 'var(--color-gray-400)', marginBottom: notification.status === 'ACTIVE' ? 16 : 0 }}>
+                Created: {new Date(notification.createdAt).toLocaleString()}
+                {notification.resolvedAt && ` · Resolved: ${new Date(notification.resolvedAt).toLocaleString()}`}
+              </p>
 
               {notification.status === 'ACTIVE' && (
-                <div className="notification-actions">
+                <div style={{ display: 'flex', gap: 8 }}>
                   <button
-                    className="btn-approve"
+                    className="btn-primary btn-sm"
                     onClick={() => handleVote(notification.id, 'APPROVE')}
+                    style={{ background: 'var(--color-green)', borderColor: 'var(--color-green)' }}
                   >
                     Approve
                   </button>
                   <button
-                    className="btn-reject"
+                    className="btn-secondary btn-sm"
                     onClick={() => handleVote(notification.id, 'REJECT')}
+                    style={{ color: 'var(--color-red)', borderColor: 'var(--color-red)' }}
                   >
                     Reject
                   </button>

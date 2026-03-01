@@ -17,6 +17,10 @@ export default async function AdminConfigPage() {
         bylawsPdfUrl: config.bylawsPdfUrl,
         adminEmail: config.adminEmail,
         welcomeMessage: config.welcomeMessage || '',
+        assistanceApprovalThreshold: config.assistanceApprovalThreshold ?? 2,
+        assistanceRejectionThreshold: config.assistanceRejectionThreshold ?? 2,
+        supportRequestApprovalThreshold: config.supportRequestApprovalThreshold ?? 2,
+        supportRequestRejectionThreshold: config.supportRequestRejectionThreshold ?? 2,
       }}
     />
   )

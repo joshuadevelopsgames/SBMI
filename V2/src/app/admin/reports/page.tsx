@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 interface Report {
   totalMembers: number;
@@ -19,7 +18,6 @@ interface Report {
 }
 
 export default function ReportsPage() {
-  const router = useRouter();
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -44,112 +42,92 @@ export default function ReportsPage() {
   };
 
   return (
-    <div className="admin-container">
-      <h1>Reports & Analytics</h1>
+    <div>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--color-gray-900)', marginBottom: 24 }}>
+        Reports &amp; Analytics
+      </h1>
 
-      <div className="admin-filters">
-        <button
-          className={dateRange === 'week' ? 'active' : ''}
-          onClick={() => setDateRange('week')}
-        >
-          This Week
-        </button>
-        <button
-          className={dateRange === 'month' ? 'active' : ''}
-          onClick={() => setDateRange('month')}
-        >
-          This Month
-        </button>
-        <button
-          className={dateRange === 'year' ? 'active' : ''}
-          onClick={() => setDateRange('year')}
-        >
-          This Year
-        </button>
-        <button
-          className={dateRange === 'all' ? 'active' : ''}
-          onClick={() => setDateRange('all')}
-        >
-          All Time
-        </button>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+        {[
+          { value: 'week', label: 'This Week' },
+          { value: 'month', label: 'This Month' },
+          { value: 'year', label: 'This Year' },
+          { value: 'all', label: 'All Time' },
+        ].map(({ value, label }) => (
+          <button
+            key={value}
+            className={dateRange === value ? 'btn-primary btn-sm' : 'btn-secondary btn-sm'}
+            onClick={() => setDateRange(value)}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
-      {error && <div className="error-message">{error}</div>}
+      {error && (
+        <div className="alert-error" style={{ marginBottom: 16 }}>{error}</div>
+      )}
 
       {loading ? (
-        <p>Loading report...</p>
+        <p style={{ color: 'var(--color-gray-400)' }}>Loading report...</p>
       ) : report ? (
-        <div className="reports-grid">
-          <div className="report-card">
-            <h3>Membership</h3>
-            <div className="report-stat">
-              <span className="stat-label">Total Members</span>
-              <span className="stat-value">{report.totalMembers}</span>
-            </div>
-            <div className="report-stat">
-              <span className="stat-label">Active</span>
-              <span className="stat-value">{report.activeMembers}</span>
-            </div>
-            <div className="report-stat">
-              <span className="stat-label">Inactive</span>
-              <span className="stat-value">{report.inactiveMembers}</span>
-            </div>
-            <div className="report-stat">
-              <span className="stat-label">Overdue</span>
-              <span className="stat-value" style={{ color: '#C62828' }}>
-                {report.overdueMembers}
-              </span>
-            </div>
-            <div className="report-stat">
-              <span className="stat-label">Family Members</span>
-              <span className="stat-value">{report.totalFamilyMembers}</span>
-            </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+          {/* Membership */}
+          <div style={{ background: 'var(--color-white)', border: '1px solid var(--color-gray-200)', padding: '24px' }}>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--color-gray-900)', marginBottom: 16 }}>
+              Membership
+            </h3>
+            {[
+              { label: 'Total Members', value: report.totalMembers },
+              { label: 'Active', value: report.activeMembers, color: 'var(--color-green)' },
+              { label: 'Inactive', value: report.inactiveMembers },
+              { label: 'Overdue', value: report.overdueMembers, color: '#C62828' },
+              { label: 'Family Members', value: report.totalFamilyMembers },
+            ].map(({ label, value, color }) => (
+              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                <span style={{ fontSize: 13, color: 'var(--color-gray-600)' }}>{label}</span>
+                <span style={{ fontSize: 18, fontWeight: 700, color: color || 'var(--color-gray-900)' }}>{value}</span>
+              </div>
+            ))}
           </div>
 
-          <div className="report-card">
-            <h3>Payments</h3>
-            <div className="report-stat">
-              <span className="stat-label">Total Amount</span>
-              <span className="stat-value">${report.totalPaymentAmount.toFixed(2)}</span>
-            </div>
-            <div className="report-stat">
-              <span className="stat-label">Average Payment</span>
-              <span className="stat-value">${report.averagePaymentAmount.toFixed(2)}</span>
-            </div>
-            <div className="report-stat">
-              <span className="stat-label">Recurring</span>
-              <span className="stat-value">{report.recurringMembers}</span>
-            </div>
+          {/* Payments */}
+          <div style={{ background: 'var(--color-white)', border: '1px solid var(--color-gray-200)', padding: '24px' }}>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--color-gray-900)', marginBottom: 16 }}>
+              Payments
+            </h3>
+            {[
+              { label: 'Total Collected', value: `$${(report.totalPaymentAmount / 100).toFixed(2)}` },
+              { label: 'Average Payment', value: `$${(report.averagePaymentAmount / 100).toFixed(2)}` },
+              { label: 'Recurring Members', value: report.recurringMembers },
+            ].map(({ label, value }) => (
+              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                <span style={{ fontSize: 13, color: 'var(--color-gray-600)' }}>{label}</span>
+                <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--color-gray-900)' }}>{value}</span>
+              </div>
+            ))}
           </div>
 
-          <div className="report-card">
-            <h3>Support Requests</h3>
-            <div className="report-stat">
-              <span className="stat-label">Approved</span>
-              <span className="stat-value" style={{ color: '#2E7D32' }}>
-                {report.supportRequestsApproved}
-              </span>
-            </div>
-            <div className="report-stat">
-              <span className="stat-label">Pending</span>
-              <span className="stat-value" style={{ color: '#FFA500' }}>
-                {report.supportRequestsPending}
-              </span>
-            </div>
-            <div className="report-stat">
-              <span className="stat-label">Declined</span>
-              <span className="stat-value" style={{ color: '#C62828' }}>
-                {report.supportRequestsDeclined}
-              </span>
-            </div>
-            <div className="report-stat">
-              <span className="stat-label">Total Amount</span>
-              <span className="stat-value">${report.totalSupportAmount.toFixed(2)}</span>
-            </div>
+          {/* Support Requests */}
+          <div style={{ background: 'var(--color-white)', border: '1px solid var(--color-gray-200)', padding: '24px' }}>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--color-gray-900)', marginBottom: 16 }}>
+              Support Requests
+            </h3>
+            {[
+              { label: 'Approved', value: report.supportRequestsApproved, color: 'var(--color-green)' },
+              { label: 'Pending', value: report.supportRequestsPending, color: '#FFA500' },
+              { label: 'Declined', value: report.supportRequestsDeclined, color: '#C62828' },
+              { label: 'Total Amount', value: `$${(report.totalSupportAmount / 100).toFixed(2)}` },
+            ].map(({ label, value, color }) => (
+              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                <span style={{ fontSize: 13, color: 'var(--color-gray-600)' }}>{label}</span>
+                <span style={{ fontSize: 18, fontWeight: 700, color: color || 'var(--color-gray-900)' }}>{value}</span>
+              </div>
+            ))}
           </div>
         </div>
       ) : (
-        <p>No report data available.</p>
+        <p style={{ color: 'var(--color-gray-400)' }}>No report data available.</p>
       )}
     </div>
   );

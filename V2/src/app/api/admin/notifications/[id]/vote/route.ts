@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { verifyAuth } from '@/lib/auth';
+import { getSession } from '@/lib/auth';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const auth = await verifyAuth(request);
-    if (!auth || auth.user.role !== 'ADMIN') {
+    const { id } = await params;
+    const user = await getSession();
+    if (!user || user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -18,7 +19,7 @@ export async function POST(
     }
 
     const notification = await prisma.governanceNotification.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { approvalVotes: true },
     });
 
@@ -31,7 +32,7 @@ export async function POST(
     }
 
     // Check if user already voted
-    const existingVote = notification.approvalVotes.find(v => v.votedByUserId === auth.user.id);
+    const existingVote = notification.approvalVotes.find(v => v.votedByUserId === user.id);
     if (existingVote) {
       return NextResponse.json({ error: 'You have already voted on this notification' }, { status: 400 });
     }
@@ -39,16 +40,16 @@ export async function POST(
     // Create the vote
     await prisma.governanceApprovalVote.create({
       data: {
-        notificationId: params.id,
-        votedByUserId: auth.user.id,
-        decision,
+        notificationId: id,
+        votedByUserId: user.id,
+        decision: decision as 'APPROVE' | 'REJECT',
       },
     });
 
     // Check if thresholds are met
     const config = await prisma.appConfig.findFirst();
     const updatedNotification = await prisma.governanceNotification.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { approvalVotes: true },
     });
 
@@ -82,7 +83,7 @@ export async function POST(
 
     if (shouldResolve) {
       await prisma.governanceNotification.update({
-        where: { id: params.id },
+        where: { id },
         data: {
           status: 'RESOLVED',
           resolvedAt: new Date(),

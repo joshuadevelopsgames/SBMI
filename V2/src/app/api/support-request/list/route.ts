@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { verifyAuth } from '@/lib/auth';
+import { getSession } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const auth = await verifyAuth(request);
-    if (!auth || auth.user.role !== 'ADMIN') {
+    const user = await getSession();
+    if (!user || user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: Record<string, unknown> = {};
     if (status !== 'ALL') {
       where.status = status;
     }
@@ -24,10 +24,6 @@ export async function GET(request: NextRequest) {
     const [requests, total] = await Promise.all([
       prisma.supportRequest.findMany({
         where,
-        include: {
-          submittedBy: { select: { id: true, firstName: true, lastName: true, email: true } },
-          targetUser: { select: { id: true, firstName: true, lastName: true, email: true } },
-        },
         orderBy: { createdAt: 'desc' },
         skip,
         take: limit,
