@@ -168,6 +168,9 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
         }}>
           Administrator
         </div>
+        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.2)', marginTop: 4 }}>
+          Build: 2026-03-01 12:40
+        </div>
       </div>
 
       {/* Navigation */}
