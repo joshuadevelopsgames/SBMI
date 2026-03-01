@@ -137,7 +137,7 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.04em' }}>Admin Portal</div>
           </div>
         </Link>
-        <div className="flag-bar" style={{ marginTop: 16 }} />
+        <div className="flag-bar" style={{ marginTop: 16 }}><div /></div>
       </div>
 
       {/* User info */}
