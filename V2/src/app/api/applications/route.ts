@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 })
     }
 
-    await prisma.application.create({
+    const application = await prisma.application.create({
       data: {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
@@ -27,6 +27,16 @@ export async function POST(req: NextRequest) {
         postalCode: postalCode.trim().toUpperCase(),
         message: message?.trim() || null,
         status: 'PENDING',
+      },
+    })
+
+    // Create a governance notification for this application
+    await prisma.governanceNotification.create({
+      data: {
+        notificationType: 'APPLICATION_PENDING',
+        status: 'ACTIVE',
+        relatedEntityId: application.id,
+        relatedEntityType: 'APPLICATION',
       },
     })
 

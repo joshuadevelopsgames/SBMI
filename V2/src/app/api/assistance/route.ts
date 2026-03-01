@@ -48,6 +48,17 @@ export async function POST(req: NextRequest) {
       include: { familyMember: true },
     })
 
+    // Create a governance notification for this assistance request
+    await prisma.governanceNotification.create({
+      data: {
+        notificationType: 'ASSISTANCE_REQUEST',
+        status: 'ACTIVE',
+        relatedEntityId: request.id,
+        relatedEntityType: 'ASSISTANCE_REQUEST',
+        createdBy: user.id,
+      },
+    })
+
     // Send notification to admin
     const config = await getAppConfig()
     await sendAssistanceRequestNotification(config.adminEmail, {

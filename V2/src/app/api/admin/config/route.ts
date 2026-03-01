@@ -8,7 +8,17 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const body = await req.json()
-    const { monthlyContributionCents, penaltyAmountCents, bylawsPdfUrl, adminEmail, welcomeMessage } = body
+    const { 
+      monthlyContributionCents, 
+      penaltyAmountCents, 
+      bylawsPdfUrl, 
+      adminEmail, 
+      welcomeMessage,
+      assistanceApprovalThreshold,
+      assistanceRejectionThreshold,
+      supportRequestApprovalThreshold,
+      supportRequestRejectionThreshold
+    } = body
 
     if (!monthlyContributionCents || monthlyContributionCents <= 0) {
       return NextResponse.json({ error: 'Invalid monthly contribution amount.' }, { status: 400 })
@@ -33,6 +43,10 @@ export async function PATCH(req: NextRequest) {
         bylawsPdfUrl: bylawsPdfUrl.trim(),
         adminEmail: adminEmail.trim().toLowerCase(),
         welcomeMessage: welcomeMessage?.trim() || null,
+        assistanceApprovalThreshold: assistanceApprovalThreshold || 2,
+        assistanceRejectionThreshold: assistanceRejectionThreshold || 2,
+        supportRequestApprovalThreshold: supportRequestApprovalThreshold || 2,
+        supportRequestRejectionThreshold: supportRequestRejectionThreshold || 2,
       },
       update: {
         monthlyContributionCents,
@@ -40,6 +54,10 @@ export async function PATCH(req: NextRequest) {
         bylawsPdfUrl: bylawsPdfUrl.trim(),
         adminEmail: adminEmail.trim().toLowerCase(),
         welcomeMessage: welcomeMessage?.trim() || null,
+        assistanceApprovalThreshold: assistanceApprovalThreshold || 2,
+        assistanceRejectionThreshold: assistanceRejectionThreshold || 2,
+        supportRequestApprovalThreshold: supportRequestApprovalThreshold || 2,
+        supportRequestRejectionThreshold: supportRequestRejectionThreshold || 2,
       },
     })
 

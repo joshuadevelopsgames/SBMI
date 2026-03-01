@@ -44,6 +44,17 @@ export async function POST(req: NextRequest) {
       },
     })
 
+    // Create a governance notification for this family change request
+    await prisma.governanceNotification.create({
+      data: {
+        notificationType: 'FAMILY_CHANGE_REQUEST',
+        status: 'ACTIVE',
+        relatedEntityId: request.id,
+        relatedEntityType: 'FAMILY_CHANGE',
+        createdBy: user.id,
+      },
+    })
+
     return NextResponse.json(
       { 
         message: 'Family member request submitted for admin approval.',

@@ -10,6 +10,10 @@ interface AdminConfigClientProps {
     bylawsPdfUrl: string
     adminEmail: string
     welcomeMessage: string
+    assistanceApprovalThreshold: number
+    assistanceRejectionThreshold: number
+    supportRequestApprovalThreshold: number
+    supportRequestRejectionThreshold: number
   }
 }
 
@@ -20,6 +24,10 @@ export default function AdminConfigClient({ config: initial }: AdminConfigClient
   const [bylawsUrl, setBylawsUrl] = useState(initial.bylawsPdfUrl)
   const [adminEmail, setAdminEmail] = useState(initial.adminEmail)
   const [welcomeMessage, setWelcomeMessage] = useState(initial.welcomeMessage)
+  const [assistanceApprovalThreshold, setAssistanceApprovalThreshold] = useState(initial.assistanceApprovalThreshold)
+  const [assistanceRejectionThreshold, setAssistanceRejectionThreshold] = useState(initial.assistanceRejectionThreshold)
+  const [supportRequestApprovalThreshold, setSupportRequestApprovalThreshold] = useState(initial.supportRequestApprovalThreshold)
+  const [supportRequestRejectionThreshold, setSupportRequestRejectionThreshold] = useState(initial.supportRequestRejectionThreshold)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -56,6 +64,10 @@ export default function AdminConfigClient({ config: initial }: AdminConfigClient
           bylawsPdfUrl: bylawsUrl.trim(),
           adminEmail: adminEmail.trim().toLowerCase(),
           welcomeMessage: welcomeMessage.trim(),
+          assistanceApprovalThreshold,
+          assistanceRejectionThreshold,
+          supportRequestApprovalThreshold,
+          supportRequestRejectionThreshold,
         }),
       })
       if (res.ok) {
@@ -70,7 +82,7 @@ export default function AdminConfigClient({ config: initial }: AdminConfigClient
   }
 
   return (
-    <div style={{ maxWidth: 640 }}>
+    <div style={{ maxWidth: 800 }}>
       {error && <div className="alert-error" style={{ marginBottom: 16 }}>{error}</div>}
       {success && <div className="alert-success" style={{ marginBottom: 16 }}>{success}</div>}
 
@@ -119,6 +131,74 @@ export default function AdminConfigClient({ config: initial }: AdminConfigClient
               />
               <p style={{ fontSize: 12, color: 'var(--color-gray-400)', marginTop: 4 }}>
                 Applied when recurring payment fails
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Governance thresholds */}
+        <div style={{
+          background: 'var(--color-white)',
+          border: '1px solid var(--color-gray-200)',
+          padding: '28px',
+          marginBottom: 16,
+        }}>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--color-gray-900)', marginBottom: 20 }}>
+            Governance Thresholds
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
+            <div>
+              <label className="form-label">Assistance Approval Threshold</label>
+              <input
+                type="number"
+                min="1"
+                className="form-input"
+                value={assistanceApprovalThreshold}
+                onChange={(e) => setAssistanceApprovalThreshold(parseInt(e.target.value))}
+              />
+              <p style={{ fontSize: 11, color: 'var(--color-gray-400)', marginTop: 4 }}>
+                Votes required to approve an assistance request
+              </p>
+            </div>
+            <div>
+              <label className="form-label">Assistance Rejection Threshold</label>
+              <input
+                type="number"
+                min="1"
+                className="form-input"
+                value={assistanceRejectionThreshold}
+                onChange={(e) => setAssistanceRejectionThreshold(parseInt(e.target.value))}
+              />
+              <p style={{ fontSize: 11, color: 'var(--color-gray-400)', marginTop: 4 }}>
+                Votes required to reject an assistance request
+              </p>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+            <div>
+              <label className="form-label">Support Request Approval Threshold</label>
+              <input
+                type="number"
+                min="1"
+                className="form-input"
+                value={supportRequestApprovalThreshold}
+                onChange={(e) => setSupportRequestApprovalThreshold(parseInt(e.target.value))}
+              />
+              <p style={{ fontSize: 11, color: 'var(--color-gray-400)', marginTop: 4 }}>
+                Votes required to approve a "Give Support" request
+              </p>
+            </div>
+            <div>
+              <label className="form-label">Support Request Rejection Threshold</label>
+              <input
+                type="number"
+                min="1"
+                className="form-input"
+                value={supportRequestRejectionThreshold}
+                onChange={(e) => setSupportRequestRejectionThreshold(parseInt(e.target.value))}
+              />
+              <p style={{ fontSize: 11, color: 'var(--color-gray-400)', marginTop: 4 }}>
+                Votes required to reject a "Give Support" request
               </p>
             </div>
           </div>
