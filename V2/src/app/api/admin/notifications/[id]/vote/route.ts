@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 
@@ -8,6 +9,13 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
+    const cookieStore = await cookies();
+    const isDemoAdmin = cookieStore.get('sbmi_demo_admin')?.value === '1';
+
+    if (isDemoAdmin) {
+      return NextResponse.json({ success: true, resolved: false, outcome: '', demo: true });
+    }
+
     const user = await getSession();
     if (!user || user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

@@ -65,31 +65,26 @@ function LoginForm() {
   const handleDemo = async () => {
     setDemoLoading(true)
     try {
-      await fetch('/api/auth/demo', { method: 'POST' })
-      router.push('/member')
+      const endpoint = isAdmin ? '/api/auth/demo-admin' : '/api/auth/demo'
+      await fetch(endpoint, { method: 'POST' })
+      router.push(isAdmin ? '/admin' : '/member')
     } catch {
       setDemoLoading(false)
     }
   }
 
+  const accentColor = isAdmin ? '#B71C1C' : 'var(--color-green)'
+
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'var(--color-gray-50)',
-      display: 'flex',
-      flexDirection: 'column',
-    }}>
+    <div style={{ minHeight: '100vh', background: 'var(--color-gray-50)', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
-      <header style={{
-        background: 'var(--color-white)',
-        borderBottom: '1px solid var(--color-gray-200)',
-      }}>
+      <header style={{ background: 'var(--color-white)', borderBottom: '1px solid var(--color-gray-200)' }}>
         <div className="flag-bar" />
         <div className="container" style={{ display: 'flex', alignItems: 'center', height: 60 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
             <div style={{
               width: 36, height: 36,
-              background: isAdmin ? 'var(--color-red)' : 'var(--color-green)',
+              background: accentColor,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: 'white', fontWeight: 800, fontSize: 12, letterSpacing: '0.04em',
             }}>SBMI</div>
@@ -105,10 +100,10 @@ function LoginForm() {
         <div style={{ width: '100%', maxWidth: 460 }}>
 
           {/* Title */}
-          <div style={{ textAlign: 'center', marginBottom: 36 }}>
+          <div style={{ textAlign: 'center', marginBottom: 32 }}>
             <div style={{
               width: 56, height: 56,
-              background: isAdmin ? 'var(--color-red)' : 'var(--color-green)',
+              background: accentColor,
               margin: '0 auto 20px',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
@@ -117,62 +112,54 @@ function LoginForm() {
                 <circle cx="12" cy="7" r="4"/>
               </svg>
             </div>
-            <h1 style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: 28,
-              fontWeight: 700,
-              color: 'var(--color-gray-900)',
-              marginBottom: 8,
-            }}>
-              {isAdmin ? 'Admin Sign In' : 'Member Sign In'}
+            <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 28, fontWeight: 700, color: 'var(--color-gray-900)', marginBottom: 8 }}>
+              {isAdmin ? 'Executive Committee Login' : 'Member Sign In'}
             </h1>
             <p style={{ color: 'var(--color-gray-500)', fontSize: 15 }}>
-              {isAdmin ? 'Sign in to the Executive Committee portal' : 'Sign in to your SBMI member portal'}
+              {isAdmin ? 'Sign in to the governance portal' : 'Sign in to your SBMI member portal'}
             </p>
           </div>
 
-          {/* Demo Banner (Member only) */}
-          {!isAdmin && (
-            <div style={{
-              background: '#FFF8E1',
-              border: '1px solid #F9A825',
-              padding: '16px 20px',
-              marginBottom: 24,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 16,
-              flexWrap: 'wrap',
-            }}>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#7B5800', marginBottom: 2 }}>
-                  Want to explore first?
-                </div>
-                <div style={{ fontSize: 13, color: '#92650A' }}>
-                  Try the member portal without an account.
-                </div>
+          {/* Demo Banner */}
+          <div style={{
+            background: isAdmin ? '#FFEBEE' : '#FFF8E1',
+            border: `1px solid ${isAdmin ? '#EF9A9A' : '#F9A825'}`,
+            padding: '16px 20px',
+            marginBottom: 24,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 16,
+            flexWrap: 'wrap',
+          }}>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: isAdmin ? '#7B1010' : '#7B5800', marginBottom: 2 }}>
+                {isAdmin ? 'Preview the Admin Portal' : 'Want to explore first?'}
               </div>
-              <button
-                onClick={handleDemo}
-                disabled={demoLoading}
-                style={{
-                  background: '#F9A825',
-                  border: 'none',
-                  color: '#1a1a1a',
-                  fontSize: 13,
-                  fontWeight: 700,
-                  padding: '10px 20px',
-                  cursor: demoLoading ? 'wait' : 'pointer',
-                  letterSpacing: '0.04em',
-                  textTransform: 'uppercase',
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0,
-                }}
-              >
-                {demoLoading ? 'Loading...' : 'View Demo →'}
-              </button>
+              <div style={{ fontSize: 13, color: isAdmin ? '#922020' : '#92650A' }}>
+                {isAdmin ? 'Try the governance portal with demo data.' : 'Try the member portal without an account.'}
+              </div>
             </div>
-          )}
+            <button
+              onClick={handleDemo}
+              disabled={demoLoading}
+              style={{
+                background: isAdmin ? '#B71C1C' : '#F9A825',
+                border: 'none',
+                color: isAdmin ? '#fff' : '#1a1a1a',
+                fontSize: 13,
+                fontWeight: 700,
+                padding: '10px 20px',
+                cursor: demoLoading ? 'wait' : 'pointer',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+              }}
+            >
+              {demoLoading ? 'Loading...' : (isAdmin ? 'Admin Demo →' : 'View Demo →')}
+            </button>
+          </div>
 
           {/* Message alerts */}
           {message && (
@@ -187,20 +174,14 @@ function LoginForm() {
           <form
             onSubmit={handleSubmit}
             noValidate
-            style={{
-              background: 'var(--color-white)',
-              border: '1px solid var(--color-gray-200)',
-              padding: '36px',
-            }}
+            style={{ background: 'var(--color-white)', border: '1px solid var(--color-gray-200)', padding: '36px' }}
           >
             {loginError && (
               <div className="alert-error" style={{ marginBottom: 24 }}>{loginError}</div>
             )}
 
             <div style={{ marginBottom: 20 }}>
-              <label className="form-label" htmlFor="email">
-                Email Address
-              </label>
+              <label className="form-label" htmlFor="email">Email Address</label>
               <input
                 id="email"
                 type="email"
@@ -216,9 +197,7 @@ function LoginForm() {
             </div>
 
             <div style={{ marginBottom: 20 }}>
-              <label className="form-label" htmlFor="password">
-                Password
-              </label>
+              <label className="form-label" htmlFor="password">Password</label>
               <input
                 id="password"
                 type="password"
@@ -239,7 +218,7 @@ function LoginForm() {
                 />
                 Stay logged in
               </label>
-              <Link href="/forgot-password" style={{ fontSize: 14, color: isAdmin ? 'var(--color-red)' : 'var(--color-green)', textDecoration: 'none', fontWeight: 500 }}>
+              <Link href="/forgot-password" style={{ fontSize: 14, color: accentColor, textDecoration: 'none', fontWeight: 500 }}>
                 Forgot password?
               </Link>
             </div>
@@ -248,45 +227,35 @@ function LoginForm() {
               type="submit"
               className="btn-primary"
               disabled={loading}
-              style={{ 
-                width: '100%', 
-                padding: '14px', 
-                fontSize: 16, 
-                justifyContent: 'center',
-                background: isAdmin ? 'var(--color-red)' : 'var(--color-green)',
-                borderColor: isAdmin ? 'var(--color-red)' : 'var(--color-green)'
-              }}
+              style={{ width: '100%', padding: '14px', fontSize: 16, justifyContent: 'center', background: accentColor, borderColor: accentColor }}
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
           <div style={{ textAlign: 'center', marginTop: 24 }}>
-            <p style={{ fontSize: 14, color: 'var(--color-gray-500)', marginBottom: 8 }}>
-              {isAdmin ? (
-                <>
-                  Are you a member?{' '}
-                  <Link href="/login" style={{ color: 'var(--color-green)', fontWeight: 600, textDecoration: 'none' }}>
-                    Member Login
-                  </Link>
-                </>
-              ) : (
-                <>
+            {isAdmin ? (
+              <p style={{ fontSize: 14, color: 'var(--color-gray-500)' }}>
+                Are you a member?{' '}
+                <Link href="/login" style={{ color: 'var(--color-green)', fontWeight: 600, textDecoration: 'none' }}>
+                  Member Login
+                </Link>
+              </p>
+            ) : (
+              <>
+                <p style={{ fontSize: 14, color: 'var(--color-gray-500)', marginBottom: 8 }}>
                   Not a member yet?{' '}
                   <Link href="/#apply" style={{ color: 'var(--color-green)', fontWeight: 600, textDecoration: 'none' }}>
                     Apply for membership
                   </Link>
-                </>
-              )}
-            </p>
-            
-            {!isAdmin && (
-              <Link 
-                href="/login?type=admin" 
-                style={{ fontSize: 13, color: 'var(--color-gray-400)', textDecoration: 'none', fontWeight: 500 }}
-              >
-                Executive Committee Login →
-              </Link>
+                </p>
+                <Link
+                  href="/login?type=admin"
+                  style={{ fontSize: 13, color: 'var(--color-gray-400)', textDecoration: 'none', fontWeight: 500 }}
+                >
+                  Executive Committee Login →
+                </Link>
+              </>
             )}
           </div>
         </div>
