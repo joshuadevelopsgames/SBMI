@@ -40,8 +40,18 @@ export async function POST(req: NextRequest) {
       },
     })
 
-    // Send 2FA email
-    await send2FACodeEmail(user.email, code)
+    // Send 2FA email (bypass if admin on dev branch)
+    if (user.role !== 'ADMIN' || process.env.VERCEL_GIT_COMMIT_REF !== 'dev') {
+      try {
+        await send2FACodeEmail(user.email, code)
+      } catch (emailError) {
+        console.error('[POST /api/auth/login] Email error:', emailError)
+        // If it's a member on dev, don't crash, just log. 
+        // In prod, this might be a 500 but on dev we want to allow access.
+      }
+    } else {
+      console.log(`[POST /api/auth/login] Bypassing 2FA email for admin ${user.email}. Code: ${code}`)
+    }
 
     // Set pre-2FA cookie (short-lived, 10 minutes)
     const pre2faData = JSON.stringify({ userId: user.id, stayLoggedIn: !!stayLoggedIn })

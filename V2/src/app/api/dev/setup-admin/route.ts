@@ -13,6 +13,7 @@ export async function POST() {
     const password = 'AdminPassword123!';
     const passwordHash = await bcrypt.hash(password, 12);
 
+    // Create a pre-verified admin user
     const user = await prisma.user.upsert({
       where: { email },
       update: {
@@ -21,6 +22,8 @@ export async function POST() {
         firstName: 'System',
         lastName: 'Administrator',
         status: 'ACTIVE',
+        twoFactorCode: '000000', // Set a static 2FA code for easy bypass
+        twoFactorCodeAt: new Date(),
       },
       create: {
         email,
@@ -29,16 +32,18 @@ export async function POST() {
         lastName: 'Administrator',
         role: 'ADMIN',
         status: 'ACTIVE',
+        twoFactorCode: '000000', // Set a static 2FA code for easy bypass
+        twoFactorCodeAt: new Date(),
       },
     });
 
     return NextResponse.json({ 
       success: true, 
-      message: `Admin user ${user.email} is ready.`,
-      credentials: { email, password }
+      message: `Admin user ${user.email} is ready. Use code 000000 for 2FA.`,
+      credentials: { email, password, code: '000000' }
     });
   } catch (error) {
     console.error('Error setting up admin:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 });
   }
 }
