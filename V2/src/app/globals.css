@@ -158,25 +158,22 @@ body {
     padding: 0 !important;
   }
 
-  /* Stats Grid (4-column) */
-  .stats-grid-mobile,
-  div[style*="grid-template-columns: repeat(4"] {
+  /* Stats Grid (4-column) - only apply to mobile */
+  .stats-grid-mobile {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
     gap: 1px !important;
   }
 
-  /* Benefits Grid (3-column) */
-  .benefits-grid-mobile,
-  div[style*="grid-template-columns: repeat(3"] {
+  /* Benefits Grid (3-column) - only apply to mobile */
+  .benefits-grid-mobile {
     display: grid !important;
     grid-template-columns: 1fr !important;
     gap: 20px !important;
   }
 
-  /* How It Works Grid */
-  .how-it-works-grid,
-  div[style*="grid-template-columns: repeat(4"] {
+  /* How It Works Grid - only apply to mobile */
+  .how-it-works-grid {
     display: grid !important;
     grid-template-columns: 1fr !important;
     gap: 48px !important;
