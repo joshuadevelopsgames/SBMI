@@ -16,6 +16,14 @@
   --font-sans: 'Inter', sans-serif;
 }
 
+/* Global Reset to prevent side lines/overflow */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   color: #111827;
   -webkit-font-smoothing: antialiased;
@@ -24,6 +32,7 @@ body {
 }
 
 .container {
+  width: 100%;
   max-width: 80rem;
   margin-left: auto;
   margin-right: auto;
@@ -38,11 +47,13 @@ body {
   }
 }
 
+/* Flag Bar Fix */
 .flag-bar {
   height: 4px;
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  position: relative;
 }
 
 .flag-bar::before {
@@ -73,26 +84,40 @@ body {
     width: 44px !important;
     height: 44px !important;
     z-index: 201 !important;
+    margin-right: -8px; /* Offset padding to align with container edge */
   }
 
   nav .container {
-    height: 80px !important;
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
+    height: 72px !important;
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Ensure the flag bar is always full width */
+  nav .flag-bar {
+    width: 100% !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
   }
 
   /* Hero Section */
   .hero-section {
     height: auto !important;
     min-height: 500px !important;
-    padding-top: 140px !important; /* Increased to prevent overlap with fixed nav */
+    padding-top: 140px !important;
     padding-bottom: 60px !important;
     align-items: center !important;
     text-align: center !important;
   }
 
   .hero-section h1 {
-    font-size: 36px !important;
+    font-size: 32px !important;
     line-height: 1.1 !important;
   }
 
@@ -110,7 +135,6 @@ body {
     min-height: auto !important;
   }
 
-  /* Specific fix for Join section: Info card first, then Form */
   .application-form-grid {
     flex-direction: column !important;
   }
@@ -124,7 +148,7 @@ body {
   .split-grid-mobile > div {
     width: 100% !important;
     min-height: auto !important;
-    padding: 40px 24px !important;
+    padding: 40px 20px !important;
   }
 
   /* Specifically for the "What is an Iddir?" image container on mobile */
