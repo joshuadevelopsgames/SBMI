@@ -401,3 +401,193 @@ input[type="checkbox"] {
 .sidebar-nav-link.active svg {
   opacity: 1;
 }
+
+/* ─── Member Portal: Buttons ─────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #2d6a2d;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease;
+  letter-spacing: 0.02em;
+}
+.btn-primary:hover { background: #245224; }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: transparent;
+  color: #2d6a2d;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1.5px solid #2d6a2d;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.btn-secondary:hover { background: #f0f7f0; }
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: transparent;
+  color: #c0392b;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1.5px solid #c0392b;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.btn-danger:hover { background: #fdf2f2; }
+
+.btn-sm {
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+}
+
+/* ─── Member Portal: Badges ──────────────────────────────── */
+.badge-current {
+  display: inline-block;
+  padding: 3px 10px;
+  background: #e8f5e9;
+  color: #2d6a2d;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ─── Member Portal: Alerts ──────────────────────────────── */
+.alert-success {
+  padding: 14px 18px;
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  border-left: 4px solid #2d6a2d;
+  border-radius: 6px;
+  color: #1b5e20;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.alert-info {
+  padding: 14px 18px;
+  background: #e3f2fd;
+  border: 1px solid #90caf9;
+  border-left: 4px solid #1976d2;
+  border-radius: 6px;
+  color: #0d47a1;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.alert-error {
+  padding: 14px 18px;
+  background: #fdf2f2;
+  border: 1px solid #f5c6cb;
+  border-left: 4px solid #c0392b;
+  border-radius: 6px;
+  color: #7b1e1e;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+/* ─── Member Portal: Error Message ──────────────────────── */
+.error-message {
+  color: #c0392b;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* ─── Member Portal: Form ────────────────────────────────── */
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+  letter-spacing: 0.01em;
+}
+
+.form-input {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #111827;
+  background: #fff;
+  border: 1.5px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+.form-input:focus {
+  border-color: #2d6a2d;
+  box-shadow: 0 0 0 3px rgba(45, 106, 45, 0.12);
+}
+.form-input::placeholder { color: #9ca3af; }
+
+/* ─── Member Portal: Data Table ──────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.data-table th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6b7280;
+  border-bottom: 1.5px solid #e5e7eb;
+  background: #f9fafb;
+}
+.data-table td {
+  padding: 12px 14px;
+  color: #374151;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #f9fafb; }
+
+/* ─── Member Portal: Family Member Inactive Note ─────────── */
+.family-member-inactive-note {
+  font-size: 12px;
+  color: #9ca3af;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+/* ─── Member Portal: Mobile Menu Overlay ─────────────────── */
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 40;
+  display: none;
+}
+@media (max-width: 768px) {
+  .mobile-menu-overlay.open { display: block; }
+}
