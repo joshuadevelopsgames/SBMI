@@ -323,7 +323,7 @@ export default function WelcomePage() {
               rooted in Ethiopian tradition, providing financial and emotional support
               to members and their families during times of bereavement.
             </p>
-            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center', flexDirection: 'column', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start', flexDirection: 'column' }}>
               <style>{`
                 @media (max-width: 768px) {
                   .hero-buttons { flex-direction: column; width: 100%; }
