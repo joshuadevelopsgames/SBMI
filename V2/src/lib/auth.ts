@@ -78,3 +78,34 @@ export async function verifyAuth(request: any) {
   if (!user) return null;
   return { user };
 }
+
+// A mock admin user returned in demo mode so individual pages don't redirect to login.
+const DEMO_ADMIN_USER = {
+  id: 'demo-admin',
+  firstName: 'Demo',
+  lastName: 'Administrator',
+  email: 'admin@sbmi.ca',
+  role: 'ADMIN' as const,
+  status: 'ACTIVE' as const,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  passwordHash: '',
+  twoFactorCode: null,
+  twoFactorExpiry: null,
+  phone: null,
+  membershipStartDate: null,
+  lastLoginAt: null,
+  stripeCustomerId: null,
+}
+
+/**
+ * Use this instead of getSession() in admin server pages.
+ * Returns the real user OR a demo admin stub when the demo cookie is set.
+ * Returns null only when neither is present.
+ */
+export async function getAdminSession(): Promise<User | null> {
+  const cookieStore = await cookies()
+  const isDemoAdmin = cookieStore.get('sbmi_demo_admin')?.value === '1'
+  if (isDemoAdmin) return DEMO_ADMIN_USER as unknown as User
+  return getSession()
+}

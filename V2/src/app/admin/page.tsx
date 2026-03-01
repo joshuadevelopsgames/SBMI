@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { cookies } from 'next/headers'
-import { getSession } from '@/lib/auth'
+import { getAdminSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 const DEMO_STATS = {
@@ -25,7 +25,7 @@ export default async function AdminDashboard() {
   let stats = DEMO_STATS
 
   if (!isDemoAdmin) {
-    const user = await getSession()
+    const user = await getAdminSession()
     if (!user || user.role !== 'ADMIN') redirect('/login')
 
     try {

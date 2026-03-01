@@ -7,7 +7,7 @@ interface AdminConfigClientProps {
   config: {
     monthlyContributionCents: number
     penaltyAmountCents: number
-    bylawsPdfUrl: string
+    bylawsPdfUrl: string | null
     adminEmail: string
     welcomeMessage: string
     assistanceApprovalThreshold: number
@@ -21,7 +21,7 @@ export default function AdminConfigClient({ config: initial }: AdminConfigClient
   const router = useRouter()
   const [monthlyAmount, setMonthlyAmount] = useState((initial.monthlyContributionCents / 100).toFixed(2))
   const [penaltyAmount, setPenaltyAmount] = useState((initial.penaltyAmountCents / 100).toFixed(2))
-  const [bylawsUrl, setBylawsUrl] = useState(initial.bylawsPdfUrl)
+  const [bylawsUrl, setBylawsUrl] = useState(initial.bylawsPdfUrl ?? '')
   const [adminEmail, setAdminEmail] = useState(initial.adminEmail)
   const [welcomeMessage, setWelcomeMessage] = useState(initial.welcomeMessage)
   const [assistanceApprovalThreshold, setAssistanceApprovalThreshold] = useState(initial.assistanceApprovalThreshold)

@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
-import { getSession } from '@/lib/auth'
+import { getAdminSession } from '@/lib/auth'
 import AdminSidebar from '@/components/AdminSidebar'
 import MemberHeader from '@/components/MemberHeader'
 
@@ -53,7 +53,7 @@ export default async function AdminLayout({
     )
   }
 
-  const user = await getSession()
+  const user = await getAdminSession()
 
   if (!user) redirect('/login')
   if (user.role !== 'ADMIN') redirect('/member')
