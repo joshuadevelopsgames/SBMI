@@ -9,6 +9,9 @@ function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const message = searchParams.get('message')
+  const type = searchParams.get('type') // 'admin' or 'member' (default)
+
+  const isAdmin = type === 'admin'
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -86,7 +89,7 @@ function LoginForm() {
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
             <div style={{
               width: 36, height: 36,
-              background: 'var(--color-green)',
+              background: isAdmin ? 'var(--color-red)' : 'var(--color-green)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: 'white', fontWeight: 800, fontSize: 12, letterSpacing: '0.04em',
             }}>SBMI</div>
@@ -105,7 +108,7 @@ function LoginForm() {
           <div style={{ textAlign: 'center', marginBottom: 36 }}>
             <div style={{
               width: 56, height: 56,
-              background: 'var(--color-green)',
+              background: isAdmin ? 'var(--color-red)' : 'var(--color-green)',
               margin: '0 auto 20px',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
@@ -121,53 +124,55 @@ function LoginForm() {
               color: 'var(--color-gray-900)',
               marginBottom: 8,
             }}>
-              Member Sign In
+              {isAdmin ? 'Admin Sign In' : 'Member Sign In'}
             </h1>
             <p style={{ color: 'var(--color-gray-500)', fontSize: 15 }}>
-              Sign in to your SBMI member portal
+              {isAdmin ? 'Sign in to the Executive Committee portal' : 'Sign in to your SBMI member portal'}
             </p>
           </div>
 
-          {/* Demo Banner */}
-          <div style={{
-            background: '#FFF8E1',
-            border: '1px solid #F9A825',
-            padding: '16px 20px',
-            marginBottom: 24,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 16,
-            flexWrap: 'wrap',
-          }}>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#7B5800', marginBottom: 2 }}>
-                Want to explore first?
+          {/* Demo Banner (Member only) */}
+          {!isAdmin && (
+            <div style={{
+              background: '#FFF8E1',
+              border: '1px solid #F9A825',
+              padding: '16px 20px',
+              marginBottom: 24,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 16,
+              flexWrap: 'wrap',
+            }}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#7B5800', marginBottom: 2 }}>
+                  Want to explore first?
+                </div>
+                <div style={{ fontSize: 13, color: '#92650A' }}>
+                  Try the member portal without an account.
+                </div>
               </div>
-              <div style={{ fontSize: 13, color: '#92650A' }}>
-                Try the member portal without an account.
-              </div>
+              <button
+                onClick={handleDemo}
+                disabled={demoLoading}
+                style={{
+                  background: '#F9A825',
+                  border: 'none',
+                  color: '#1a1a1a',
+                  fontSize: 13,
+                  fontWeight: 700,
+                  padding: '10px 20px',
+                  cursor: demoLoading ? 'wait' : 'pointer',
+                  letterSpacing: '0.04em',
+                  textTransform: 'uppercase',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                }}
+              >
+                {demoLoading ? 'Loading...' : 'View Demo →'}
+              </button>
             </div>
-            <button
-              onClick={handleDemo}
-              disabled={demoLoading}
-              style={{
-                background: '#F9A825',
-                border: 'none',
-                color: '#1a1a1a',
-                fontSize: 13,
-                fontWeight: 700,
-                padding: '10px 20px',
-                cursor: demoLoading ? 'wait' : 'pointer',
-                letterSpacing: '0.04em',
-                textTransform: 'uppercase',
-                whiteSpace: 'nowrap',
-                flexShrink: 0,
-              }}
-            >
-              {demoLoading ? 'Loading...' : 'View Demo →'}
-            </button>
-          </div>
+          )}
 
           {/* Message alerts */}
           {message && (
@@ -234,7 +239,7 @@ function LoginForm() {
                 />
                 Stay logged in
               </label>
-              <Link href="/forgot-password" style={{ fontSize: 14, color: 'var(--color-green)', textDecoration: 'none', fontWeight: 500 }}>
+              <Link href="/forgot-password" style={{ fontSize: 14, color: isAdmin ? 'var(--color-red)' : 'var(--color-green)', textDecoration: 'none', fontWeight: 500 }}>
                 Forgot password?
               </Link>
             </div>
@@ -243,18 +248,47 @@ function LoginForm() {
               type="submit"
               className="btn-primary"
               disabled={loading}
-              style={{ width: '100%', padding: '14px', fontSize: 16, justifyContent: 'center' }}
+              style={{ 
+                width: '100%', 
+                padding: '14px', 
+                fontSize: 16, 
+                justifyContent: 'center',
+                background: isAdmin ? 'var(--color-red)' : 'var(--color-green)',
+                borderColor: isAdmin ? 'var(--color-red)' : 'var(--color-green)'
+              }}
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          <p style={{ textAlign: 'center', marginTop: 24, fontSize: 14, color: 'var(--color-gray-500)' }}>
-            Not a member yet?{' '}
-            <Link href="/#apply" style={{ color: 'var(--color-green)', fontWeight: 600, textDecoration: 'none' }}>
-              Apply for membership
-            </Link>
-          </p>
+          <div style={{ textAlign: 'center', marginTop: 24 }}>
+            <p style={{ fontSize: 14, color: 'var(--color-gray-500)', marginBottom: 8 }}>
+              {isAdmin ? (
+                <>
+                  Are you a member?{' '}
+                  <Link href="/login" style={{ color: 'var(--color-green)', fontWeight: 600, textDecoration: 'none' }}>
+                    Member Login
+                  </Link>
+                </>
+              ) : (
+                <>
+                  Not a member yet?{' '}
+                  <Link href="/#apply" style={{ color: 'var(--color-green)', fontWeight: 600, textDecoration: 'none' }}>
+                    Apply for membership
+                  </Link>
+                </>
+              )}
+            </p>
+            
+            {!isAdmin && (
+              <Link 
+                href="/login?type=admin" 
+                style={{ fontSize: 13, color: 'var(--color-gray-400)', textDecoration: 'none', fontWeight: 500 }}
+              >
+                Executive Committee Login →
+              </Link>
+            )}
+          </div>
         </div>
       </main>
 
