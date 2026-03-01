@@ -98,129 +98,306 @@ export default function WelcomePage() {
   }
 
   return (
-    <div style={{ background: 'white' }}>
-      <style>{`
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .flag-bar { height: 4px; background: linear-gradient(90deg, #1B5E20 0%, #F9A825 50%, #C62828 100%); }
-        
-        @media (max-width: 768px) {
-          .container { padding: 0 16px; }
-          .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .split-screen { grid-template-columns: 1fr !important; }
-          .split-screen-image { min-height: 300px !important; }
-          .split-screen-text { padding: 32px 16px !important; }
-          .benefits-grid { grid-template-columns: 1fr !important; }
-          .quote-band { padding: 40px 16px !important; }
-          .how-it-works { grid-template-columns: 1fr !important; }
-          .form-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
+    <div style={{ fontFamily: 'var(--font-sans)', overflowX: 'hidden' }}>
 
-      {/* ─── STICKY HEADER ────────────────────────────────────────── */}
-      <header style={{
-        position: 'sticky',
+      {/* ─── NAVIGATION ─────────────────────────────────────────── */}
+      <nav style={{
+        position: 'fixed',
         top: 0,
-        zIndex: 100,
-        background: scrolled ? 'white' : 'transparent',
-        borderBottom: scrolled ? '1px solid var(--color-gray-200)' : 'none',
-        transition: 'all 0.3s ease',
-        boxShadow: scrolled ? '0 1px 3px rgba(0,0,0,0.05)' : 'none',
+        left: 0,
+        right: 0,
+        zIndex: 200,
+        transition: 'background 0.3s ease, box-shadow 0.3s ease',
+        background: scrolled ? 'rgba(255,255,255,0.97)' : 'transparent',
+        boxShadow: scrolled ? '0 1px 0 rgba(0,0,0,0.08)' : 'none',
+        backdropFilter: scrolled ? 'blur(12px)' : 'none',
       }}>
-        <div className="flag-bar" />
         <div className="container" style={{
           display: 'flex',
-          justifyContent: 'space-between',
           alignItems: 'center',
-          padding: '16px 0',
+          justifyContent: 'space-between',
+          height: 72,
         }}>
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
+          {/* Logo */}
+          <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 14, textDecoration: 'none' }}>
             <div style={{
-              width: 40, height: 40,
+              width: 44,
+              height: 44,
               background: 'var(--color-green)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: 'white', fontWeight: 800, fontSize: 14,
-            }}>SB</div>
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}>
+              <span style={{
+                color: 'white',
+                fontWeight: 800,
+                fontSize: 13,
+                letterSpacing: '0.06em',
+                fontFamily: 'var(--font-sans)',
+              }}>SBMI</span>
+            </div>
             <div>
-              <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--color-gray-900)', lineHeight: 1.1 }}>
-                Samuel Bete
+              <div style={{
+                fontWeight: 700,
+                fontSize: 15,
+                color: scrolled ? 'var(--color-gray-900)' : 'white',
+                lineHeight: 1.2,
+                transition: 'color 0.3s',
+              }}>
+                Samuel Bete Mutual Iddir
               </div>
-              <div style={{ fontSize: 11, color: 'var(--color-gray-500)', letterSpacing: '0.04em' }}>
-                Mutual Iddir
+              <div style={{
+                fontSize: 10,
+                color: scrolled ? 'var(--color-gray-400)' : 'rgba(255,255,255,0.6)',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                transition: 'color 0.3s',
+              }}>
+                Calgary, Alberta
               </div>
             </div>
-          </Link>
+          </a>
 
-          <nav style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
-            <Link href="/login" style={{
-              textDecoration: 'none',
-              color: 'var(--color-green)',
-              fontWeight: 600,
-              fontSize: 14,
-            }}>
+          {/* Desktop Nav */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 36 }} className="desktop-nav">
+            {[
+              { href: '#about', label: 'About' },
+              { href: '#memorial', label: 'Our Story' },
+              { href: '#benefits', label: 'Benefits' },
+              { href: '#apply', label: 'Join' },
+            ].map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                style={{
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: scrolled ? 'var(--color-gray-700)' : 'rgba(255,255,255,0.9)',
+                  textDecoration: 'none',
+                  letterSpacing: '0.02em',
+                  transition: 'color 0.2s',
+                }}
+              >
+                {link.label}
+              </a>
+            ))}
+            <Link
+              href="/login"
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: scrolled ? 'var(--color-green)' : 'white',
+                textDecoration: 'none',
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                border: `1px solid ${scrolled ? 'var(--color-green)' : 'rgba(255,255,255,0.6)'}`,
+                padding: '8px 20px',
+                transition: 'all 0.2s',
+              }}
+            >
               Member Login
             </Link>
-          </nav>
-        </div>
-      </header>
+          </div>
 
-      {/* ─── HERO ────────────────────────────────────────────────── */}
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="mobile-menu-btn"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 8,
+              display: 'none',
+            }}
+            aria-label="Toggle menu"
+          >
+            <div style={{ width: 24, height: 2, background: scrolled ? '#111' : 'white', marginBottom: 5, transition: 'background 0.3s' }} />
+            <div style={{ width: 24, height: 2, background: scrolled ? '#111' : 'white', marginBottom: 5, transition: 'background 0.3s' }} />
+            <div style={{ width: 24, height: 2, background: scrolled ? '#111' : 'white', transition: 'background 0.3s' }} />
+          </button>
+        </div>
+
+        {/* Ethiopian flag bar */}
+        <div className="flag-bar" />
+      </nav>
+
+      {/* Mobile Menu Overlay */}
+      {menuOpen && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 199,
+          background: 'rgba(27,94,32,0.98)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 32,
+        }}>
+          <button onClick={() => setMenuOpen(false)} style={{ position: 'absolute', top: 24, right: 24, background: 'none', border: 'none', cursor: 'pointer', color: 'white', fontSize: 28 }}>✕</button>
+          {[
+            { href: '#about', label: 'About' },
+            { href: '#memorial', label: 'Our Story' },
+            { href: '#benefits', label: 'Benefits' },
+            { href: '#apply', label: 'Join' },
+          ].map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+              style={{ fontSize: 28, fontWeight: 600, color: 'white', textDecoration: 'none', fontFamily: 'var(--font-serif)' }}
+            >
+              {link.label}
+            </a>
+          ))}
+          <Link href="/login" onClick={() => setMenuOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#F9A825', textDecoration: 'none', border: '1px solid #F9A825', padding: '12px 32px', marginTop: 8 }}>
+            Member Login
+          </Link>
+        </div>
+      )}
+
+      {/* ─── HERO — Full-bleed photo with overlay ───────────────── */}
       <section style={{
-        height: 'clamp(400px, 100vh, 600px)',
-        background: `url(/images/hero-community.jpeg) center/cover no-repeat`,
         position: 'relative',
+        height: '100vh',
+        minHeight: 600,
+        maxHeight: 900,
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
-        color: 'white',
+        alignItems: 'flex-end',
+        overflow: 'hidden',
       }}>
+        {/* Background image */}
+        <div style={{ position: 'absolute', inset: 0 }}>
+          <Image
+            src="/images/hero-community.jpeg"
+            alt="Ethiopian community gathering"
+            fill
+            style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
+            priority
+          />
+          {/* Gradient overlay — dark at bottom, semi-dark at top */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.75) 100%)',
+          }} />
+        </div>
+
+        {/* Hero content */}
+        <div className="container" style={{ position: 'relative', zIndex: 2, paddingBottom: 'clamp(40px, 10vw, 80px)', paddingTop: 'clamp(60px, 10vw, 120px)' }}>
+          <div style={{ maxWidth: 720 }}>
+            <p style={{
+              fontSize: 'clamp(10px, 2vw, 12px)',
+              fontWeight: 700,
+              color: '#F9A825',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              marginBottom: 20,
+            }}>
+              Calgary, Alberta · Est. 2012
+            </p>
+            <h1 style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(42px, 6vw, 80px)',
+              fontWeight: 700,
+              lineHeight: 1.08,
+              color: 'white',
+              marginBottom: 28,
+              letterSpacing: '-0.01em',
+            }}>
+              When one of us<br />
+              grieves, we all<br />
+              <em style={{ fontStyle: 'italic', color: '#F9A825' }}>stand together.</em>
+            </h1>
+            <p style={{
+              fontSize: 'clamp(14px, 4vw, 18px)',
+              lineHeight: 1.75,
+              color: 'rgba(255,255,255,0.85)',
+              marginBottom: 44,
+              maxWidth: 540,
+              fontWeight: 300,
+            }}>
+              The Samuel Bete Mutual Iddir is a community-based mutual aid organization
+              rooted in Ethiopian tradition, providing financial and emotional support
+              to members and their families during times of bereavement.
+            </p>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center', flexDirection: 'column', alignItems: 'flex-start' }}>
+              <style>{`
+                @media (max-width: 768px) {
+                  .hero-buttons { flex-direction: column; width: 100%; }
+                  .hero-buttons a { width: 100%; text-align: center; }
+                }
+              `}</style>
+              <a
+                href="#apply"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  padding: '16px 36px',
+                  background: '#F9A825',
+                  color: '#1a1a1a',
+                  fontSize: 14,
+                  fontWeight: 700,
+                  textDecoration: 'none',
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  transition: 'background 0.2s',
+                }}
+              >
+                Apply for Membership
+                <span style={{ fontSize: 18 }}>→</span>
+              </a>
+              <a
+                href="#about"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '16px 28px',
+                  color: 'white',
+                  fontSize: 14,
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  letterSpacing: '0.04em',
+                  border: '1px solid rgba(255,255,255,0.5)',
+                }}
+              >
+                Learn More
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
         <div style={{
           position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(135deg, rgba(27,94,32,0.5) 0%, rgba(198,40,40,0.3) 100%)',
-        }} />
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: 800, padding: '0 20px' }}>
-          <h1 style={{
-            fontFamily: 'var(--font-serif)',
-            fontSize: 'clamp(32px, 8vw, 64px)',
-            fontWeight: 700,
-            lineHeight: 1.2,
-            marginBottom: 16,
-          }}>
-            When one of us grieves, we all <span style={{ color: '#F9A825' }}>stand together.</span>
-          </h1>
-          <p style={{
-            fontSize: 'clamp(14px, 4vw, 18px)',
-            fontWeight: 400,
-            lineHeight: 1.6,
-            marginBottom: 32,
-            opacity: 0.95,
-          }}>
-            Calgary, Alberta · Est. 2012
-          </p>
-          <Link href="#apply" style={{
-            display: 'inline-block',
-            background: '#F9A825',
-            color: 'var(--color-gray-900)',
-            padding: 'clamp(12px, 2vw, 16px) clamp(24px, 5vw, 40px)',
-            borderRadius: 4,
-            fontWeight: 700,
-            fontSize: 'clamp(13px, 2vw, 16px)',
-            textDecoration: 'none',
-            transition: 'all 0.2s ease',
-          }} onMouseEnter={(e) => { e.currentTarget.style.background = '#E89500'; e.currentTarget.style.transform = 'translateY(-2px)'; }} onMouseLeave={(e) => { e.currentTarget.style.background = '#F9A825'; e.currentTarget.style.transform = 'translateY(0)'; }}>
-            Join Our Community
-          </Link>
+          bottom: 32,
+          right: 40,
+          zIndex: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 8,
+          color: 'rgba(255,255,255,0.5)',
+          fontSize: 10,
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase',
+        }}>
+          <div style={{ width: 1, height: 48, background: 'rgba(255,255,255,0.3)' }} />
+          <span>Scroll</span>
         </div>
       </section>
 
-      {/* ─── STATS BAND ────────────────────────────────────────── */}
+      {/* ─── STATS BAND ─────────────────────────────────────────── */}
       <section style={{
         background: 'var(--color-gray-900)',
         padding: '0',
       }}>
         <div className="container">
-          <div className="stats-grid" style={{
+          <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
             borderLeft: '1px solid rgba(255,255,255,0.08)',
@@ -234,14 +411,14 @@ export default function WelcomePage() {
               <div
                 key={stat.label}
                 style={{
-                  padding: 'clamp(20px, 5vw, 36px) clamp(16px, 4vw, 32px)',
+                  padding: '36px 32px',
                   borderRight: '1px solid rgba(255,255,255,0.08)',
                   borderBottom: '1px solid rgba(255,255,255,0.08)',
                 }}
               >
                 <div style={{
                   fontFamily: 'var(--font-serif)',
-                  fontSize: 'clamp(24px, 6vw, 32px)',
+                  fontSize: 32,
                   fontWeight: 700,
                   color: '#F9A825',
                   marginBottom: 6,
@@ -249,10 +426,10 @@ export default function WelcomePage() {
                 }}>
                   {stat.value}
                 </div>
-                <div style={{ fontSize: 'clamp(12px, 2vw, 13px)', fontWeight: 600, color: 'white', marginBottom: 4 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'white', marginBottom: 4 }}>
                   {stat.label}
                 </div>
-                <div style={{ fontSize: 'clamp(11px, 1.5vw, 12px)', color: 'rgba(255,255,255,0.4)' }}>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>
                   {stat.sub}
                 </div>
               </div>
@@ -263,13 +440,13 @@ export default function WelcomePage() {
 
       {/* ─── WHAT IS AN IDDIR — Split screen ────────────────────── */}
       <section id="about" style={{ background: 'var(--color-off-white)' }}>
-        <div className="split-screen" style={{
+        <div style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           minHeight: 560,
         }}>
           {/* Image side */}
-          <div className="split-screen-image" style={{ position: 'relative', minHeight: 480 }}>
+          <div style={{ position: 'relative', minHeight: 480 }}>
             <Image
               src="/images/community-gathering.jpeg"
               alt="Ethiopian community members gathered together"
@@ -284,12 +461,12 @@ export default function WelcomePage() {
             {/* Floating label */}
             <div style={{
               position: 'absolute',
-              bottom: 'clamp(16px, 4vw, 32px)',
-              left: 'clamp(16px, 4vw, 32px)',
+              bottom: 32,
+              left: 32,
               background: 'var(--color-green)',
               color: 'white',
               padding: '12px 20px',
-              fontSize: 'clamp(11px, 2vw, 12px)',
+              fontSize: 12,
               fontWeight: 700,
               letterSpacing: '0.12em',
               textTransform: 'uppercase',
@@ -299,344 +476,495 @@ export default function WelcomePage() {
           </div>
 
           {/* Text side */}
-          <div className="split-screen-text" style={{
-            padding: 'clamp(32px, 6vw, 96px) clamp(24px, 5vw, 80px)',
+          <div style={{
+            padding: 'clamp(48px, 6vw, 96px) clamp(40px, 5vw, 80px)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
           }}>
-            <div style={{ fontSize: 'clamp(11px, 2vw, 12px)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--color-green)', marginBottom: 16 }}>
-              WHAT IS AN IDDIR?
-            </div>
-            <h2 style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: 'clamp(28px, 6vw, 48px)',
-              fontWeight: 700,
-              lineHeight: 1.2,
-              color: 'var(--color-gray-900)',
-              marginBottom: 24,
-            }}>
-              A centuries-old tradition of standing together
-            </h2>
             <p style={{
-              fontSize: 'clamp(14px, 2vw, 16px)',
-              lineHeight: 1.7,
-              color: 'var(--color-gray-600)',
+              fontSize: 11,
+              fontWeight: 700,
+              color: 'var(--color-green)',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
               marginBottom: 20,
             }}>
-              An <strong>Iddir</strong> (ኢዲር) is a traditional Ethiopian community organization that pools resources to support members during times of bereavement and hardship. For centuries, Ethiopians have relied on this mutual aid system to ensure no one faces adversity alone.
+              What is an Iddir?
             </p>
-            <blockquote style={{
-              borderLeft: '4px solid #F9A825',
-              paddingLeft: 20,
-              fontStyle: 'italic',
-              fontSize: 'clamp(14px, 2vw, 16px)',
-              color: 'var(--color-gray-700)',
-              margin: '20px 0',
+            <h2 style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(30px, 3.5vw, 48px)',
+              fontWeight: 700,
+              color: 'var(--color-gray-900)',
+              lineHeight: 1.15,
+              marginBottom: 28,
+              letterSpacing: '-0.01em',
             }}>
-              "By pooling our resources and standing together, we can face any adversity." — Samuel Bete Mutual Iddir
-            </blockquote>
+              A centuries-old tradition<br />of standing together
+            </h2>
+            <p style={{
+              color: 'var(--color-gray-600)',
+              lineHeight: 1.85,
+              marginBottom: 20,
+              fontSize: 16,
+              fontWeight: 300,
+            }}>
+              An <strong style={{ fontWeight: 600, color: 'var(--color-gray-800)' }}>Iddir (ኢዲር)</strong> is a traditional Ethiopian community organization
+              that pools resources to support members during times of loss. Rooted in centuries
+              of Ethiopian culture, the Iddir embodies the principle that no family should face
+              grief alone or bear its financial burden in isolation.
+            </p>
+            <p style={{
+              color: 'var(--color-gray-600)',
+              lineHeight: 1.85,
+              marginBottom: 32,
+              fontSize: 16,
+              fontWeight: 300,
+            }}>
+              When a member or their immediate family experiences a death, the Iddir mobilizes
+              to provide financial assistance for funeral expenses, practical coordination,
+              and the emotional presence of community during the mourning period known as <em>lekso</em>.
+            </p>
+            <div style={{
+              borderLeft: '3px solid #F9A825',
+              paddingLeft: 20,
+              fontFamily: 'var(--font-serif)',
+              fontSize: 18,
+              fontStyle: 'italic',
+              color: 'var(--color-gray-700)',
+              lineHeight: 1.6,
+            }}>
+              "In Ethiopia, no one grieves alone. The community is your family."
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ─── SAMUEL BETE MEMORIAL ────────────────────────────────── */}
-      <section style={{
+      {/* ─── SAMUEL BETE MEMORIAL ───────────────────────────────── */}
+      <section id="memorial" style={{
         background: 'var(--color-gray-900)',
-        color: 'white',
+        position: 'relative',
+        overflow: 'hidden',
       }}>
-        <div className="split-screen" style={{
+        {/* Background texture */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(249,168,37,0.06) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(27,94,32,0.1) 0%, transparent 50%)',
+        }} />
+
+        <div style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
-          minHeight: 480,
+          position: 'relative',
+          zIndex: 1,
         }}>
           {/* Text side */}
-          <div className="split-screen-text" style={{
-            padding: 'clamp(32px, 6vw, 96px) clamp(24px, 5vw, 80px)',
+          <div style={{
+            padding: 'clamp(64px, 8vw, 112px) clamp(40px, 5vw, 80px)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
           }}>
-            <div style={{ fontSize: 'clamp(11px, 2vw, 12px)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#F9A825', marginBottom: 16 }}>
-              IN MEMORY
-            </div>
+            <p style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: '#F9A825',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              marginBottom: 20,
+            }}>
+              In Memoriam
+            </p>
             <h2 style={{
               fontFamily: 'var(--font-serif)',
-              fontSize: 'clamp(28px, 6vw, 48px)',
+              fontSize: 'clamp(32px, 4vw, 54px)',
               fontWeight: 700,
-              lineHeight: 1.2,
-              marginBottom: 24,
+              color: 'white',
+              lineHeight: 1.12,
+              marginBottom: 28,
+              letterSpacing: '-0.01em',
             }}>
-              Samuel Lulseged Bete
+              Samuel Lulseged Bete<br />
+              <span style={{ color: '#F9A825', fontSize: '0.65em', fontWeight: 400, fontStyle: 'italic' }}>
+                September 6, 2000 — July 27, 2010
+              </span>
             </h2>
             <p style={{
-              fontSize: 'clamp(14px, 2vw, 16px)',
-              lineHeight: 1.7,
-              marginBottom: 16,
-              opacity: 0.9,
+              color: 'rgba(255,255,255,0.75)',
+              lineHeight: 1.85,
+              marginBottom: 24,
+              fontSize: 16,
+              fontWeight: 300,
             }}>
-              September 6, 2000 – July 27, 2010
+              Samuel was nine years old — a bright, joyful child described by those who knew him
+              as "always happy, healthy, joyous, agile, smart, and lovely." He was the only child
+              of Whiwot and Leulsege Bete, an Ethiopian family who had made their home in Calgary
+              after immigrating from Kenya in 2004.
             </p>
             <p style={{
-              fontSize: 'clamp(14px, 2vw, 16px)',
-              lineHeight: 1.7,
-              marginBottom: 20,
-              opacity: 0.85,
+              color: 'rgba(255,255,255,0.75)',
+              lineHeight: 1.85,
+              marginBottom: 24,
+              fontSize: 16,
+              fontWeight: 300,
             }}>
-              Samuel was a beloved 9-year-old member of the Ethiopian community in Calgary. Known for his joyful spirit, kindness, and bright smile, he embodied the values of community and togetherness. His parents, Whiwot and Leulsege Bete, immigrated from Ethiopia to Canada in 2004 to build a better life for their family.
+              Samuel passed away on July 27, 2010 in a tragic accident. His loss was felt deeply
+              across Calgary's Ethiopian community. In 2012, community members came together to
+              incorporate the Samuel Bete Mutual Iddir — not just as a practical organization,
+              but as a living act of remembrance.
             </p>
             <p style={{
-              fontSize: 'clamp(14px, 2vw, 16px)',
-              lineHeight: 1.7,
-              opacity: 0.85,
+              color: 'rgba(255,255,255,0.75)',
+              lineHeight: 1.85,
+              fontSize: 16,
+              fontWeight: 300,
             }}>
-              In 2012, two years after Samuel's passing, community members established the Samuel Bete Memorial Iddir in his honor. Every contribution made by our members, every family supported in their time of need, is a living testament to Samuel's legacy and the enduring strength of our community.
+              Every contribution made, every family supported in their time of need, honours
+              Samuel's memory and ensures that no family in our community faces loss alone.
             </p>
           </div>
 
           {/* Image side */}
-          <div className="split-screen-image" style={{ position: 'relative', minHeight: 480 }}>
+          <div style={{ position: 'relative', minHeight: 500 }}>
             <Image
-              src="/images/candlelight-vigil.jpeg"
-              alt="Candlelight vigil in memory of Samuel Bete"
+              src="/images/candlelight-vigil.jpg"
+              alt="Community candlelight vigil in memory"
               fill
               style={{ objectFit: 'cover', objectPosition: 'center' }}
             />
             <div style={{
               position: 'absolute',
               inset: 0,
-              background: 'linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%)',
+              background: 'linear-gradient(to right, rgba(17,24,39,0.6) 0%, rgba(17,24,39,0.1) 50%, transparent 100%)',
             }} />
+            {/* Memorial plaque */}
             <div style={{
               position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
               textAlign: 'center',
-              padding: 20,
+              padding: '28px 36px',
+              border: '1px solid rgba(249,168,37,0.4)',
+              background: 'rgba(0,0,0,0.6)',
+              backdropFilter: 'blur(8px)',
+              minWidth: 240,
             }}>
-              <div style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: 'clamp(24px, 5vw, 36px)',
-                fontWeight: 700,
-                lineHeight: 1.3,
-              }}>
-                Forever in our hearts
+              <div style={{ fontSize: 11, color: '#F9A825', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}>
+                In Loving Memory
               </div>
+              <div style={{ fontFamily: 'var(--font-serif)', fontSize: 22, color: 'white', fontWeight: 600, marginBottom: 8 }}>
+                Samuel Bete
+              </div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 16 }}>
+                2000 – 2010
+              </div>
+              <div style={{ width: 40, height: 1, background: '#F9A825', margin: '0 auto' }} />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── BENEFITS GRID ────────────────────────────────────────── */}
-      <section style={{ background: 'var(--color-gray-50)', padding: 'clamp(48px, 8vw, 96px) 0' }}>
+      {/* ─── BENEFITS ───────────────────────────────────────────── */}
+      <section id="benefits" style={{ background: 'white', padding: 'clamp(64px, 8vw, 112px) 0' }}>
         <div className="container">
-          <h2 style={{
-            fontFamily: 'var(--font-serif)',
-            fontSize: 'clamp(28px, 6vw, 48px)',
-            fontWeight: 700,
-            textAlign: 'center',
-            marginBottom: 'clamp(32px, 5vw, 64px)',
-            color: 'var(--color-gray-900)',
-          }}>
-            What We Offer
-          </h2>
+          {/* Section header */}
+          <div style={{ maxWidth: 560, marginBottom: 64 }}>
+            <p style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: 'var(--color-green)',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              marginBottom: 16,
+            }}>
+              Membership Benefits
+            </p>
+            <h2 style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(30px, 4vw, 48px)',
+              fontWeight: 700,
+              color: 'var(--color-gray-900)',
+              lineHeight: 1.15,
+              marginBottom: 20,
+              letterSpacing: '-0.01em',
+            }}>
+              What your membership provides
+            </h2>
+            <p style={{ fontSize: 16, color: 'var(--color-gray-500)', lineHeight: 1.75, fontWeight: 300 }}>
+              A small monthly contribution ensures that when the unthinkable happens,
+              your family will not face it alone — financially or emotionally.
+            </p>
+          </div>
 
-          <div className="benefits-grid" style={{
+          {/* Benefits grid */}
+          <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: 'clamp(20px, 4vw, 32px)',
+            gap: 2,
+            background: 'var(--color-gray-100)',
           }}>
             {[
               {
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <polyline points="9 12 11 14 15 10"/>
+                  </svg>
+                ),
                 title: 'Funeral Financial Assistance',
-                desc: 'A significant payout to help cover funeral home services, burial costs, and related expenses when a member or their immediate family passes away.',
-                icon: (
-                  <svg viewBox="0 0 24 24" width="32" height="32" fill="var(--color-green)">
-                    <path d="M12 1C6.48 1 2 5.48 2 11s4.48 10 10 10 10-4.48 10-10S17.52 1 12 1zm-2 15l-5-5 1.41-1.41L10 13.17l7.59-7.59L19 7l-9 9z"/>
-                  </svg>
-                ),
+                body: 'A significant payout to help cover funeral home services, burial costs, and related expenses when a member or their immediate family passes away.',
+                accent: 'var(--color-green)',
+                iconColor: 'var(--color-green)',
                 bg: 'var(--color-green-pale)',
               },
               {
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.77a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    <path d="M14.05 2a9 9 0 0 1 8 7.94M14.05 6A5 5 0 0 1 18 10"/>
+                  </svg>
+                ),
                 title: 'Repatriation Support',
-                desc: 'Assistance with the costs of transporting remains to Ethiopia for burial, honouring the deeply held tradition of returning home.',
-                icon: (
-                  <svg viewBox="0 0 24 24" width="32" height="32" fill="var(--color-green)">
-                    <path d="M10.5 1.5H3.75A2.25 2.25 0 0 0 1.5 3.75v16.5A2.25 2.25 0 0 0 3.75 22.5h16.5a2.25 2.25 0 0 0 2.25-2.25V13.5M23 1.5 12.75 11.75M23 1.5v6.75M23 1.5h-6.75"/>
-                  </svg>
-                ),
+                body: 'Assistance with the costs of transporting remains to Ethiopia for burial, honouring the deeply held tradition of returning home.',
+                accent: 'var(--color-green)',
+                iconColor: 'var(--color-green)',
                 bg: 'var(--color-green-pale)',
               },
               {
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="2" x2="12" y2="6"/>
+                    <path d="M9 6c0 3 3 4 3 8"/>
+                    <path d="M15 6c0 3-3 4-3 8"/>
+                    <path d="M9 14a3 3 0 0 0 6 0"/>
+                    <line x1="8" y1="22" x2="16" y2="22"/>
+                    <line x1="12" y1="17" x2="12" y2="22"/>
+                  </svg>
+                ),
                 title: 'Lekso Coordination',
-                desc: 'Practical support during the mourning period — coordinating food, seating, and logistics so the family can focus on grieving together.',
-                icon: (
-                  <svg viewBox="0 0 24 24" width="32" height="32" fill="var(--color-green)">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                  </svg>
-                ),
+                body: 'Practical support during the mourning period — coordinating food, seating, and logistics so the family can focus on grieving together.',
+                accent: 'var(--color-green)',
+                iconColor: 'var(--color-green)',
                 bg: 'var(--color-green-pale)',
               },
               {
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                  </svg>
+                ),
                 title: 'Family Coverage',
-                desc: 'Benefits extend to your registered spouse and dependent children, ensuring your entire household is protected under a single membership.',
-                icon: (
-                  <svg viewBox="0 0 24 24" width="32" height="32" fill="var(--color-gold)">
-                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-                  </svg>
-                ),
-                bg: 'var(--color-gold-pale)',
+                body: 'Benefits extend to your registered spouse and dependent children, ensuring your entire household is protected under a single membership.',
+                accent: '#F9A825',
+                iconColor: '#92650A',
+                bg: '#FFF8E1',
               },
               {
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                  </svg>
+                ),
                 title: 'Community Presence',
-                desc: 'Members show up. During lekso, Iddir members serve as pallbearers, distribute food, and provide the moral support of a community that cares.',
-                icon: (
-                  <svg viewBox="0 0 24 24" width="32" height="32" fill="var(--color-gold)">
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                  </svg>
-                ),
-                bg: 'var(--color-gold-pale)',
+                body: 'Members show up. During lekso, Iddir members serve as pallbearers, distribute food, and provide the moral support of a community that cares.',
+                accent: '#F9A825',
+                iconColor: '#92650A',
+                bg: '#FFF8E1',
               },
               {
-                title: 'Transparent Governance',
-                desc: 'A formal by-laws structure, elected officers, and a member portal for full transparency on contributions, balances, and organization decisions.',
                 icon: (
-                  <svg viewBox="0 0 24 24" width="32" height="32" fill="var(--color-gold)">
-                    <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10 9 9 9 8 9"/>
                   </svg>
                 ),
-                bg: 'var(--color-gold-pale)',
+                title: 'Transparent Governance',
+                body: 'A formal by-laws structure, elected officers, and a member portal for full transparency on contributions, balances, and organization decisions.',
+                accent: '#F9A825',
+                iconColor: '#92650A',
+                bg: '#FFF8E1',
               },
             ].map((benefit) => (
               <div
                 key={benefit.title}
                 style={{
                   background: 'white',
-                  padding: 'clamp(24px, 4vw, 32px)',
-                  borderRadius: 8,
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-                  transition: 'all 0.2s ease',
-                  display: 'flex',
-                  flexDirection: 'column',
+                  padding: '40px 36px',
+                  position: 'relative',
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.12)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
               >
                 <div style={{
-                  width: 56,
-                  height: 56,
+                  width: 52,
+                  height: 52,
                   background: benefit.bg,
-                  borderRadius: 8,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginBottom: 16,
+                  marginBottom: 24,
+                  color: benefit.iconColor,
                 }}>
                   {benefit.icon}
                 </div>
                 <h3 style={{
                   fontFamily: 'var(--font-serif)',
-                  fontSize: 'clamp(16px, 3vw, 18px)',
-                  fontWeight: 700,
+                  fontSize: 20,
+                  fontWeight: 600,
                   color: 'var(--color-gray-900)',
                   marginBottom: 12,
+                  lineHeight: 1.3,
                 }}>
                   {benefit.title}
                 </h3>
                 <p style={{
-                  fontSize: 'clamp(13px, 2vw, 15px)',
-                  lineHeight: 1.6,
-                  color: 'var(--color-gray-600)',
+                  fontSize: 15,
+                  color: 'var(--color-gray-500)',
+                  lineHeight: 1.75,
+                  fontWeight: 300,
                 }}>
-                  {benefit.desc}
+                  {benefit.body}
                 </p>
+                <div style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  width: '100%',
+                  height: 3,
+                  background: benefit.accent,
+                  opacity: 0,
+                  transition: 'opacity 0.2s',
+                }} />
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ─── QUOTE BAND ────────────────────────────────────────── */}
-      <section className="quote-band" style={{
-        background: `url(/images/ethiopian-festival.jpeg) center/cover no-repeat`,
-        padding: 'clamp(40px, 10vw, 120px) 20px',
-        position: 'relative',
-        textAlign: 'center',
-        color: 'white',
-      }}>
+      {/* ─── PHOTO BAND — Full-width community photo ────────────── */}
+      <section style={{ position: 'relative', height: 480, overflow: 'hidden' }}>
+        <Image
+          src="/images/ethiopian-festival.jpeg"
+          alt="Ethiopian community celebration"
+          fill
+          style={{ objectFit: 'cover', objectPosition: 'center 40%' }}
+        />
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(135deg, rgba(27,94,32,0.6) 0%, rgba(27,94,32,0.4) 100%)',
-        }} />
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: 800, margin: '0 auto' }}>
-          <blockquote style={{
-            fontFamily: 'var(--font-serif)',
-            fontSize: 'clamp(24px, 6vw, 42px)',
-            fontWeight: 700,
-            lineHeight: 1.3,
-            fontStyle: 'italic',
-            margin: 0,
-          }}>
-            "Together, we honor the past, support the present, and build a stronger future for our community."
-          </blockquote>
+          background: 'rgba(27,94,32,0.72)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <div style={{ textAlign: 'center', maxWidth: 720, padding: '0 24px' }}>
+            <p style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(24px, 4vw, 44px)',
+              fontWeight: 600,
+              color: 'white',
+              lineHeight: 1.35,
+              fontStyle: 'italic',
+              marginBottom: 24,
+            }}>
+              "The Iddir is not just insurance. It is the community saying:<br />
+              <em style={{ color: '#F9A825' }}>we see you, we are here, you are not alone.</em>"
+            </p>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              — Ethiopian Mutual Aid Tradition
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* ─── HOW IT WORKS ────────────────────────────────────────── */}
-      <section style={{ background: 'white', padding: 'clamp(48px, 8vw, 96px) 0' }}>
+      {/* ─── HOW IT WORKS ───────────────────────────────────────── */}
+      <section style={{ background: 'var(--color-off-white)', padding: 'clamp(64px, 8vw, 112px) 0' }}>
         <div className="container">
-          <h2 style={{
-            fontFamily: 'var(--font-serif)',
-            fontSize: 'clamp(28px, 6vw, 48px)',
-            fontWeight: 700,
-            textAlign: 'center',
-            marginBottom: 'clamp(32px, 5vw, 64px)',
-            color: 'var(--color-gray-900)',
-          }}>
-            How It Works
-          </h2>
+          <div style={{ textAlign: 'center', maxWidth: 560, margin: '0 auto 64px' }}>
+            <p style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: 'var(--color-green)',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              marginBottom: 16,
+            }}>
+              How It Works
+            </p>
+            <h2 style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(28px, 3.5vw, 44px)',
+              fontWeight: 700,
+              color: 'var(--color-gray-900)',
+              lineHeight: 1.2,
+              letterSpacing: '-0.01em',
+            }}>
+              Simple, transparent, and community-run
+            </h2>
+          </div>
 
-          <div className="how-it-works" style={{
+          <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: 'clamp(20px, 4vw, 40px)',
+            gap: 0,
             position: 'relative',
           }}>
+            {/* Connector line */}
+            <div style={{
+              position: 'absolute',
+              top: 32,
+              left: '12.5%',
+              right: '12.5%',
+              height: 1,
+              background: 'var(--color-gray-200)',
+              zIndex: 0,
+            }} />
+
             {[
-              { num: '01', title: 'Apply', desc: 'Submit your membership application with basic information about yourself and your family.' },
-              { num: '02', title: 'Contribute', desc: 'Make a monthly contribution to the mutual aid fund. Your membership covers your entire household.' },
-              { num: '03', title: 'Community', desc: 'Participate in lekso ceremonies and community events. Your presence strengthens our bonds.' },
-              { num: '04', title: 'Support', desc: 'When hardship strikes, the Iddir is there. Financial assistance and community support await.' },
-            ].map((step, idx) => (
-              <div key={idx} style={{ textAlign: 'center' }}>
+              { step: '01', title: 'Apply', body: 'Submit your membership application online. Our admin team reviews and approves new members.' },
+              { step: '02', title: 'Contribute', body: 'Pay a small monthly contribution. Track your balance and payment history in your member portal.' },
+              { step: '03', title: 'Register Family', body: 'Add your spouse and dependent children to ensure they are covered under your membership.' },
+              { step: '04', title: 'Be Supported', body: 'When a loss occurs, submit a request. The Iddir responds with financial assistance and community support.' },
+            ].map((item) => (
+              <div key={item.step} style={{ padding: '0 24px', textAlign: 'center', position: 'relative', zIndex: 1 }}>
                 <div style={{
+                  width: 64,
+                  height: 64,
+                  background: 'var(--color-green)',
+                  color: 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 24px',
                   fontFamily: 'var(--font-serif)',
-                  fontSize: 'clamp(32px, 6vw, 48px)',
+                  fontSize: 22,
                   fontWeight: 700,
-                  color: '#F9A825',
-                  marginBottom: 12,
                 }}>
-                  {step.num}
+                  {item.step}
                 </div>
                 <h3 style={{
                   fontFamily: 'var(--font-serif)',
-                  fontSize: 'clamp(16px, 3vw, 18px)',
-                  fontWeight: 700,
+                  fontSize: 20,
+                  fontWeight: 600,
                   color: 'var(--color-gray-900)',
-                  marginBottom: 8,
+                  marginBottom: 12,
                 }}>
-                  {step.title}
+                  {item.title}
                 </h3>
                 <p style={{
-                  fontSize: 'clamp(13px, 2vw, 15px)',
-                  lineHeight: 1.6,
-                  color: 'var(--color-gray-600)',
+                  fontSize: 14,
+                  color: 'var(--color-gray-500)',
+                  lineHeight: 1.75,
+                  fontWeight: 300,
                 }}>
-                  {step.desc}
+                  {item.body}
                 </p>
               </div>
             ))}
@@ -644,230 +972,485 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      {/* ─── APPLICATION FORM ────────────────────────────────────── */}
-      <section id="apply" style={{ background: 'var(--color-gray-50)', padding: 'clamp(48px, 8vw, 96px) 0' }}>
-        <div className="container">
-          <h2 style={{
-            fontFamily: 'var(--font-serif)',
-            fontSize: 'clamp(28px, 6vw, 48px)',
-            fontWeight: 700,
-            textAlign: 'center',
-            marginBottom: 'clamp(32px, 5vw, 64px)',
-            color: 'var(--color-gray-900)',
-          }}>
-            Join the Samuel Bete Mutual Iddir
-          </h2>
-
-          {submitted ? (
+      {/* ─── APPLICATION FORM ───────────────────────────────────── */}
+      <section id="apply" style={{ background: 'white' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          minHeight: 600,
+        }}>
+          {/* Left — Image + info */}
+          <div style={{ position: 'relative', background: 'var(--color-gray-900)', overflow: 'hidden' }}>
+            <Image
+              src="/images/hands-together.jpg"
+              alt="Community hands together"
+              fill
+              style={{ objectFit: 'cover', objectPosition: 'center', opacity: 0.4 }}
+            />
             <div style={{
-              maxWidth: 600,
-              margin: '0 auto',
-              background: 'white',
-              padding: 'clamp(32px, 5vw, 48px)',
-              borderRadius: 8,
-              textAlign: 'center',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+              position: 'relative',
+              zIndex: 1,
+              padding: 'clamp(48px, 6vw, 80px) clamp(40px, 5vw, 72px)',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
             }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
-              <h3 style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: 'clamp(20px, 4vw, 28px)',
-                fontWeight: 700,
-                color: 'var(--color-gray-900)',
-                marginBottom: 12,
-              }}>
-                Application Received
-              </h3>
               <p style={{
-                fontSize: 'clamp(14px, 2vw, 16px)',
-                color: 'var(--color-gray-600)',
-                lineHeight: 1.6,
+                fontSize: 11,
+                fontWeight: 700,
+                color: '#F9A825',
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                marginBottom: 20,
               }}>
-                Thank you for your interest in joining the Samuel Bete Mutual Iddir. Your application has been received and will be reviewed by our administration team. We will contact you within 5 business days.
+                Membership Application
               </p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} style={{
-              maxWidth: 700,
-              margin: '0 auto',
-              background: 'white',
-              padding: 'clamp(32px, 5vw, 48px)',
-              borderRadius: 8,
-              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-            }}>
-              {submitError && (
-                <div style={{
-                  background: '#FEE',
-                  color: '#C62828',
-                  padding: 12,
-                  borderRadius: 4,
-                  marginBottom: 20,
-                  fontSize: 14,
-                }}>
-                  {submitError}
-                </div>
-              )}
-
-              <div className="form-grid" style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: 'clamp(16px, 3vw, 24px)',
-                marginBottom: 'clamp(16px, 3vw, 24px)',
+              <h2 style={{
+                fontFamily: 'var(--font-serif)',
+                fontSize: 'clamp(28px, 3.5vw, 44px)',
+                fontWeight: 700,
+                color: 'white',
+                lineHeight: 1.2,
+                marginBottom: 28,
+                letterSpacing: '-0.01em',
               }}>
+                Join the Samuel Bete<br />Mutual Iddir
+              </h2>
+              <p style={{
+                fontSize: 16,
+                color: 'rgba(255,255,255,0.7)',
+                lineHeight: 1.8,
+                marginBottom: 40,
+                fontWeight: 300,
+              }}>
+                Membership is open to all Ethiopians and their families living in Canada.
+                Once your application is reviewed and approved by our admin team,
+                you will receive login credentials to access the member portal.
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 {[
-                  { name: 'firstName', label: 'First Name *', type: 'text' },
-                  { name: 'lastName', label: 'Last Name *', type: 'text' },
-                  { name: 'email', label: 'Email *', type: 'email' },
-                  { name: 'phone', label: 'Phone *', type: 'tel' },
-                  { name: 'address', label: 'Address *', type: 'text', fullWidth: true },
-                  { name: 'city', label: 'City *', type: 'text' },
-                  { name: 'province', label: 'Province *', type: 'text' },
-                  { name: 'postalCode', label: 'Postal Code *', type: 'text' },
-                ].map((field) => (
-                  <div key={field.name} style={{
-                    gridColumn: field.fullWidth ? '1 / -1' : 'auto',
-                  }}>
-                    <label style={{
-                      display: 'block',
-                      fontSize: 'clamp(12px, 2vw, 14px)',
-                      fontWeight: 600,
-                      marginBottom: 6,
-                      color: 'var(--color-gray-700)',
+                  { icon: '✓', text: 'Monthly contributions from $30' },
+                  { icon: '✓', text: 'Coverage for spouse and dependent children' },
+                  { icon: '✓', text: 'Financial assistance upon bereavement' },
+                  { icon: '✓', text: 'Full member portal access' },
+                ].map((item) => (
+                  <div key={item.text} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <div style={{
+                      width: 28,
+                      height: 28,
+                      background: 'rgba(249,168,37,0.15)',
+                      border: '1px solid rgba(249,168,37,0.4)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#F9A825',
+                      fontSize: 13,
+                      fontWeight: 700,
+                      flexShrink: 0,
                     }}>
-                      {field.label}
-                    </label>
-                    <input
-                      type={field.type}
-                      name={field.name}
-                      value={formData[field.name as keyof ApplicationFormData]}
-                      onChange={handleChange}
-                      style={{
-                        width: '100%',
-                        padding: '10px 12px',
-                        border: errors[field.name] ? '1px solid #C62828' : '1px solid var(--color-gray-300)',
-                        borderRadius: 4,
-                        fontSize: 16,
-                        fontFamily: 'var(--font-sans)',
-                        boxSizing: 'border-box',
-                      }}
-                    />
-                    {errors[field.name] && (
-                      <div style={{ fontSize: 12, color: '#C62828', marginTop: 4 }}>
-                        {errors[field.name]}
-                      </div>
-                    )}
+                      {item.icon}
+                    </div>
+                    <span style={{ fontSize: 15, color: 'rgba(255,255,255,0.8)', fontWeight: 300 }}>
+                      {item.text}
+                    </span>
                   </div>
                 ))}
               </div>
 
-              <div style={{ marginBottom: 'clamp(16px, 3vw, 24px)' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: 'clamp(12px, 2vw, 14px)',
-                  fontWeight: 600,
-                  marginBottom: 6,
-                  color: 'var(--color-gray-700)',
+              <div style={{ marginTop: 48, paddingTop: 32, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)' }}>
+                  Already a member?{' '}
+                  <Link href="/login" style={{ color: '#F9A825', textDecoration: 'none', fontWeight: 600 }}>
+                    Sign in to your account →
+                  </Link>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right — Form */}
+          <div style={{
+            padding: 'clamp(48px, 6vw, 80px) clamp(40px, 5vw, 72px)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+          }}>
+            {submitted ? (
+              <div style={{ textAlign: 'center', padding: '40px 0' }}>
+                <div style={{
+                  width: 72,
+                  height: 72,
+                  background: 'var(--color-green-pale)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 24px',
+                  fontSize: 32,
                 }}>
-                  Message (Optional)
-                </label>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows={4}
+                  ✓
+                </div>
+                <h3 style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: 28,
+                  fontWeight: 700,
+                  color: 'var(--color-gray-900)',
+                  marginBottom: 16,
+                }}>
+                  Application Received
+                </h3>
+                <p style={{ fontSize: 16, color: 'var(--color-gray-500)', lineHeight: 1.75, fontWeight: 300 }}>
+                  Thank you for applying to join the Samuel Bete Mutual Iddir.
+                  Our admin team will review your application and contact you
+                  at the email address you provided.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} noValidate>
+                <h3 style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: 24,
+                  fontWeight: 700,
+                  color: 'var(--color-gray-900)',
+                  marginBottom: 8,
+                }}>
+                  Apply for Membership
+                </h3>
+                <p style={{ fontSize: 14, color: 'var(--color-gray-400)', marginBottom: 32, fontWeight: 300 }}>
+                  All fields marked with * are required.
+                </p>
+
+                {submitError && (
+                  <div className="alert-error" style={{ marginBottom: 24 }}>
+                    {submitError}
+                  </div>
+                )}
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+                  <div>
+                    <label className="form-label" htmlFor="firstName">
+                      First Name <span style={{ color: 'var(--color-red)' }}>*</span>
+                    </label>
+                    <input
+                      id="firstName"
+                      name="firstName"
+                      type="text"
+                      className={`form-input${errors.firstName ? ' error' : ''}`}
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      autoComplete="given-name"
+                    />
+                    {errors.firstName && <p className="error-message">{errors.firstName}</p>}
+                  </div>
+                  <div>
+                    <label className="form-label" htmlFor="lastName">
+                      Last Name <span style={{ color: 'var(--color-red)' }}>*</span>
+                    </label>
+                    <input
+                      id="lastName"
+                      name="lastName"
+                      type="text"
+                      className={`form-input${errors.lastName ? ' error' : ''}`}
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      autoComplete="family-name"
+                    />
+                    {errors.lastName && <p className="error-message">{errors.lastName}</p>}
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+                  <div>
+                    <label className="form-label" htmlFor="email">
+                      Email Address <span style={{ color: 'var(--color-red)' }}>*</span>
+                    </label>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      className={`form-input${errors.email ? ' error' : ''}`}
+                      value={formData.email}
+                      onChange={handleChange}
+                      autoComplete="email"
+                    />
+                    {errors.email && <p className="error-message">{errors.email}</p>}
+                  </div>
+                  <div>
+                    <label className="form-label" htmlFor="phone">
+                      Phone Number <span style={{ color: 'var(--color-red)' }}>*</span>
+                    </label>
+                    <input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      className={`form-input${errors.phone ? ' error' : ''}`}
+                      value={formData.phone}
+                      onChange={handleChange}
+                      autoComplete="tel"
+                    />
+                    {errors.phone && <p className="error-message">{errors.phone}</p>}
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: 16 }}>
+                  <label className="form-label" htmlFor="address">
+                    Street Address <span style={{ color: 'var(--color-red)' }}>*</span>
+                  </label>
+                  <input
+                    id="address"
+                    name="address"
+                    type="text"
+                    className={`form-input${errors.address ? ' error' : ''}`}
+                    value={formData.address}
+                    onChange={handleChange}
+                    autoComplete="street-address"
+                  />
+                  {errors.address && <p className="error-message">{errors.address}</p>}
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 16, marginBottom: 16 }}>
+                  <div>
+                    <label className="form-label" htmlFor="city">
+                      City <span style={{ color: 'var(--color-red)' }}>*</span>
+                    </label>
+                    <input
+                      id="city"
+                      name="city"
+                      type="text"
+                      className={`form-input${errors.city ? ' error' : ''}`}
+                      value={formData.city}
+                      onChange={handleChange}
+                      autoComplete="address-level2"
+                    />
+                    {errors.city && <p className="error-message">{errors.city}</p>}
+                  </div>
+                  <div>
+                    <label className="form-label" htmlFor="province">
+                      Province <span style={{ color: 'var(--color-red)' }}>*</span>
+                    </label>
+                    <select
+                      id="province"
+                      name="province"
+                      className={`form-input${errors.province ? ' error' : ''}`}
+                      value={formData.province}
+                      onChange={handleChange}
+                    >
+                      <option value="">—</option>
+                      {['AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'].map((p) => (
+                        <option key={p} value={p}>{p}</option>
+                      ))}
+                    </select>
+                    {errors.province && <p className="error-message">{errors.province}</p>}
+                  </div>
+                  <div>
+                    <label className="form-label" htmlFor="postalCode">
+                      Postal Code <span style={{ color: 'var(--color-red)' }}>*</span>
+                    </label>
+                    <input
+                      id="postalCode"
+                      name="postalCode"
+                      type="text"
+                      className={`form-input${errors.postalCode ? ' error' : ''}`}
+                      value={formData.postalCode}
+                      onChange={handleChange}
+                      autoComplete="postal-code"
+                    />
+                    {errors.postalCode && <p className="error-message">{errors.postalCode}</p>}
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: 28 }}>
+                  <label className="form-label" htmlFor="message">
+                    Additional Message (Optional)
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows={3}
+                    className="form-input"
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="Tell us a bit about yourself or any questions you have..."
+                    style={{ resize: 'vertical' }}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  disabled={submitting}
                   style={{
                     width: '100%',
-                    padding: '10px 12px',
-                    border: '1px solid var(--color-gray-300)',
-                    borderRadius: 4,
-                    fontSize: 16,
-                    fontFamily: 'var(--font-sans)',
-                    boxSizing: 'border-box',
-                    resize: 'vertical',
+                    justifyContent: 'center',
+                    padding: '16px 28px',
+                    fontSize: 15,
+                    letterSpacing: '0.06em',
+                    textTransform: 'uppercase',
                   }}
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={submitting}
-                style={{
-                  width: '100%',
-                  padding: 'clamp(12px, 2vw, 16px)',
-                  background: submitting ? 'var(--color-gray-400)' : 'var(--color-green)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: 4,
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: 'clamp(14px, 2vw, 16px)',
-                  fontWeight: 700,
-                  cursor: submitting ? 'not-allowed' : 'pointer',
-                  transition: 'background 0.2s ease',
-                }}
-                onMouseEnter={(e) => {
-                  if (!submitting) e.currentTarget.style.background = '#0D4620'
-                }}
-                onMouseLeave={(e) => {
-                  if (!submitting) e.currentTarget.style.background = 'var(--color-green)'
-                }}
-              >
-                {submitting ? 'Submitting...' : 'Submit Application'}
-              </button>
-            </form>
-          )}
+                >
+                  {submitting ? 'Submitting...' : 'Submit Application'}
+                </button>
+              </form>
+            )}
+          </div>
         </div>
       </section>
 
-      {/* ─── FOOTER ────────────────────────────────────────────── */}
-      <footer style={{ background: 'var(--color-gray-900)', color: 'white', padding: 'clamp(32px, 5vw, 64px) 0' }}>
+      {/* ─── FOOTER ─────────────────────────────────────────────── */}
+      <footer style={{
+        background: 'var(--color-gray-900)',
+        color: 'rgba(255,255,255,0.6)',
+      }}>
         <div className="flag-bar" />
-        <div className="container">
+        <div className="container" style={{ padding: '64px 24px 32px' }}>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: 'clamp(32px, 5vw, 48px)',
-            marginBottom: 'clamp(32px, 5vw, 48px)',
+            gridTemplateColumns: '2fr 1fr 1fr 1fr',
+            gap: 48,
+            marginBottom: 56,
+            paddingBottom: 56,
+            borderBottom: '1px solid rgba(255,255,255,0.08)',
           }}>
+            {/* Brand */}
             <div>
-              <h4 style={{ fontSize: 'clamp(12px, 2vw, 14px)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16, color: '#F9A825' }}>
-                Organization
-              </h4>
-              <p style={{ fontSize: 'clamp(13px, 2vw, 15px)', lineHeight: 1.8, opacity: 0.8 }}>
-                Samuel Bete Mutual Iddir<br />
-                Calgary, Alberta<br />
-                Canada
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+                <div style={{
+                  width: 44,
+                  height: 44,
+                  background: 'var(--color-green)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}>
+                  <span style={{ color: 'white', fontWeight: 800, fontSize: 12, letterSpacing: '0.06em' }}>SBMI</span>
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: 'white', lineHeight: 1.2 }}>
+                    Samuel Bete Mutual Iddir
+                  </div>
+                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                    Calgary, Alberta
+                  </div>
+                </div>
+              </div>
+              <p style={{ fontSize: 14, lineHeight: 1.8, maxWidth: 300, fontWeight: 300 }}>
+                A community mutual aid organization rooted in Ethiopian tradition,
+                serving members and their families across Canada since 2012.
               </p>
             </div>
+
+            {/* Organization */}
             <div>
-              <h4 style={{ fontSize: 'clamp(12px, 2vw, 14px)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16, color: '#F9A825' }}>
-                Members
-              </h4>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                <li><Link href="/login" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: 'clamp(13px, 2vw, 15px)', lineHeight: 1.8 }}>Member Login</Link></li>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 20 }}>
+                Organization
+              </div>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {[
+                  { href: '#about', label: 'About the Iddir' },
+                  { href: '#memorial', label: 'Samuel\'s Story' },
+                  { href: '#benefits', label: 'Member Benefits' },
+                  { href: '#apply', label: 'Apply for Membership' },
+                ].map((link) => (
+                  <li key={link.label}>
+                    <a href={link.href} style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: 14, fontWeight: 300 }}>
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
+
+            {/* Members */}
             <div>
-              <h4 style={{ fontSize: 'clamp(12px, 2vw, 14px)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16, color: '#F9A825' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 20 }}>
+                Members
+              </div>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {[
+                  { href: '/login', label: 'Member Login' },
+                ].map((link) => (
+                  <li key={link.label}>
+                    <a href={link.href} style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: 14, fontWeight: 300 }}>
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 20 }}>
                 Contact
-              </h4>
-              <p style={{ fontSize: 'clamp(13px, 2vw, 15px)', lineHeight: 1.8, opacity: 0.8 }}>
-                <a href="mailto:info@sbmi.ca" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>
-                  info@sbmi.ca
-                </a>
+              </div>
+              <p style={{ fontSize: 14, lineHeight: 1.8, marginBottom: 12, fontWeight: 300 }}>
+                For membership inquiries or general questions:
+              </p>
+              <a
+                href="mailto:info@sbmi.ca"
+                style={{ color: '#F9A825', fontSize: 14, textDecoration: 'none', fontWeight: 600 }}
+              >
+                info@sbmi.ca
+              </a>
+              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', marginTop: 16, lineHeight: 1.6, fontWeight: 300 }}>
+                Calgary, Alberta<br />Canada
               </p>
             </div>
           </div>
+
+          {/* Bottom bar */}
           <div style={{
-            borderTop: '1px solid rgba(255,255,255,0.1)',
-            paddingTop: 'clamp(16px, 3vw, 24px)',
-            textAlign: 'center',
-            fontSize: 'clamp(12px, 2vw, 13px)',
-            opacity: 0.6,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 16,
           }}>
-            © {new Date().getFullYear()} Samuel Bete Mutual Iddir. All rights reserved.
+            <p style={{ fontSize: 13, fontWeight: 300 }}>
+              &copy; {new Date().getFullYear()} Samuel Bete Mutual Iddir. All rights reserved.
+            </p>
+            <div style={{ display: 'flex', gap: 24 }}>
+              <Link href="/login" style={{ color: 'rgba(255,255,255,0.35)', textDecoration: 'none', fontSize: 13 }}>
+                Member Portal
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
+
+      {/* ─── RESPONSIVE STYLES ──────────────────────────────────── */}
+      <style>{`
+        @media (max-width: 900px) {
+          .desktop-nav { display: none !important; }
+          .mobile-menu-btn { display: flex !important; flex-direction: column; }
+        }
+        @media (max-width: 768px) {
+          section > div[style*="grid-template-columns: 1fr 1fr"] {
+            grid-template-columns: 1fr !important;
+          }
+          section > div[style*="grid-template-columns: repeat(3"] {
+            grid-template-columns: 1fr !important;
+          }
+          section > div[style*="grid-template-columns: repeat(4"] {
+            grid-template-columns: 1fr 1fr !important;
+          }
+          footer .container > div[style*="grid-template-columns: 2fr"] {
+            grid-template-columns: 1fr 1fr !important;
+          }
+        }
+        @media (max-width: 480px) {
+          section > div[style*="grid-template-columns: repeat(4"] {
+            grid-template-columns: 1fr !important;
+          }
+          footer .container > div[style*="grid-template-columns: 2fr"] {
+            grid-template-columns: 1fr !important;
+          }
+        }
+        a:hover { opacity: 0.85; }
+        .btn-primary:hover { opacity: 0.9; }
+      `}</style>
     </div>
   )
 }
