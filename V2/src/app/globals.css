@@ -366,3 +366,38 @@ input[type="checkbox"] {
     font-size: 14px;
   }
 }
+
+/* ─── Member Portal Sidebar ─────────────────────────────── */
+.sidebar-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-gray-600);
+  text-decoration: none;
+  transition: background 0.1s ease, color 0.1s ease;
+  border-left: 3px solid transparent;
+}
+
+.sidebar-nav-link:hover {
+  background: var(--color-gray-50);
+  color: var(--color-gray-900);
+}
+
+.sidebar-nav-link.active {
+  background: var(--color-green-pale);
+  color: var(--color-green);
+  border-left-color: var(--color-green);
+  font-weight: 600;
+}
+
+.sidebar-nav-link svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.sidebar-nav-link.active svg {
+  opacity: 1;
+}
