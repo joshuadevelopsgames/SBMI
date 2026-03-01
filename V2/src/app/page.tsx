@@ -220,7 +220,9 @@ export default function WelcomePage() {
         </div>
 
         {/* Ethiopian flag bar */}
-        <div className="flag-bar" />
+        <div className="flag-bar">
+          <div />
+        </div>
       </nav>
 
       {/* Mobile Menu Overlay */}
@@ -1298,7 +1300,9 @@ export default function WelcomePage() {
         background: 'var(--color-gray-900)',
         color: 'rgba(255,255,255,0.6)',
       }}>
-        <div className="flag-bar" />
+        <div className="flag-bar">
+          <div />
+        </div>
         <div className="container" style={{ padding: '64px 24px 32px' }}>
           <div className="footer-grid" style={{
             display: 'grid',
