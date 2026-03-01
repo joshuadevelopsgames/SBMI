@@ -318,11 +318,17 @@ button, input, select, textarea { border-radius: 0; }
   .application-form-grid {
     display: flex !important;
     flex-direction: column !important;
+    min-height: auto !important;
   }
 
   /* Specific fix for Join section: Info card first, then Form */
   .application-form-grid {
     flex-direction: column !important;
+  }
+
+  .application-form-grid > div {
+    width: 100% !important;
+    min-height: auto !important;
   }
 
   div[style*="grid-template-columns: 1fr 1fr"] > div,
@@ -353,7 +359,16 @@ button, input, select, textarea { border-radius: 0; }
   div[style*="grid-template-columns: repeat(4"] {
     display: grid !important;
     grid-template-columns: 1fr !important;
-    gap: 40px !important;
+    gap: 48px !important;
+  }
+
+  .how-it-works-grid > div {
+    padding: 0 !important;
+    margin-bottom: 24px;
+  }
+
+  .connector-line {
+    display: none !important;
   }
 
   /* Form Fields */

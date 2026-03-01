@@ -906,14 +906,14 @@ export default function WelcomePage() {
             </h2>
           </div>
 
-          <div style={{
+          <div className="how-it-works-grid" style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 0,
             position: 'relative',
           }}>
             {/* Connector line */}
-            <div style={{
+            <div className="connector-line" style={{
               position: 'absolute',
               top: 32,
               left: '12.5%',
@@ -970,7 +970,7 @@ export default function WelcomePage() {
 
       {/* ─── APPLICATION FORM ───────────────────────────────────── */}
       <section id="apply" style={{ background: 'white' }}>
-        <div style={{
+        <div className="application-form-grid" style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           minHeight: 600,
