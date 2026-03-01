@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -71,6 +72,7 @@ const navItems = [
 
 export default function MemberSidebar({ user }: MemberSidebarProps) {
   const pathname = usePathname()
+  const [isOpen, setIsOpen] = useState(false)
 
   const isActive = (href: string) => {
     if (href === '/member') return pathname === '/member'
@@ -78,127 +80,187 @@ export default function MemberSidebar({ user }: MemberSidebarProps) {
   }
 
   return (
-    <aside style={{
-      width: 240,
-      background: 'var(--color-white)',
-      borderRight: '1px solid var(--color-gray-200)',
-      display: 'flex',
-      flexDirection: 'column',
-      flexShrink: 0,
-    }}>
-      {/* Logo */}
-      <div style={{
-        padding: '20px 16px',
-        borderBottom: '1px solid var(--color-gray-200)',
+    <>
+      {/* Mobile menu button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        style={{
+          display: 'none',
+          position: 'fixed',
+          top: 50,
+          left: 16,
+          zIndex: 1000,
+          background: 'var(--color-green)',
+          color: 'white',
+          border: 'none',
+          padding: '8px 12px',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: 14,
+          fontWeight: 600,
+        }}
+        className="mobile-menu-btn"
+      >
+        {isOpen ? '✕' : '☰'}
+      </button>
+
+      {/* Sidebar overlay for mobile */}
+      {isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          style={{
+            display: 'none',
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.5)',
+            zIndex: 999,
+          }}
+          className="mobile-menu-overlay"
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside style={{
+        width: 240,
+        background: 'var(--color-white)',
+        borderRight: '1px solid var(--color-gray-200)',
+        display: 'flex',
+        flexDirection: 'column',
+        flexShrink: 0,
+        transition: 'transform 0.3s ease',
+        position: 'relative',
       }}>
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+        {/* Logo */}
+        <div style={{
+          padding: '20px 16px',
+          borderBottom: '1px solid var(--color-gray-200)',
+        }}>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+            <div style={{
+              width: 32, height: 32,
+              background: 'var(--color-green)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'white', fontWeight: 800, fontSize: 12,
+              flexShrink: 0,
+            }}>SB</div>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--color-gray-900)', lineHeight: 1.2 }}>
+                Samuel Bete
+              </div>
+              <div style={{ fontSize: 11, color: 'var(--color-gray-500)', letterSpacing: '0.04em' }}>
+                Mutual Iddir
+              </div>
+            </div>
+          </Link>
+          <div className="flag-bar" style={{ marginTop: 16 }} />
+        </div>
+
+        {/* User info */}
+        <div style={{
+          padding: '16px',
+          borderBottom: '1px solid var(--color-gray-100)',
+          background: 'var(--color-gray-50)',
+        }}>
           <div style={{
-            width: 32, height: 32,
+            width: 40, height: 40,
             background: 'var(--color-green)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'white', fontWeight: 800, fontSize: 12,
-            flexShrink: 0,
-          }}>SB</div>
-          <div>
-            <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--color-gray-900)', lineHeight: 1.2 }}>
-              Samuel Bete
-            </div>
-            <div style={{ fontSize: 11, color: 'var(--color-gray-500)', letterSpacing: '0.04em' }}>
-              Mutual Iddir
-            </div>
-          </div>
-        </Link>
-        <div className="flag-bar" style={{ marginTop: 16 }} />
-      </div>
-
-      {/* User info */}
-      <div style={{
-        padding: '16px',
-        borderBottom: '1px solid var(--color-gray-100)',
-        background: 'var(--color-gray-50)',
-      }}>
-        <div style={{
-          width: 40, height: 40,
-          background: 'var(--color-green)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: 'white', fontWeight: 700, fontSize: 16,
-          marginBottom: 8,
-        }}>
-          {user.firstName[0]}{user.lastName[0]}
-        </div>
-        <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--color-gray-900)' }}>
-          {user.firstName} {user.lastName}
-        </div>
-        <div style={{ fontSize: 12, color: 'var(--color-gray-500)', marginTop: 2 }}>
-          {user.email}
-        </div>
-        {user.role === 'ADMIN' && (
-          <div style={{
-            display: 'inline-block',
-            marginTop: 6,
-            padding: '2px 8px',
-            background: 'var(--color-green-pale)',
-            color: 'var(--color-green)',
-            fontSize: 11,
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            letterSpacing: '0.06em',
+            color: 'white', fontWeight: 700, fontSize: 16,
+            marginBottom: 8,
           }}>
-            Admin
+            {user.firstName[0]}{user.lastName[0]}
           </div>
-        )}
-      </div>
-
-      {/* Navigation */}
-      <nav style={{ flex: 1, padding: '8px 0' }}>
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`sidebar-nav-link${isActive(item.href) ? ' active' : ''}`}
-          >
-            {item.icon}
-            {item.label}
-          </Link>
-        ))}
-
-        {user.role === 'ADMIN' && (
-          <>
+          <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--color-gray-900)' }}>
+            {user.firstName} {user.lastName}
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--color-gray-500)', marginTop: 2 }}>
+            {user.email}
+          </div>
+          {user.role === 'ADMIN' && (
             <div style={{
-              padding: '12px 16px 4px',
-              fontSize: 10,
+              display: 'inline-block',
+              marginTop: 6,
+              padding: '2px 8px',
+              background: 'var(--color-green-pale)',
+              color: 'var(--color-green)',
+              fontSize: 11,
               fontWeight: 700,
               textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              color: 'var(--color-gray-400)',
+              letterSpacing: '0.06em',
             }}>
-              Administration
+              Admin
             </div>
-            <Link
-              href="/admin"
-              className={`sidebar-nav-link${pathname.startsWith('/admin') ? ' active' : ''}`}
-            >
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
-              </svg>
-              Admin Portal
-            </Link>
-          </>
-        )}
-      </nav>
+          )}
+        </div>
 
-      {/* Logout */}
-      <div style={{ padding: '12px 0', borderTop: '1px solid var(--color-gray-200)' }}>
-        <form action="/api/auth/logout" method="POST">
+        {/* Navigation */}
+        <nav style={{ flex: 1, padding: '8px 0' }}>
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`sidebar-nav-link${isActive(item.href) ? ' active' : ''}`}
+              onClick={() => setIsOpen(false)}
+            >
+              {item.icon}
+              {item.label}
+            </Link>
+          ))}
+
+          {user.role === 'ADMIN' && (
+            <>
+              <div style={{
+                padding: '12px 16px 4px',
+                fontSize: 10,
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                color: 'var(--color-gray-400)',
+              }}>
+                Administration
+              </div>
+              <Link
+                href="/admin"
+                className={`sidebar-nav-link${pathname.startsWith('/admin') ? ' active' : ''}`}
+                onClick={() => setIsOpen(false)}
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                </svg>
+                Admin Portal
+              </Link>
+            </>
+          )}
+        </nav>
+
+        {/* Sign out button */}
+        <div style={{ padding: '8px 0', borderTop: '1px solid var(--color-gray-200)' }}>
           <button
-            type="submit"
-            className="sidebar-nav-link"
+            onClick={() => {
+              document.location.href = '/api/auth/logout'
+            }}
             style={{
               width: '100%',
-              background: 'none',
+              padding: '10px 16px',
+              background: 'transparent',
+              color: 'var(--color-gray-600)',
               border: 'none',
-              cursor: 'pointer',
               textAlign: 'left',
+              fontSize: 14,
+              fontWeight: 500,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              transition: 'background 0.1s ease, color 0.1s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--color-red-light)'
+              e.currentTarget.style.color = 'var(--color-red)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent'
+              e.currentTarget.style.color = 'var(--color-gray-600)'
             }}
           >
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
@@ -206,8 +268,34 @@ export default function MemberSidebar({ user }: MemberSidebarProps) {
             </svg>
             Sign Out
           </button>
-        </form>
-      </div>
-    </aside>
+        </div>
+      </aside>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .mobile-menu-btn {
+            display: block !important;
+          }
+
+          aside {
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
+            height: 100vh !important;
+            z-index: 1001 !important;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+          }
+
+          aside.open {
+            transform: translateX(0);
+          }
+
+          .mobile-menu-overlay {
+            display: block !important;
+          }
+        }
+      `}</style>
+    </>
   )
 }

@@ -46,7 +46,7 @@ export default async function MemberLayout({
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, paddingTop: 36 }}>
           <MemberHeader user={{ firstName: DEMO_USER.firstName, lastName: DEMO_USER.lastName }} />
-          <main style={{ flex: 1, padding: '32px 40px' }}>
+          <main style={{ flex: 1, padding: 'clamp(16px, 5vw, 40px)' }}>
             {children}
           </main>
           <MemberFooter adminEmail="info@sbmi.ca" />
@@ -67,7 +67,7 @@ export default async function MemberLayout({
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         <MemberHeader user={{ firstName: user.firstName, lastName: user.lastName }} />
-        <main style={{ flex: 1, padding: '32px 40px' }}>
+        <main style={{ flex: 1, padding: 'clamp(16px, 5vw, 40px)' }}>
           {children}
         </main>
         <MemberFooter adminEmail="info@sbmi.ca" />
