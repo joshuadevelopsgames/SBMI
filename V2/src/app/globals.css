@@ -9,6 +9,7 @@
   --color-gray-900: #101827;
   --color-gray-800: #1F2937;
   --color-gray-500: #6B7280;
+  --color-gray-400: #9CA3AF;
   --color-gray-200: #E5E7EB;
   --color-off-white: #F9FAFB;
   --font-serif: 'Playfair Display', serif;
@@ -58,20 +59,36 @@ body {
   background: var(--color-gold);
 }
 
-/* Mobile Responsive Optimizations */
+/* Navigation & Header Fixes */
 @media (max-width: 768px) {
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .mobile-menu-btn {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 44px !important;
+    height: 44px !important;
+    z-index: 201 !important;
+  }
+
+  nav .container {
+    height: 80px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
   /* Hero Section */
   .hero-section {
     height: auto !important;
     min-height: 500px !important;
-    padding-top: 120px !important;
+    padding-top: 140px !important; /* Increased to prevent overlap with fixed nav */
     padding-bottom: 60px !important;
     align-items: center !important;
     text-align: center !important;
-  }
-
-  .hero-section .container {
-    padding-bottom: 0 !important;
   }
 
   .hero-section h1 {
@@ -82,18 +99,6 @@ body {
   .hero-section p {
     font-size: 16px !important;
     margin-bottom: 32px !important;
-  }
-
-  .hero-section div[style*="display: flex"] {
-    flex-direction: column !important;
-    gap: 16px !important;
-    align-items: center !important;
-  }
-
-  .hero-section a {
-    width: 100% !important;
-    max-width: 280px !important;
-    justify-content: center !important;
   }
 
   /* Stack all 2-column grids (About, Memorial, Join) */
