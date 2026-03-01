@@ -72,3 +72,9 @@ export function generateToken(): string {
   }
   return Array.from(array, (b) => b.toString(16).padStart(2, '0')).join('')
 }
+
+export async function verifyAuth(request: any) {
+  const user = await getSession();
+  if (!user) return null;
+  return { user };
+}
