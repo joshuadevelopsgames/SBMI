@@ -15,15 +15,26 @@
   --font-sans: 'Inter', sans-serif;
 }
 
-@layer base {
-  body {
-    @apply text-gray-900 antialiased;
-    font-family: var(--font-sans);
-  }
+body {
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-sans);
 }
 
 .container {
-  @apply max-w-7xl mx-auto px-6 lg:px-12;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
 }
 
 .flag-bar {
