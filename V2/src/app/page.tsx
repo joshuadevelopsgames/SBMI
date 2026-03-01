@@ -714,9 +714,9 @@ export default function WelcomePage() {
                 ),
                 title: 'Funeral Financial Assistance',
                 body: 'A significant payout to help cover funeral home services, burial costs, and related expenses when a member or their immediate family passes away.',
-                accent: 'var(--color-green)',
-                iconColor: 'var(--color-green)',
-                bg: 'var(--color-green-pale)',
+                accent: '#F9A825',
+                iconColor: '#92650A',
+                bg: '#FFF8E1',
               },
               {
                 icon: (
@@ -727,9 +727,9 @@ export default function WelcomePage() {
                 ),
                 title: 'Repatriation Support',
                 body: 'Assistance with the costs of transporting remains to Ethiopia for burial, honouring the deeply held tradition of returning home.',
-                accent: 'var(--color-green)',
-                iconColor: 'var(--color-green)',
-                bg: 'var(--color-green-pale)',
+                accent: '#F9A825',
+                iconColor: '#92650A',
+                bg: '#FFF8E1',
               },
               {
                 icon: (
@@ -744,9 +744,9 @@ export default function WelcomePage() {
                 ),
                 title: 'Lekso Coordination',
                 body: 'Practical support during the mourning period — coordinating food, seating, and logistics so the family can focus on grieving together.',
-                accent: 'var(--color-green)',
-                iconColor: 'var(--color-green)',
-                bg: 'var(--color-green-pale)',
+                accent: '#F9A825',
+                iconColor: '#92650A',
+                bg: '#FFF8E1',
               },
               {
                 icon: (
