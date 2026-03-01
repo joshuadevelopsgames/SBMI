@@ -27,7 +27,7 @@ export async function getAppConfig() {
       data: {
         monthlyContributionCents: parseInt(process.env.MONTHLY_CONTRIBUTION_CENTS || '2000'),
         penaltyAmountCents: parseInt(process.env.PENALTY_AMOUNT_CENTS || '500'),
-        bylawsPdfUrl: '/bylaws.pdf',
+        bylawsPdfUrl: '/sbmi-bylaws.pdf',
         adminEmail: process.env.ADMIN_EMAIL || 'admin@sbmi.ca',
       },
     })

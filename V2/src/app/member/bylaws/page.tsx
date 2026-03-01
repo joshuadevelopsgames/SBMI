@@ -7,7 +7,7 @@ export default async function BylawsPage() {
   const cookieStore = await cookies()
   const isDemo = cookieStore.get('sbmi_demo')?.value === '1'
 
-  let config = { bylawsPdfUrl: '/bylaws.pdf', adminEmail: 'info@sbmi.ca' }
+  let config = { bylawsPdfUrl: '/sbmi-bylaws.pdf', adminEmail: 'info@sbmi.ca' }
 
   if (!isDemo) {
     const user = await getSession()
