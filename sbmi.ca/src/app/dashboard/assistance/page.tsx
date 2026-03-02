@@ -133,7 +133,7 @@ export default function AssistancePage() {
                   <Link href="/dashboard/family" className="text-[#1B5E3B] hover:underline font-medium">
                     Manage family
                   </Link>
-                  {" "}to add or edit family members, then return here.
+                  {" "}to request add/remove or edit family members, then return here.
                 </p>
               </>
             )}

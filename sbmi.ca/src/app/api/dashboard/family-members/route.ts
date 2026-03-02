@@ -34,7 +34,7 @@ export async function GET() {
   return NextResponse.json(withAge);
 }
 
-/** POST: add family member. SOW Family US2 — age ≤25 at entry */
+/** POST: request add family member (admin approval required). */
 export async function POST(req: NextRequest) {
   const session = await getSession();
   if (!session?.memberId) {
@@ -65,13 +65,36 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   }
-  const created = await prisma.familyMember.create({
-    data: { memberId: session.memberId, fullName, birthDate },
+  const existingPending = await prisma.familyMemberChangeRequest.findFirst({
+    where: {
+      memberId: session.memberId,
+      action: "ADD",
+      status: "PENDING",
+      fullName,
+      birthDate,
+    },
   });
-  return NextResponse.json({
-    id: created.id,
-    fullName: created.fullName,
-    birthDate: created.birthDate,
-    currentAge: ageAt(created.birthDate),
+  if (existingPending) {
+    return NextResponse.json(
+      { error: "An add request for this family member is already pending admin approval." },
+      { status: 409 }
+    );
+  }
+  const request = await prisma.familyMemberChangeRequest.create({
+    data: {
+      memberId: session.memberId,
+      action: "ADD",
+      fullName,
+      birthDate,
+    },
   });
+  return NextResponse.json(
+    {
+      ok: true,
+      requestId: request.id,
+      status: request.status,
+      message: "Your add request was submitted for admin approval.",
+    },
+    { status: 202 }
+  );
 }

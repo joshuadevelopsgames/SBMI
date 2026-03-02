@@ -59,7 +59,7 @@ export async function PATCH(
   });
 }
 
-/** DELETE: remove family member. SOW Family US5 — with confirmation (handled in UI) */
+/** DELETE: request remove family member (admin approval required). */
 export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -75,6 +75,36 @@ export async function DELETE(
   if (!existing) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
-  await prisma.familyMember.delete({ where: { id } });
-  return NextResponse.json({ ok: true });
+  const pendingRemoval = await prisma.familyMemberChangeRequest.findFirst({
+    where: {
+      memberId: session.memberId,
+      familyMemberId: id,
+      action: "REMOVE",
+      status: "PENDING",
+    },
+  });
+  if (pendingRemoval) {
+    return NextResponse.json(
+      { error: "A removal request is already pending admin approval for this family member." },
+      { status: 409 }
+    );
+  }
+  const request = await prisma.familyMemberChangeRequest.create({
+    data: {
+      memberId: session.memberId,
+      familyMemberId: id,
+      action: "REMOVE",
+      fullName: existing.fullName,
+      birthDate: existing.birthDate,
+    },
+  });
+  return NextResponse.json(
+    {
+      ok: true,
+      requestId: request.id,
+      status: request.status,
+      message: "Your removal request was submitted for admin approval.",
+    },
+    { status: 202 }
+  );
 }

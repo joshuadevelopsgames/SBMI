@@ -77,7 +77,7 @@ export default async function AdminDashboardPage() {
             Approvals
           </h3>
           <p className="text-sm text-[#3D5A4A]">
-            Process pending membership applications and claims.
+            Process pending membership applications, household member changes, and claims.
           </p>
         </Link>
         <Link
