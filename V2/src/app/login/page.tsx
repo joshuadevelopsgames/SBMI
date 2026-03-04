@@ -11,7 +11,8 @@ function LoginForm() {
   const message = searchParams.get('message')
   const type = searchParams.get('type') // 'admin' or 'member' (default)
 
-  const isAdmin = type === 'admin'
+  const isAdmin = type === 'admin';
+  console.log('login/page.tsx: isAdmin', isAdmin, 'searchParams.type', type);
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
