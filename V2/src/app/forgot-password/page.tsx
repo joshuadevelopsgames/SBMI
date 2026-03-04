@@ -59,7 +59,7 @@ export default function ForgotPasswordPage() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--color-gray-50)', display: 'flex', flexDirection: 'column' }}>
       <header style={{ background: 'var(--color-white)', borderBottom: '1px solid var(--color-gray-200)' }}>
-        <div className="flag-bar" />
+        <div className="flag-bar"><div /></div>
         <div className="container" style={{ display: 'flex', alignItems: 'center', height: 60 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
             <div style={{
