@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SBMI Flowcharts Preview</title>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      flowchart: { useMaxWidth: true, htmlLabels: true }
+    });
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 1rem 2rem 2rem; background: #f5f5f5; }
+    h1 { margin-top: 0; }
+    section { background: #fff; border-radius: 8px; padding: 1.5rem 2rem; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    section h2 { margin: 0 0 1rem; font-size: 1.1rem; color: #333; border-bottom: 1px solid #eee; padding-bottom: .5rem; }
+    .mermaid { display: flex; justify-content: center; overflow: auto; min-height: 80px; }
+    .mermaid svg { max-width: 100%; }
+    nav { margin-bottom: 2rem; padding: 1rem; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    nav a { display: inline-block; margin-right: 1rem; margin-bottom: .5rem; color: #4a90d9; text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+    .doc { font-size: 0.85rem; color: #666; margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+  <nav>
+    <span class="doc">SBMI RFP:</span>
+    <a href="#rfp-1">1 Phases</a><a href="#rfp-2">2 RBAC</a><a href="#rfp-3">3 Member Journey</a><a href="#rfp-4">4 Approval</a><a href="#rfp-5">5 Payment</a><a href="#rfp-6">6 Sequence</a><a href="#rfp-7">7 Claims</a><a href="#rfp-8">8 Data</a><a href="#rfp-9">9 Notifications</a><a href="#rfp-10">10 Reports</a><a href="#rfp-11">11 Config</a><a href="#rfp-12">12 Out of Scope</a><a href="#rfp-13">13 Context</a><a href="#rfp-14">14 Month 1</a>
+    <br><span class="doc">Iddir Bylaws:</span>
+    <a href="#bylaw-1">1 Org</a><a href="#bylaw-2">2 Membership</a><a href="#bylaw-3">3 Family</a><a href="#bylaw-4">4 Funeral</a><a href="#bylaw-5">5 Humanitarian</a><a href="#bylaw-6">6 Income</a><a href="#bylaw-7">7 Elections</a><a href="#bylaw-8">8 Decisions</a><a href="#bylaw-9">9 Fines</a><a href="#bylaw-10">10 Visitor</a><a href="#bylaw-11">11 Death Support</a><a href="#bylaw-12">12 Meeting Notice</a><a href="#bylaw-13">13 Resignation</a>
+  </nav>
+
+  <h1>SBMI Member Portal RFP – Flowcharts</h1>
+
+  <section id="rfp-1"><h2>1. Project Phases</h2><div class="mermaid">
+flowchart LR
+    subgraph M1["Month 1"]
+        A[Discovery & Design] --> B[Core Development Begins]
+    end
+    subgraph M2["Months 1–2"]
+        B --> C[Core Development]
+        C --> D[Financial & Logic Workflows]
+    end
+    subgraph M3["Month 3"]
+        D --> E[Compliance & Security]
+        E --> F[Reporting Module]
+    end
+    subgraph Launch["Launch Phase"]
+        F --> G[Soft Launch]
+        G --> H[Training & Knowledge Transfer]
+        H --> I[Full Launch\nJuly 1, 2026]
+    end
+    style A fill:#4a90d9,color:#fff
+    style B fill:#4a90d9,color:#fff
+    style C fill:#5ba85b,color:#fff
+    style D fill:#5ba85b,color:#fff
+    style E fill:#e8a838,color:#fff
+    style F fill:#e8a838,color:#fff
+    style G fill:#d94a4a,color:#fff
+    style H fill:#d94a4a,color:#fff
+    style I fill:#8e44ad,color:#fff
+</div></section>
+
+  <section id="rfp-2"><h2>2. User Roles & RBAC</h2><div class="mermaid">
+flowchart TD
+    RBAC[RBAC Permission Matrix]
+    RBAC --> MR[Member Role]
+    RBAC --> AR[Admin Role]
+    MR --> M1[View/Update Profile]
+    MR --> M2[View Household]
+    MR --> M3[Pay Dues & Fees]
+    MR --> M4[View Payment History]
+    MR --> M5[Submit Claims]
+    MR --> M6[View Claim Status]
+    AR --> A1[Manage Members]
+    AR --> A2[Approval Queue]
+    AR --> A3[Configure Rules]
+    AR --> A4[View Reports]
+    AR --> A5[Waive Penalties]
+    AR --> A6[Audit Logs Access]
+    subgraph Permissions["Permission Matrix"]
+        direction LR
+        P1["Any Admin"] --- P2["Multiple Admins"]
+        P2 --- P3["Specific Admin"]
+    end
+    A2 --> Permissions
+    style RBAC fill:#8e44ad,color:#fff
+    style MR fill:#4a90d9,color:#fff
+    style AR fill:#d94a4a,color:#fff
+</div></section>
+
+  <section id="rfp-3"><h2>3. Member Journey</h2><div class="mermaid">
+flowchart TD
+    START([New Member]) --> REG{Registration Method}
+    REG -->|Online| SELF[Self-Registration Form]
+    REG -->|By Admin| ADMIN_REG[Admin Creates Account]
+    SELF --> PENDING[Pending Approval]
+    ADMIN_REG --> ACTIVE[Active Member]
+    PENDING --> APPROVE{Admin Reviews}
+    APPROVE -->|Approved| ACTIVE
+    APPROVE -->|Rejected| REJECTED[Registration Rejected\nReason Provided]
+    ACTIVE --> LOGIN[Secure Login]
+    LOGIN --> DASHBOARD[Member Dashboard]
+    DASHBOARD --> PROFILE[View/Update Profile]
+    DASHBOARD --> HOUSEHOLD[Manage Household]
+    DASHBOARD --> PAYMENTS[Payment History]
+    DASHBOARD --> CLAIMS[Claim Status]
+    DASHBOARD --> PAY[Pay Dues/Fees]
+    DASHBOARD --> RECEIPTS[View Receipts & Alerts]
+    PAY --> STRIPE[Stripe Payment\nMonthly / Weekly / Bi-weekly]
+    STRIPE --> RECEIPT_GEN[Receipt Generated]
+    RECEIPT_GEN --> EMAIL_RECEIPT[Email Receipt Sent]
+    style START fill:#8e44ad,color:#fff
+    style ACTIVE fill:#5ba85b,color:#fff
+    style REJECTED fill:#d94a4a,color:#fff
+    style STRIPE fill:#635bff,color:#fff
+</div></section>
+
+  <section id="rfp-4"><h2>4. Admin Approval Workflow</h2><div class="mermaid">
+flowchart TD
+    TRIGGER([New Item Enters Queue]) --> QUEUE[Approval Queue]
+    QUEUE --> TYPE{Item Type}
+    TYPE --> MEMBERSHIP[Pending Membership]
+    TYPE --> CLAIM[Pending Claim]
+    MEMBERSHIP --> RULE_CHECK{Check Configurable Rules}
+    CLAIM --> RULE_CHECK
+    RULE_CHECK --> ASSIGN{Assignment Rule}
+    ASSIGN -->|Any Admin| ANY[Any Available Admin]
+    ASSIGN -->|Multiple Admins| MULTI[Requires Multiple Approvals]
+    ASSIGN -->|Specific Admin| SPEC[Assigned to Specific Admin]
+    ANY --> REVIEW[Admin Reviews]
+    MULTI --> REVIEW
+    SPEC --> REVIEW
+    REVIEW --> DECISION{Decision}
+    DECISION -->|Approve| APPROVED[Approved]
+    DECISION -->|Reject| REJECTED[Rejected Reason Required]
+    APPROVED --> LOG_A[Action Logged to Audit]
+    REJECTED --> LOG_R[Action Logged to Audit]
+    LOG_A --> NOTIFY_A[Notification Sent to Member]
+    LOG_R --> NOTIFY_R[Notification Sent to Member]
+    style TRIGGER fill:#8e44ad,color:#fff
+    style APPROVED fill:#5ba85b,color:#fff
+    style REJECTED fill:#d94a4a,color:#fff
+</div></section>
+
+  <section id="rfp-5"><h2>5. Payment Flow</h2><div class="mermaid">
+flowchart TD
+    MEMBER([Member]) --> SCHEDULE[Set Payment Schedule]
+    SCHEDULE --> CALC[System Calculates Dues]
+    CALC --> RECURRING[Recurring Stripe Charge Created]
+    RECURRING --> CHARGE{Charge Attempt}
+    CHARGE -->|Success| RECEIPT[Receipt Generated]
+    RECEIPT --> EMAIL[Email Receipt to Member]
+    EMAIL --> RECORD[Payment Recorded in DB]
+    CHARGE -->|Failed| MISSED[Missed Payment Detected]
+    MISSED --> ALERT[Alert Sent to Member]
+    MISSED --> LATE_FEE[Late Fee Applied]
+    LATE_FEE --> ADMIN_REVIEW{Admin Review}
+    ADMIN_REVIEW -->|Waive| WAIVE[Penalty Waived]
+    ADMIN_REVIEW -->|Enforce| ENFORCE[Penalty Stands]
+    ENFORCE --> RETRY[Next Scheduled Charge Includes Late Fee]
+    subgraph OUT_OF_SCOPE["Out of Base Scope"]
+        CASH[Cash/Cheque Recording]
+    end
+    style MEMBER fill:#8e44ad,color:#fff
+    style RECEIPT fill:#5ba85b,color:#fff
+    style MISSED fill:#d94a4a,color:#fff
+    style RECURRING fill:#635bff,color:#fff
+</div></section>
+
+  <section id="rfp-6"><h2>6. Payment Flow – Sequence</h2><div class="mermaid">
+sequenceDiagram
+    actor Member
+    participant Portal as Member Portal
+    participant Stripe
+    participant DB as Database
+    participant Admin
+    participant Email as Email Service
+    Member->>Portal: Set payment schedule
+    Portal->>DB: Save schedule & calculate dues
+    loop Recurring Payment Cycle
+        Portal->>Stripe: Initiate charge
+        alt Payment Successful
+            Stripe-->>Portal: Payment confirmed
+            Portal->>DB: Record payment
+            Portal->>Email: Send receipt
+            Email-->>Member: Payment receipt
+        else Payment Failed
+            Stripe-->>Portal: Payment failed
+            Portal->>DB: Record missed payment
+            Portal->>Email: Send missed payment alert
+            Email-->>Member: Missed payment alert
+            Admin->>Portal: Review penalty
+        end
+    end
+</div></section>
+
+  <section id="rfp-7"><h2>7. Claims / Benefits Flow</h2><div class="mermaid">
+flowchart TD
+    MEMBER([Member]) --> SUBMIT[Submit Claim]
+    SUBMIT --> QUEUE[Claim Enters Approval Queue]
+    QUEUE --> CONFIG{Approval Configuration}
+    CONFIG -->|Single Approver| SINGLE[One Admin Reviews]
+    CONFIG -->|Multi Approver| MULTI[Multiple Admins Review]
+    SINGLE --> DECISION{Decision}
+    MULTI --> ALL_APPROVE{All Approved?}
+    ALL_APPROVE -->|Yes| DECISION
+    ALL_APPROVE -->|No| CLAIM_REJECTED
+    DECISION -->|Approve| CLAIM_APPROVED[Claim Approved]
+    DECISION -->|Reject| CLAIM_REJECTED[Claim Rejected]
+    CLAIM_APPROVED --> RECORD[Record for Payment]
+    CLAIM_APPROVED --> NOTIFY_M[Notify Member]
+    CLAIM_REJECTED --> NOTIFY_R[Notify Member]
+    RECORD --> EXTERNAL[Payment Handled Outside System]
+    style MEMBER fill:#8e44ad,color:#fff
+    style CLAIM_APPROVED fill:#5ba85b,color:#fff
+    style CLAIM_REJECTED fill:#d94a4a,color:#fff
+</div></section>
+
+  <section id="rfp-8"><h2>8. Data Architecture</h2><div class="mermaid">
+flowchart TD
+    subgraph AWS["AWS Calgary Region"]
+        subgraph DB["MySQL Database"]
+            T1[(Members)]
+            T2[(Payments)]
+            T3[(Claims)]
+            T4[(Household / Family)]
+            T5[(Roles)]
+            T6[(User Accounts)]
+            T7[(Audit Logs)]
+        end
+        subgraph Security["Security Layer"]
+            ENC[Encrypted PII]
+            HASH[Hashed Passwords]
+        end
+        subgraph Backup["Backup Policy"]
+            DAILY[Daily Automated Backups]
+            RET[30-Day Retention]
+        end
+    end
+    T1 --- T4
+    T1 --- T2
+    T1 --- T3
+    T6 --- T5
+    T6 --- T1
+    DB --> Security
+    DB --> Backup
+    style DB fill:#4a90d9,color:#fff
+    style Security fill:#d94a4a,color:#fff
+    style Backup fill:#5ba85b,color:#fff
+</div></section>
+
+  <section id="rfp-9"><h2>9. Notification System</h2><div class="mermaid">
+flowchart LR
+    subgraph Triggers["Notification Triggers"]
+        N1[Payment Reminder]
+        N2[Payment Receipt]
+        N3[Membership Renewal]
+        N4[Claim Status]
+        N5[New Registration]
+        N6[Approval Needed]
+    end
+    subgraph Channels["Channels"]
+        EMAIL[Email Included]
+        SMS[SMS Extra Scope]
+    end
+    N1 --> EMAIL
+    N2 --> EMAIL
+    N3 --> EMAIL
+    N4 --> EMAIL
+    N5 --> EMAIL
+    N6 --> EMAIL
+    style EMAIL fill:#5ba85b,color:#fff
+</div></section>
+
+  <section id="rfp-10"><h2>10. Reporting Module</h2><div class="mermaid">
+flowchart TD
+    REPORTS[Reporting Dashboard]
+    REPORTS --> FIN[Financial Reports]
+    REPORTS --> MEM[Membership Reports]
+    FIN --> F1[Contributions Summary]
+    FIN --> F2[Payouts Summary]
+    FIN --> F3[Member Statements]
+    MEM --> M1[Active Member List]
+    MEM --> M2[New / Left Members]
+    MEM --> M3[Household Registry]
+    MEM --> M4[Payment Status Report]
+    subgraph Export["Export"]
+        CSV[CSV]
+        PDF[PDF]
+    end
+    F1 --> Export
+    F2 --> Export
+    M1 --> Export
+    M4 --> Export
+    style REPORTS fill:#8e44ad,color:#fff
+</div></section>
+
+  <section id="rfp-11"><h2>11. Configurable Rules</h2><div class="mermaid">
+flowchart TD
+    CONFIG[Admin Settings Panel]
+    CONFIG --> FEE[Fee Categories]
+    CONFIG --> CLAIM_R[Claim Reasons]
+    CONFIG --> THRESH[Approval Thresholds]
+    CONFIG --> CONTRIB[Contribution Rates]
+    CONFIG --> PEN[Penalty Rules]
+    FEE --> APPLY1[Payment Calculations]
+    THRESH --> APPLY3[Approval Workflows]
+    CONTRIB --> APPLY4[Dues Calculations]
+    PEN --> APPLY5[Missed Payments]
+    style CONFIG fill:#8e44ad,color:#fff
+</div></section>
+
+  <section id="rfp-12"><h2>12. Out of Scope</h2><div class="mermaid">
+flowchart TD
+    OOS[Out of Scope for MVP]
+    OOS --> O1[Full Accounting System]
+    OOS --> O2[Cheque Issuance]
+    OOS --> O3[QuickBooks Sync]
+    OOS --> O4[Custom Report Builder]
+    OOS --> O5[Template Manager]
+    OOS --> O6[SSO Integration]
+    OOS --> O7[Formal PIPEDA Certification]
+    style OOS fill:#999,color:#fff
+</div></section>
+
+  <section id="rfp-13"><h2>13. High-Level Solution Context</h2><div class="mermaid">
+flowchart LR
+    subgraph Users["Users"]
+        MEMBERS[Members]
+        ADMINS[Admins]
+    end
+    subgraph Portal["Web Portal"]
+        MEM_UI[Member Self-Service]
+        ADMIN_UI[Admin Backend]
+    end
+    subgraph External["External"]
+        STRIPE[Stripe]
+    end
+    subgraph Backend["Backend"]
+        DB[(MySQL AWS Calgary)]
+    end
+    MEMBERS --> MEM_UI
+    ADMINS --> ADMIN_UI
+    MEM_UI --> DB
+    ADMIN_UI --> DB
+    MEM_UI <--> STRIPE
+    style Portal fill:#4a90d9,color:#fff
+    style DB fill:#5ba85b,color:#fff
+    style STRIPE fill:#635bff,color:#fff
+</div></section>
+
+  <section id="rfp-14"><h2>14. Month 1 Discovery Checklist</h2><div class="mermaid">
+flowchart TD
+    M1[Month 1: Discovery & Design]
+    M1 --> DB_SCHEMA[Finalize DB Schema]
+    M1 --> BYLAWS[Understand Bylaws]
+    M1 --> DATA[Receive Membership Data]
+    M1 --> STRIPE_SETUP[SBMI Sets Up Stripe]
+    M1 --> WIREFRAMES[Finalize UI/UX Wireframes]
+    STRIPE_SETUP --> NOTE[If not done in Month 1 - Project Delayed]
+    style M1 fill:#8e44ad,color:#fff
+    style NOTE fill:#e8a838,color:#fff
+</div></section>
+
+  <h1>Iddir Bylaws – Flowcharts</h1>
+
+  <section id="bylaw-1"><h2>1. Organizational Structure</h2><div class="mermaid">
+flowchart TD
+    GA["General Assembly\nQuorum 2/3, Meets 3x/year"]
+    GA -->|Elects| EC["Executive Committee\n2yr term, max 2 terms"]
+    GA -->|Elects| AC["Advisory Council\n5 members, 3yr term"]
+    GA -->|Elects| AUD[Auditor]
+    EC --> CHAIR[Chairperson]
+    EC --> SEC[Secretary]
+    EC --> FRM[Finance & Resources]
+    EC --> SACD[Social Affairs & Community Dev]
+    EC --> AID[Aid Provision]
+    FRM --> TREAS[Treasurer]
+    FRM --> ACCT[Accountant]
+    FRM --> STORE[Store Administrator]
+    SACD --> EVENTS[Social Events]
+    SACD --> PROG[Programs & Services]
+    SACD --> FUNERAL[Funeral Executive]
+    AID --> DON_ADMIN[Donations Admin]
+    AID --> AID_DEL[Aid Delivery]
+    style GA fill:#8e44ad,color:#fff
+    style EC fill:#4a90d9,color:#fff
+</div></section>
+
+  <section id="bylaw-2"><h2>2. Membership Lifecycle</h2><div class="mermaid">
+flowchart TD
+    ELIG{Eligibility}
+    ELIG --> E1[Location Calgary+]
+    ELIG --> E2[Age 18+]
+    ELIG --> E3[Accepts Bylaws]
+    E1 & E2 & E3 --> APPLY[Apply + Pay Registration]
+    APPLY --> FEE_TYPE{Type}
+    FEE_TYPE -->|Family| FULL_FEE[100% Fee]
+    FEE_TYPE -->|Unmarried| PARTIAL_FEE[60% then 40% on change]
+    FULL_FEE & PARTIAL_FEE --> WAIT[Wait 3 Months]
+    WAIT --> ID_CARD[Receive ID - Active Member]
+    ID_CARD --> ACTIVE[Active Member]
+    ACTIVE --> EXIT{Exit}
+    EXIT --> RESIGN[Resignation]
+    EXIT --> AUTO_TERM[Auto-Termination]
+    EXIT --> EXPULSION[Expulsion]
+    RESIGN --> WRITE_SEC[Written Notice to Secretary]
+    WRITE_SEC --> CHECK_48[48h: Return Property]
+    CHECK_48 --> RESIGN_ACCEPTED[Accepted]
+    AUTO_TERM --> UNPAID[6 Mo Unpaid]
+    AUTO_TERM --> ABSENT[2 Consecutive GA Absent]
+    UNPAID & ABSENT --> TERMINATED[Terminated]
+    EXPULSION --> BREACH[Breach / No Cooperation]
+    BREACH --> SPECIAL_MTG[Special Meeting]
+    SPECIAL_MTG --> EXPELLED[Expelled]
+    style ACTIVE fill:#5ba85b,color:#fff
+    style TERMINATED fill:#d94a4a,color:#fff
+</div></section>
+
+  <section id="bylaw-3"><h2>3. Family Definition</h2><div class="mermaid">
+flowchart TD
+    FAM[Family Definition]
+    FAM --> REL[Blood / Marriage / Adoption]
+    FAM --> HOUSE[Same Household]
+    FAM --> LEGAL[Legal Status in Canada]
+    FAM --> CHILDREN[Parents + Children under 25 Unmarried]
+    FAM --> SEP[Separated = One Family]
+    SEP --> OUTSIDE{Parent Moves Outside?}
+    OUTSIDE -->|Yes| CALGARY_SIDE[Only Calgary-side Continue]
+    FAM --> DIVORCE[Divorce - New Form]
+    FAM --> DEATH_SUPPORT[Death Support to Family That Had Death]
+    style FAM fill:#8e44ad,color:#fff
+</div></section>
+
+  <section id="bylaw-4"><h2>4. Aid (Funeral) Procedure</h2><div class="mermaid">
+flowchart TD
+    DEATH([Member Family Death])
+    DEATH --> NOTIFY[Notify EC]
+    NOTIFY --> FUNERAL_PAY[Association Pays Funeral Home Direct]
+    NOTIFY --> RECEPTION_PAY[Association Pays Reception Direct]
+    FUNERAL_PAY --> LAST_DAY[Last Day of Mourning]
+    RECEPTION_PAY --> LAST_DAY
+    LAST_DAY --> SYMPATHY["$5 per Member Family"]
+    SYMPATHY --> COLLECT[EC Collects by Next Payment Day]
+    DEATH --> LOCATION{Location?}
+    LOCATION -->|Calgary| STANDARD[Standard as above]
+    LOCATION -->|Outside| OUTSIDE[Same Amounts, Max 1 Week Cover]
+    subgraph Visitor["Visitor Death at Member Home"]
+        V_REPORT{Reported In/Out?}
+        V_REPORT -->|Yes| V_SUPPORT["$15 per Member"]
+        V_REPORT -->|No| V_NONE[No Support]
+    end
+    style DEATH fill:#d94a4a,color:#fff
+    style SYMPATHY fill:#5ba85b,color:#fff
+</div></section>
+
+  <section id="bylaw-5"><h2>5. Humanitarian Support</h2><div class="mermaid">
+flowchart TD
+    APPLICANT([Applicant])
+    APPLICANT --> SUBMIT[Submit Written Case to EC]
+    SUBMIT --> EC_ASSESS[EC Assesses]
+    EC_ASSESS --> TYPE{Type}
+    TYPE --> HEALTH[Health - Unable to Work Long-Term]
+    TYPE --> CATASTROPHE[Catastrophe - Livelihood Impact]
+    HEALTH --> CONFIRM{No Other Income?}
+    CATASTROPHE --> CONFIRM
+    CONFIRM -->|Yes| CONVINCED{EC Convinced?}
+    CONFIRM -->|No| DENIED[Denied]
+    CONVINCED -->|Yes| GA_SUBMIT[EC Takes to GA]
+    CONVINCED -->|No| DENIED
+    GA_SUBMIT --> GA_DECISION{GA Approves?}
+    GA_DECISION -->|Yes| APPROVED[Approved One-Time Amount]
+    GA_DECISION -->|No| DENIED
+    APPROVED --> PRIORITY[Members Prioritized]
+    style APPROVED fill:#5ba85b,color:#fff
+    style DENIED fill:#d94a4a,color:#fff
+</div></section>
+
+  <section id="bylaw-6"><h2>6. Income & Property</h2><div class="mermaid">
+flowchart TD
+    INCOME[Association Income]
+    INCOME --> REG_FEE[Registration Fee]
+    INCOME --> MONTHLY["Monthly $20"]
+    INCOME --> FINES[Fines]
+    INCOME --> RENTALS[Rentals]
+    INCOME --> FUNDRAISE[Fundraising]
+    INCOME --> DONATIONS[Donations]
+    INCOME --> BORROW[Borrowing - Special Meeting]
+    PROPERTY[Property]
+    PROPERTY --> ACQUIRE[Purchase / Donation]
+    PROPERTY --> USE[Objectives & Events]
+    PROPERTY --> DISPOSE[Sell / Mortgage / Lease]
+    style INCOME fill:#4a90d9,color:#fff
+    style PROPERTY fill:#5ba85b,color:#fff
+</div></section>
+
+  <section id="bylaw-7"><h2>7. Election Process</h2><div class="mermaid">
+flowchart TD
+    GA([General Assembly]) --> ELECT_COMM[GA Elects Election Committee]
+    ELECT_COMM --> MEETING[Election Meeting]
+    MEETING --> QUORUM1{Quorum 2/3?}
+    QUORUM1 -->|Yes| VOTE[Vote by Show of Hands In-Person]
+    QUORUM1 -->|No| POSTPONE[Postpone 1 Month]
+    POSTPONE --> MEETING2[Second Meeting]
+    MEETING2 --> QUORUM2[Those Present = Quorum]
+    QUORUM2 --> VOTE
+    VOTE --> EXEC[Executive 2yr Max 2 terms]
+    VOTE --> SUB[Subcommittees 3yr Max 2 terms]
+    subgraph Extraordinary[Extraordinary]
+        EX1[EC Disagreement]
+        EX2[EC Member Moves]
+        EX3[EC Too Few]
+    end
+    Extraordinary --> ELECT_COMM
+    style GA fill:#8e44ad,color:#fff
+    style VOTE fill:#4a90d9,color:#fff
+</div></section>
+
+  <section id="bylaw-8"><h2>8. Decision Rules & Quorum</h2><div class="mermaid">
+flowchart TD
+    DECISIONS[Decision Rules]
+    DECISIONS --> REG_GA[Regular GA]
+    DECISIONS --> EX_GA[Extraordinary]
+    DECISIONS --> EC_AC[EC & Advisory]
+    DECISIONS --> SUBCOMM[Subcommittees]
+    DECISIONS --> BYLAW[Bylaw Amendment]
+    REG_GA --> RG_Q[Quorum 2/3]
+    REG_GA --> RG_R[Resolution 2/3]
+    EX_GA --> EX_Q[Quorum 3/4]
+    EX_GA --> EX_R[Resolution 3/4]
+    EC_AC --> EA_Q[3 of 5]
+    SUBCOMM --> SC_Q[2 of 3]
+    BYLAW --> BY_N[Notice 21 Days]
+    BYLAW --> BY_V[Vote 75%+]
+    style DECISIONS fill:#8e44ad,color:#fff
+</div></section>
+
+  <section id="bylaw-9"><h2>9. Fines & Disciplinary Escalation</h2><div class="mermaid">
+flowchart TD
+    OFFENSE([Offense])
+    OFFENSE --> TYPE{Type}
+    TYPE --> MINOR[Minor]
+    TYPE --> SERIOUS[Serious]
+    TYPE --> CRIMINAL[Criminal]
+    MINOR --> MISS_MTG[Miss Meeting $5]
+    MINOR --> LATE_CONTRIB[Late Contribution $5]
+    MINOR --> MISS_FUNERAL[Miss Funeral / Duties]
+    MISS_FUNERAL --> ESCALATION[EC Escalation]
+    SERIOUS --> DEFAMATION[Defamation]
+    DEFAMATION --> STEP1[Reproach]
+    STEP1 --> STEP2[Written Warning]
+    STEP2 --> STEP3[GA Final Decision]
+    CRIMINAL --> FRAUD[Fraud / Embezzlement]
+    FRAUD --> COURT[Referred to Court]
+    style MINOR fill:#e8a838,color:#fff
+    style CRIMINAL fill:#800,color:#fff
+</div></section>
+
+  <section id="bylaw-10"><h2>10. Visitor at Member's Home</h2><div class="mermaid">
+flowchart TD
+    VISITOR([Visitor at Member Home])
+    VISITOR --> REPORT_IN[Member Reports to EC in Writing]
+    REPORT_IN --> STAY[Visitor Stays]
+    STAY --> REPORT_OUT[Member Reports Departure]
+    REPORT_OUT --> DEATH{Death While Visiting?}
+    DEATH -->|Yes On Time| SUPPORT["$15 per Member + Coordination"]
+    DEATH -->|Yes Late/No Report| NO_SUPPORT[No Support]
+    DEATH -->|No| END([End])
+    style SUPPORT fill:#5ba85b,color:#fff
+    style NO_SUPPORT fill:#d94a4a,color:#fff
+</div></section>
+
+  <section id="bylaw-11"><h2>11. Death Support – Child Over 25 & Divorce</h2><div class="mermaid">
+flowchart TD
+    DEATH([Death in Member Family])
+    DEATH --> WHO{Who Died?}
+    WHO -->|Child Under 25| FULL[Full Support]
+    WHO -->|Child Over 25| CHECK{EC: No Own Family? In Area?}
+    CHECK -->|Yes| HALF[50% Support + Sympathy Card]
+    CHECK -->|No| MESSAGE[Sympathy Message Only]
+    WHO -->|Divorce Two Residences| REP[Family Provides Representative]
+    REP --> ONE_REQ[One Parent Can Request]
+    ONE_REQ --> NO_AGREE{Agreement?}
+    NO_AGREE -->|No| SPLIT[Support Divided Equally]
+    NO_AGREE -->|Yes| FULL
+    style FULL fill:#5ba85b,color:#fff
+    style HALF fill:#e8a838,color:#fff
+</div></section>
+
+  <section id="bylaw-12"><h2>12. Meeting Notice & Call Rules</h2><div class="mermaid">
+flowchart TD
+    MEETING[Meeting Type]
+    MEETING --> REGULAR[Regular]
+    MEETING --> EXTRA[Extraordinary]
+    MEETING --> URGENT[Urgent]
+    REGULAR --> R_CALL[Call + Agenda 14 Days Before]
+    EXTRA --> E_CALL[Call + Agenda 21 Days Before]
+    URGENT --> U_CALL[Notification 1 Week]
+    R_CALL --> CHANNELS[Phone / Email / Other]
+    E_CALL --> CHANNELS
+    U_CALL --> CHANNELS
+    style REGULAR fill:#4a90d9,color:#fff
+    style EXTRA fill:#e8a838,color:#fff
+    style URGENT fill:#d94a4a,color:#fff
+</div></section>
+
+  <section id="bylaw-13"><h2>13. Resignation Flow (Secretary 48h)</h2><div class="mermaid">
+flowchart TD
+    MEMBER([Member Wishes to Resign])
+    MEMBER --> WRITE[Written Resignation to Secretary]
+    WRITE --> T0[Receipt]
+    T0 --> T48[Within 48 Hours]
+    T48 --> CHECK{Property in Possession?}
+    CHECK -->|Yes| RETURN[Secretary Ensures Return]
+    CHECK -->|No| ACCEPT[Resignation Accepted]
+    RETURN --> ACCEPT
+    style MEMBER fill:#8e44ad,color:#fff
+    style ACCEPT fill:#5ba85b,color:#fff
+</div></section>
+
+</body>
+</html>

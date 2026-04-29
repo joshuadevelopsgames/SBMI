@@ -1,0 +1,14 @@
+---
+description: Log all sbmi.ca changes in a daily changelog
+globs: sbmi.ca/**
+alwaysApply: true
+---
+
+# Changelog after every change
+
+- **After creating, editing, or deleting any file under `sbmi.ca/`**, update the daily changelog.
+- **Path:** `sbmi.ca/docs/CHANGELOG-YYYY-MM-DD.md` (use today’s date in ISO format).
+- **If the file doesn’t exist:** Create it with a title `# Changelog — YYYY-MM-DD` and a short intro line, then add the new entry.
+- **If it exists:** Append a new section (or subsection) for the changes just made.
+- **Each entry:** Include a **Goal** (or “Change”), **What changed** (bullets), and **Files** touched. Keep entries short and scannable.
+- **One session = one or more sections** in that day’s changelog; group related edits into one section.

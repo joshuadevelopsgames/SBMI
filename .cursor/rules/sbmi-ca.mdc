@@ -1,0 +1,12 @@
+---
+description: Restrict edits to the SBMI portal app (deployed at /var/www/sbmi.ca)
+globs: sbmi.ca/**
+alwaysApply: true
+---
+
+# SBMI scope: only manipulate files for sbmi.ca
+
+- **Only create, edit, or delete files under `sbmi.ca/`** (this project deploys to `/var/www/sbmi.ca`).
+- Do not modify files outside `sbmi.ca/` (e.g. repo root files, other sbmi.ca assets) unless the user explicitly asks.
+- For deploy/config that lives under `sbmi.ca/deploy/`, treat it as in-scope.
+- **GitHub push / deploy:** When pushing to GitHub or deploying, the server target is **only** `/var/www/sbmi.ca` (no other paths).
