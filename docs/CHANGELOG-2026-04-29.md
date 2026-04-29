@@ -157,3 +157,11 @@ Session notes: spec drift fixes and Phase 1c scaffolding without live Stripe.
 **What changed:** Added `assistance-constants.ts` + API/body validation; assistance page character hint and `maxLength`. Added `stripe-ui.ts` (`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` check); callouts + disabled **Process payment** when unset; registration-payment messaging branches on key presence. `.env.example` documents Stripe keys. `.gitignore` ignores `dev.db`. `foundation-backlog.md` / `assistance.md` updated. Copied `sbmi.ca/` → `/Users/joshua/SBMI`, `git init`, initial commit (excluding `dev.db`, `node_modules`, `.next`).
 
 **Files:** `src/lib/assistance-constants.ts`, `src/lib/stripe-ui.ts`, `src/app/api/dashboard/assistance/route.ts`, `src/app/dashboard/assistance/page.tsx`, `src/app/dashboard/payments/MakePaymentSection.tsx`, `src/app/registration-payment/page.tsx`, `.env.example`, `.gitignore`, `docs/specs/foundation-backlog.md`, `docs/specs/phase-1b/assistance.md`, `docs/CHANGELOG-2026-04-29.md`; repo `/Users/joshua/SBMI/.git` (outside `sbmi.ca/` tree).
+
+## Repo cleanup after Git merge (single app tree)
+
+**Goal:** Drop duplicate Next trees from `origin/main` merge (`V2/`, nested `sbmi.ca/`) and stray build output; keep one portal app at repo root.
+
+**What changed:** Removed `V2/`, `sbmi.ca/`, `sbmi-portal/`. Moved `preview.html`, flowchart markdown → `docs/rfp/`; `.v2-reference-page.tsx` → `docs/archive/v2-reference-page.tsx`. Updated `.cursor/rules/*` globs for repo-root layout.
+
+**Files:** deleted dirs as above; `docs/rfp/README.md`, `docs/archive/v2-reference-page.tsx`, `.cursor/rules/sbmi-ca.mdc`, `.cursor/rules/sbmi-changelog.mdc`, `docs/CHANGELOG-2026-04-29.md`.
