@@ -1,14 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { formatCalendarDate } from "@/lib/date";
+import { formatCalendarDate, formatDate } from "@/lib/date";
 
 type FamilyMemberRow = {
   id: string;
   fullName: string;
   birthDate: string;
   currentAge: number;
+};
+
+type FamilyChangeRequestRow = {
+  id: string;
+  action: "ADD" | "REMOVE";
+  status: string;
+  familyMemberId: string | null;
+  fullName: string;
+  birthDate: string;
+  createdAt: string;
 };
 
 const MAX_AGE = 25;
@@ -50,13 +59,6 @@ function BirthDateSelect({
   const [year, setYear] = useState(parts.year);
   const [month, setMonth] = useState(parts.month);
   const [day, setDay] = useState(parts.day);
-
-  useEffect(() => {
-    const p = toDateParts(value);
-    setYear(p.year);
-    setMonth(p.month);
-    setDay(p.day);
-  }, [value]);
 
   const update = (y: string, m: string, d: string) => {
     const next = fromDateParts(y, m, d);
@@ -129,23 +131,48 @@ function BirthDateSelect({
 
 export default function FamilyPage() {
   const [list, setList] = useState<FamilyMemberRow[]>([]);
+  const [pendingRequests, setPendingRequests] = useState<FamilyChangeRequestRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [notice, setNotice] = useState("");
 
   async function load() {
-    const res = await fetch("/api/dashboard/family-members", { credentials: "include" });
-    if (res.ok) {
-      const data = await res.json();
-      setList(Array.isArray(data) ? data : []);
+    try {
+      const [familyRes, requestRes] = await Promise.all([
+        fetch("/api/dashboard/family-members", { credentials: "include" }),
+        fetch("/api/dashboard/family-member-change-requests", { credentials: "include" }),
+      ]);
+      if (familyRes.ok) {
+        const data = await familyRes.json();
+        setList(Array.isArray(data) ? data : []);
+      } else {
+        setList([]);
+      }
+      if (requestRes.ok) {
+        const data = await requestRes.json();
+        setPendingRequests(Array.isArray(data) ? data : []);
+      } else {
+        setPendingRequests([]);
+      }
+    } catch {
+      setList([]);
+      setPendingRequests([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   useEffect(() => {
-    load();
+    void load();
   }, []);
+
+  const pendingRemovalIds = new Set(
+    pendingRequests
+      .filter((request) => request.action === "REMOVE" && request.familyMemberId)
+      .map((request) => request.familyMemberId as string)
+  );
 
   return (
     <div>
@@ -159,8 +186,13 @@ export default function FamilyPage() {
         Family members
       </h1>
       <p className="text-sm text-[#3D5A4A] mb-6">
-        Age and marital status for eligibility are defined in the bylaws (Article 2.5). This list is for your records only; the system does not approve benefits or make eligibility decisions.
+        Age and marital status for eligibility are defined in the bylaws (Article 2.5). Add and remove requests require admin approval before changes are applied.
       </p>
+      {notice && (
+        <p className="mb-6 text-sm rounded-lg px-3 py-2 bg-[#D4A43A]/10 border border-[#D4A43A]/30 text-[#1B5E3B]">
+          {notice}
+        </p>
+      )}
 
       <div className="sbmi-card overflow-hidden mb-6">
         <div className="px-5 py-3.5 border-b border-[#E2DCD2] flex items-center justify-between">
@@ -181,40 +213,78 @@ export default function FamilyPage() {
           </div>
         ) : (
           <ul className="divide-y divide-[#E2DCD2]">
-            {list.map((fm) => (
-              <li
-                key={fm.id}
-                className={`p-4 flex flex-wrap items-center justify-between gap-2 ${fm.currentAge > MAX_AGE ? "opacity-60 bg-[#FAF7F0]" : ""}`}
-              >
-                <div>
-                  <p className={`font-medium text-[#1B5E3B] ${fm.currentAge > MAX_AGE ? "text-[#3D5A4A]" : ""}`}>
-                    {fm.fullName}
-                  </p>
-                  <p className="text-sm text-[#3D5A4A]">
-                    Birth date: {formatCalendarDate(fm.birthDate)} · Age {fm.currentAge}
-                  </p>
-                  {fm.currentAge > MAX_AGE && (
-                    <p className="text-sm italic text-[#3D5A4A] mt-1">
-                      Age now invalidates eligibility for Iddir benefits under the bylaws.
+            {list.map((fm) => {
+              const removalPending = pendingRemovalIds.has(fm.id);
+              return (
+                <li
+                  key={fm.id}
+                  className={`p-4 flex flex-wrap items-center justify-between gap-2 ${fm.currentAge > MAX_AGE ? "opacity-60 bg-[#FAF7F0]" : ""}`}
+                >
+                  <div>
+                    <p className={`font-medium text-[#1B5E3B] ${fm.currentAge > MAX_AGE ? "text-[#3D5A4A]" : ""}`}>
+                      {fm.fullName}
                     </p>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => { setEditId(fm.id); setAddOpen(false); setDeleteId(null); }}
-                    className="text-sm text-[#1B5E3B] hover:underline font-medium"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setDeleteId(fm.id); setAddOpen(false); setEditId(null); }}
-                    className="text-sm text-red-600 hover:underline"
-                  >
-                    Delete
-                  </button>
-                </div>
+                    <p className="text-sm text-[#3D5A4A]">
+                      Birth date: {formatCalendarDate(fm.birthDate)} · Age {fm.currentAge}
+                    </p>
+                    {fm.currentAge > MAX_AGE && (
+                      <p className="text-sm italic text-[#3D5A4A] mt-1">
+                        Age now invalidates eligibility for Iddir benefits under the bylaws.
+                      </p>
+                    )}
+                    {removalPending && (
+                      <p className="text-xs text-[#3D5A4A]/80 mt-1">
+                        Removal request pending admin approval.
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => { setEditId(fm.id); setAddOpen(false); setDeleteId(null); }}
+                      className="text-sm text-[#1B5E3B] hover:underline font-medium"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setDeleteId(fm.id); setAddOpen(false); setEditId(null); }}
+                      disabled={removalPending}
+                      className={`text-sm ${removalPending ? "text-[#3D5A4A]/60 cursor-not-allowed" : "text-red-600 hover:underline"}`}
+                    >
+                      {removalPending ? "Removal pending" : "Delete"}
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+
+      <div className="sbmi-card overflow-hidden mb-6">
+        <div className="px-5 py-3.5 border-b border-[#E2DCD2]">
+          <h2 className="font-display font-semibold text-[#1B5E3B]">Pending household change requests</h2>
+        </div>
+        {loading ? (
+          <div className="p-6 text-[#3D5A4A] text-sm">Loading…</div>
+        ) : pendingRequests.length === 0 ? (
+          <div className="p-6 text-[#3D5A4A] text-sm">
+            No pending requests.
+          </div>
+        ) : (
+          <ul className="divide-y divide-[#E2DCD2]">
+            {pendingRequests.map((request) => (
+              <li key={request.id} className="p-4">
+                <p className="font-medium text-[#1B5E3B]">
+                  {request.action === "ADD" ? "Add request" : "Remove request"}: {request.fullName}
+                </p>
+                <p className="text-sm text-[#3D5A4A]">
+                  Birth date: {formatCalendarDate(request.birthDate)}
+                </p>
+                <p className="text-xs text-[#3D5A4A]/80 mt-1">
+                  Submitted {formatDate(request.createdAt)}
+                </p>
               </li>
             ))}
           </ul>
@@ -224,7 +294,7 @@ export default function FamilyPage() {
       {addOpen && (
         <AddForm
           onClose={() => setAddOpen(false)}
-          onSaved={() => { setAddOpen(false); load(); }}
+          onSaved={(message) => { setAddOpen(false); setNotice(message); setLoading(true); void load(); }}
         />
       )}
       {editId && (
@@ -233,7 +303,7 @@ export default function FamilyPage() {
           initialFullName={list.find((f) => f.id === editId)?.fullName ?? ""}
           initialBirthDate={list.find((f) => f.id === editId)?.birthDate ?? ""}
           onClose={() => setEditId(null)}
-          onSaved={() => { setEditId(null); load(); }}
+          onSaved={() => { setEditId(null); setLoading(true); void load(); }}
         />
       )}
       {deleteId && (
@@ -241,14 +311,14 @@ export default function FamilyPage() {
           id={deleteId}
           name={list.find((f) => f.id === deleteId)?.fullName ?? "this person"}
           onClose={() => setDeleteId(null)}
-          onDeleted={() => { setDeleteId(null); load(); }}
+          onDeleted={(message) => { setDeleteId(null); setNotice(message); setLoading(true); void load(); }}
         />
       )}
     </div>
   );
 }
 
-function AddForm({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
+function AddForm({ onClose, onSaved }: { onClose: () => void; onSaved: (message: string) => void }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [birthDate, setBirthDate] = useState("");
@@ -290,7 +360,7 @@ function AddForm({ onClose, onSaved }: { onClose: () => void; onSaved: () => voi
       setError(data.error ?? "Could not add.");
       return;
     }
-    onSaved();
+    onSaved(data.message ?? "Your add request was submitted for admin approval.");
   }
 
   return (
@@ -327,7 +397,7 @@ function AddForm({ onClose, onSaved }: { onClose: () => void; onSaved: () => voi
               disabled={loading}
               className="rounded-lg bg-[#D4A43A] text-[#171717] px-4 py-2.5 font-medium hover:bg-[#C4922E] disabled:opacity-50 shadow-sm transition-colors"
             >
-              {loading ? "Adding…" : "Add"}
+              {loading ? "Submitting…" : "Submit request"}
             </button>
             <button type="button" onClick={onClose} className="rounded-lg border border-[#E2DCD2] px-4 py-2.5 text-[#1B5E3B] hover:bg-[#FAF7F0] transition-colors">
               Cancel
@@ -455,7 +525,7 @@ function DeleteConfirm({
   id: string;
   name: string;
   onClose: () => void;
-  onDeleted: () => void;
+  onDeleted: (message: string) => void;
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -465,16 +535,17 @@ function DeleteConfirm({
       method: "DELETE",
       credentials: "include",
     });
+    const data = await res.json().catch(() => ({}));
     setLoading(false);
-    if (res.ok) onDeleted();
+    if (res.ok) onDeleted(data.message ?? "Your removal request was submitted for admin approval.");
   }
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-10">
       <div className="bg-white rounded-xl border border-[#E2DCD2] shadow-xl max-w-md w-full p-6">
-        <h3 className="font-display font-semibold text-[#1B5E3B] mb-2">Delete family member</h3>
+        <h3 className="font-display font-semibold text-[#1B5E3B] mb-2">Request family member removal</h3>
         <p className="text-[#3D5A4A] text-sm mb-4">
-          Remove {name} from your list? This cannot be undone.
+          Submit a request to remove {name} from your list. An admin must approve before the member is removed.
         </p>
         <div className="flex gap-2">
           <button
@@ -483,7 +554,7 @@ function DeleteConfirm({
             disabled={loading}
             className="rounded-lg bg-red-600 text-white px-4 py-2.5 font-medium hover:bg-red-700 disabled:opacity-50 shadow-sm transition-colors"
           >
-            {loading ? "Deleting…" : "Delete"}
+            {loading ? "Submitting…" : "Request removal"}
           </button>
           <button type="button" onClick={onClose} className="rounded-lg border border-[#E2DCD2] px-4 py-2.5 text-[#1B5E3B] hover:bg-[#FAF7F0] transition-colors">
             Cancel

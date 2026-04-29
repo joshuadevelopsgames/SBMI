@@ -99,6 +99,7 @@ model Member {
   payments           Payment[]
   claims             Claim[]
   familyMembers     FamilyMember[]
+  familyMemberChangeRequests FamilyMemberChangeRequest[]
   assistanceRequests AssistanceRequest[]
 }
 
@@ -124,10 +125,31 @@ model FamilyMember {
   member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
   fullName  String
   birthDate DateTime
+  changeRequests FamilyMemberChangeRequest[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([memberId])
+}
+
+model FamilyMemberChangeRequest {
+  id             String       @id @default(cuid())
+  memberId       String
+  member         Member       @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  familyMemberId String?
+  familyMember   FamilyMember? @relation(fields: [familyMemberId], references: [id], onDelete: SetNull)
+  action         String       // ADD | REMOVE
+  status         String       @default("PENDING") // PENDING | APPROVED | REJECTED
+  fullName       String
+  birthDate      DateTime
+  rejectionReason String?
+  processedById  String?
+  processedAt    DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([memberId, status])
+  @@index([status, createdAt])
 }
 
 model Claim {
